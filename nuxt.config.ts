@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
-    '@nuxt/ui'
+    '@nuxt/ui',
+    '@nuxtjs/supabase'
   ],
 
   devtools: {
@@ -24,5 +25,9 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
+  },
+   supabase: {
+    redirect: false,
+     types: '~~/shared/types/database.types.ts'
   }
 })
