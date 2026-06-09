@@ -3,9 +3,14 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
-    '@nuxtjs/supabase'
+    '@nuxtjs/supabase',
+    '@nuxt/image',
+    '@pinia/nuxt'
   ],
 
+  pinia: {
+     storesDirs: ['./stores/**']
+  },
   devtools: {
     enabled: true
   },
