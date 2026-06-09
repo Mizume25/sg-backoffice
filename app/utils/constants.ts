@@ -8,21 +8,21 @@ export const SideBarItems: NavigationMenuItem[] = [
     {
         label: "Catalogo de Productos",
         icon: "lucide:house",
-        to: "#"
+        to: "/home/products/",
     },
     {
         label: "Gestion de Categorias",
         icon: "lucide:tag",
-        to: "#"
+        to: "/home/categories/create"
     },
     {
         label: "Añadir Producto",
         icon: "lucide:store",
-        to: "#"
+        to: "/home/products/create"
     },
     {
         label: "Pedir Encargo",
         icon: "lucide:package",
-        to: "#"
+        to: "/home/orders/create"
     }
 ]
