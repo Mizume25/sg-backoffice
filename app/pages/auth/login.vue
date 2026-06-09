@@ -1,8 +1,5 @@
 <script setup lang="ts">
-
-
-
-/** Composables de LOgin */
+/** Composables de Login */
 const { form } = useLoginForm();
 const { login } = useAuth();
 const loading = ref(false)

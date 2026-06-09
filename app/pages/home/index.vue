@@ -1,14 +1,15 @@
 <script setup lang="ts">
 
-const { logout } = useAuth();
+const { profile } = storeToRefs(useProfileStore())
 
+console.log("Inciado buenismo de " , profile.value?.name);
 
 </script>
 
   
 <template>
   <div>
-<UButton @click="logout">Log out</UButton>
+
   </div>
 </template>
 

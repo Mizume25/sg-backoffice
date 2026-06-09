@@ -15,5 +15,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return navigateTo('/auth/dashboard')
   }
 
+  if(user.value){
+    await callOnce(async () => {
+    const { fetchProfile } = useAuth()
+    const { setProfile } = useProfileStore()
+
+    const data = await fetchProfile()
+    setProfile(data)
+  })
+  }
+
   
 })

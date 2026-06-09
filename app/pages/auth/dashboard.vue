@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
-const store = useProfileStore()
-const { profile } = storeToRefs(store)
+const { profile } = storeToRefs(useProfileStore())
 
-
+definePageMeta({
+  title: 'Dashboard'
+})
 
 </script>
 <template>
