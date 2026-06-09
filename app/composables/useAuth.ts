@@ -1,40 +1,51 @@
 export const useAuth = () => {
- 
+
+  /** Objeto supabase y usuario actual */
   const supabase = useSupabaseClient();
   const user = useSupabaseUser()
+
+
   const { clearProfile } = useProfileStore()
 
-const logout = async () => {
-  await supabase.auth.signOut()
-  clearProfile()
-  navigateTo('/auth/login')
-}
+  /** Cerrar Session */
+  const logout = async () => {
+    await supabase.auth.signOut()
+    clearProfile()
+    navigateTo('/auth/login')
+  }
 
 
-  /*** Login  */
+  /*** Loguear  */
   const login = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     })
+
+
+    if (error) return { data, error }
+
     return { data, error }
   }
 
-   const fetchProfile = async () => {
-    
+  /** Obtener Perfiles */
+  const fetchProfile = async () => {
+
     const { data } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', user.value?.id)
+      .eq('id', user.value?.sub!)
       .single()
 
-    return  {
+
+    console.log("Los valores devueltos ", data);
+    return {
       ...data!,
       email: user.value?.email
     }
   }
-  
 
-  return { login , fetchProfile , logout}
+
+  return { login, fetchProfile, logout }
 
 }
