@@ -19,7 +19,7 @@ const handleLogin = async () => {
     return
   }
 
-  navigateTo('/home')
+  navigateTo('/home/products/')
 }
 
 

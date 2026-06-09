@@ -15,7 +15,7 @@ definePageMeta({
     }" class="w-full h-10 font-bold cursor-pointer"
      trailing-icon="lucide:arrow-big-right" 
      leading-icon="lucide:house"
-     to="/home">
+     to="/home/products">
       Volver al Home
     </UButton>
   </div>
