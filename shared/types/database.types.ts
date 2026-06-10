@@ -17,36 +17,59 @@ export type Database = {
       categories: {
         Row: {
           code: string
+          created_at: string | null
           description: string
           id: string
           name: string
+          parent_id: string | null
+          updated_at: string | null
         }
         Insert: {
           code: string
+          created_at?: string | null
           description: string
           id?: string
           name: string
+          parent_id?: string | null
+          updated_at?: string | null
         }
         Update: {
           code?: string
+          created_at?: string | null
           description?: string
           id?: string
           name?: string
+          parent_id?: string | null
+          updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_categoires_parent_id"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       categories_products: {
         Row: {
           category_id: string
+          created_at: string | null
           product_id: string
+          updated_at: string | null
         }
         Insert: {
           category_id: string
+          created_at?: string | null
           product_id: string
+          updated_at?: string | null
         }
         Update: {
           category_id?: string
+          created_at?: string | null
           product_id?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -68,24 +91,30 @@ export type Database = {
       orders: {
         Row: {
           amount: number
+          created_at: string | null
           id: string
           order_date: string
           product_id: string
           units: number
+          updated_at: string | null
         }
         Insert: {
           amount: number
+          created_at?: string | null
           id?: string
           order_date: string
           product_id: string
           units: number
+          updated_at?: string | null
         }
         Update: {
           amount?: number
+          created_at?: string | null
           id?: string
           order_date?: string
           product_id?: string
           units?: number
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -99,19 +128,25 @@ export type Database = {
       }
       product_images: {
         Row: {
+          created_at: string | null
           id: string
           path: string
           product_id: string
+          updated_at: string | null
         }
         Insert: {
+          created_at?: string | null
           id?: string
           path: string
           product_id: string
+          updated_at?: string | null
         }
         Update: {
+          created_at?: string | null
           id?: string
           path?: string
           product_id?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -126,21 +161,27 @@ export type Database = {
       products: {
         Row: {
           code: string
+          created_at: string | null
           description: string
           id: string
           name: string
+          updated_at: string | null
         }
         Insert: {
           code: string
+          created_at?: string | null
           description: string
           id?: string
           name: string
+          updated_at?: string | null
         }
         Update: {
           code?: string
+          created_at?: string | null
           description?: string
           id?: string
           name?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -173,25 +214,31 @@ export type Database = {
       }
       rates: {
         Row: {
+          created_at: string | null
           end_date: string
           id: string
           price: number
           product_id: string
           start_date: string
+          updated_at: string | null
         }
         Insert: {
+          created_at?: string | null
           end_date: string
           id?: string
           price: number
           product_id: string
           start_date: string
+          updated_at?: string | null
         }
         Update: {
+          created_at?: string | null
           end_date?: string
           id?: string
           price?: number
           product_id?: string
           start_date?: string
+          updated_at?: string | null
         }
         Relationships: [
           {

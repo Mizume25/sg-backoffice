@@ -38,7 +38,7 @@ export const useAuth = () => {
       .single()
 
 
-    console.log("Los valores devueltos ", data);
+   
     return {
       ...data!,
       email: user.value?.email

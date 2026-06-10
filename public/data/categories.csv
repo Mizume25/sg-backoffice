@@ -1,0 +1,15 @@
+id,code,name,description,parent_id,created_at,updated_at
+56c8ae43-a9f9-4345-83de-078dd0076b6d,FRU-XKEN,frutas,Selección de las mejores frutas de temporada.,,2026-06-01 9:31:08,2026-06-01 9:31:08
+a195ed88-c5fe-4d46-b85e-45380d6f0d82,MAN-12B4,manzana,"Manzanas frescas de temporada, cultivadas en huertos seleccionados.",56c8ae43-a9f9-4345-83de-078dd0076b6d,2026-06-01 9:31:08,2026-06-01 9:31:08
+94da5df3-9a01-432c-b236-4f7157b38d10,PER-DSBV,pera,"Peras jugosas y dulces, perfectas para consumo directo o postres.",56c8ae43-a9f9-4345-83de-078dd0076b6d,2026-06-01 9:31:08,2026-06-01 9:31:08
+4cf83aa0-69bd-4a59-9184-b58e9f24f614,VER-W92A,verduras,Verduras frescas cultivadas localmente.,,2026-06-01 9:31:08,2026-06-01 9:31:08
+e45c489e-1458-4e1e-847c-6fd45dfeeb6d,ZAN-CJLX,zanahoria,"Zanahorias cultivadas de forma natural, ricas en vitamina A.",4cf83aa0-69bd-4a59-9184-b58e9f24f614,2026-06-01 9:31:08,2026-06-01 9:31:08
+430136ee-1a94-4410-966d-60f7f57a4c00,LEC-LRTU,lechuga,"Lechugas frescas de hoja crujiente, ideales para ensaladas.",4cf83aa0-69bd-4a59-9184-b58e9f24f614,2026-06-01 9:31:08,2026-06-01 9:31:08
+d51b06bb-5a81-453d-93eb-c38976a8e49e,CAR-DNHR,carnes,Carnes de primera calidad seleccionadas por nuestros expertos.,,2026-06-01 9:31:08,2026-06-01 9:31:08
+d2be0378-70fc-4be2-aaf2-15d9116dd85c,POL-LPYX,pollo,"Pollo de granja criado en libertad, sin antibióticos.",d51b06bb-5a81-453d-93eb-c38976a8e49e,2026-06-01 9:31:08,2026-06-01 9:31:08
+39950292-fd31-4038-ba4f-f21b563ae2ef,TER-DZBD,ternera,"Ternera de primera calidad, tierna y con sabor intenso.",d51b06bb-5a81-453d-93eb-c38976a8e49e,2026-06-01 9:31:08,2026-06-01 9:31:08
+77157ab9-a37b-4f1d-8de1-19cd7dd4520b,LAC-QPPA,lacteos,Productos lácteos frescos de origen certificado.,,2026-06-01 9:31:08,2026-06-01 9:31:08
+0257c76c-069f-4887-ac33-425f8cd610a6,LEC-0IST,leche,"Leche fresca de vaca, procesada con los más altos estándares de calidad.",77157ab9-a37b-4f1d-8de1-19cd7dd4520b,2026-06-01 9:31:08,2026-06-01 9:31:08
+d245ecd3-2d19-4a30-b65e-e082f1b66a78,QUE-IYTD,queso,Quesos artesanales elaborados con leche de origen controlado.,77157ab9-a37b-4f1d-8de1-19cd7dd4520b,2026-06-01 9:31:08,2026-06-01 9:31:08
+f645a00c-ff94-4bce-9b18-10413ea097eb,EJE-KVB6,ejemplos,Categoria de prueba,,2026-06-01 9:32:58,2026-06-01 9:32:58
+1d6b5ac9-139b-4633-a656-1e3c578e0390,PRU-X6BE,prueba,dwadwdawdawd,f645a00c-ff94-4bce-9b18-10413ea097eb,2026-06-01 9:44:39,2026-06-01 9:44:39
