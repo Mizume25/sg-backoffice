@@ -14,12 +14,12 @@ const { profile } = storeToRefs(useProfileStore())
       </div>
        <div class="flex flex-row  gap-5 items-center">
         <UAvatar   :alt="profile?.name"
-  size="md">
+        size="md">
 
         </UAvatar>
         <UDropdownMenu class="w-25 cursor-pointer" 
-        :items="[{label: 'Log-out' , icon:'lucide:log-out' , onSelect: logout}] ">
-          <UButton label="Log out" trailing-icon="lucide:log-out "  color='info' class="border border-black"  />
+        :items="[{label: 'Log-out' , onSelect: logout , icon:'lucide:log-out'}] ">
+          <UButton label="Log out"   color='info' class="border border-black" icon='lucide:log-out'  />
         </UDropdownMenu>
       </div>
       
