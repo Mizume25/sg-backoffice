@@ -12,11 +12,11 @@ const border = computed(() => colorCategory(parent.value))
 
 /** Eventos del componente */
 const emit = defineEmits<{
-  parent: [parent: string | undefined]
+  product: [parent: string | undefined]
 }>()
 
-const handleParent = () => {
-  emit('parent', parent.value)
+const handleProduct = () => {
+  emit('product', props.product.id)
 }
 
 
@@ -26,7 +26,7 @@ const handleParent = () => {
   <div 
     class="w-75 min-h-50 bg-blue-900 rounded-2xl border-4 shadow-2xl transition-transform duration-150 hover:scale-105 active:scale-95 cursor-pointer hover:z-20"
     :class="border"
-     @click="handleParent"
+     @click="handleProduct"
      v-show="filter === 'Todos' || filter === parent"
     >
     <header class="w-full min-h-[25%] p-3 flex flex-col gap-y-1 ">

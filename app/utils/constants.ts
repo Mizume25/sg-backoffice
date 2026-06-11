@@ -115,3 +115,21 @@ export const getParent = (record: ProductRecord) : string | undefined => {
         return undefined
     }
 }
+
+
+/**
+ * 
+ * Funcion de Fechas 
+ */
+
+export const formatDate = (date: string | null | undefined): string => {
+  if (!date) return 'Sin fecha'
+  
+  const clean = date.split('T')[0] ?? ''
+  const parts = clean.split('-')
+  
+  if (parts.length < 3) return 'Sin fecha'
+  
+  const [year, month, day] = parts
+  return `${day}/${month}/${year?.slice(2)}`
+}
