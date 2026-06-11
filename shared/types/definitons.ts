@@ -46,4 +46,9 @@ export type ProductRecord  = Product & {
 }
 
 
+export type CategoryRecord = Category & {
+    categories: Category[]
+}
+
+
 
