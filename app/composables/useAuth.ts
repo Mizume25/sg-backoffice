@@ -1,10 +1,13 @@
+/**
+ * Gestiona la autenticación del usuario
+ * @returns login, logout, user
+ */
+
 export const useAuth = () => {
 
-  /** Objeto supabase y usuario actual */
+  /** Objeto supabase y usuario actual y limpiar usuario */
   const supabase = useSupabaseClient();
   const user = useSupabaseUser()
-
-
   const { clearProfile } = useProfileStore()
 
   /** Cerrar Session */
@@ -15,7 +18,11 @@ export const useAuth = () => {
   }
 
 
-  /*** Loguear  */
+  /**
+   * Valida las creedenciales de usuario 
+   * @param email 
+   * @param password 
+   */
   const login = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -28,7 +35,8 @@ export const useAuth = () => {
     return { data, error }
   }
 
-  /** Obtener Perfiles */
+  
+  /** Obtiene Perfil de usuario  */
   const fetchProfile = async () => {
 
     const { data } = await supabase

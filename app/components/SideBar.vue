@@ -1,13 +1,9 @@
-<script setup lang="ts">
-
-
-
-
-</script>
-
 <template>
+
+  <!-- Side bar -->
   <aside class="w-[20%] min-h-screen bg-[#0f172a] fixed left-0 top-15 p-3 pt-10">
     
+  <!-- Links Iterables de una constante -->
   <NuxtLink
     v-for="item in SideBarItems"
     :key="item.label"
@@ -24,4 +20,4 @@
 </aside>
 </template>
 
-<style scoped></style>
+
