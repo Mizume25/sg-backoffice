@@ -1,4 +1,6 @@
+
 <script setup>
+// Redireccion
 definePageMeta({
   middleware: () => navigateTo('/auth/login')
 })

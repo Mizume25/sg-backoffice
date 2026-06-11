@@ -3,17 +3,14 @@ definePageMeta({
   title: "Lista de Productos"
 })
 
-/** Composables */
+
+/** Composables  & Apis */
 const { filter, order, orderBy } = useProductIndex()
+const { data: products } = await useFetch('/api/products');
 
-/** Api Project */
-const { data: products, refresh } = await useFetch('/api/products');
-
-/** Hacemos reactivos los elmenots padre */
+/** Elementos Reactivos y Modificados  */
 const parents = computed(() => getAllParents(products.value ?? []));
-
-/** Opciones del Select */
-const items = ['Todos', ...parents.value]
+const items = ['Todos', ...parents.value] // "Todos" como filtro de categoria 
 
 /** Listas en ordern disponibles */
 const listOrders = computed(() => {
@@ -77,9 +74,3 @@ const reciveProduct = (product: string | undefined): void => {
 
 
 
-
-<style lang="scss" scoped>
-.mask {
-  mask-image: linear-gradient(to right, transparent, black 4%, black 93%, transparent);
-}
-</style>

@@ -1,7 +1,7 @@
 import type { NavigationMenuItem } from "@nuxt/ui";
-/**
- * Objetos exportables para UX  
- */
+
+
+/** Objetos para UX */
 
 /** Items de SideBar */
 export const SideBarItems: NavigationMenuItem[] = [
@@ -27,7 +27,9 @@ export const SideBarItems: NavigationMenuItem[] = [
     }
 ]
 
-/** Icono dinamicos */
+/** Icono dinamicos 
+ * Obtiene Iconos segun categoria
+*/
 export const iconCategory = (category : string | undefined): string => {
     switch (category) {
         case 'frutas':
@@ -43,7 +45,9 @@ export const iconCategory = (category : string | undefined): string => {
     }
 }
 
-/** colores dinamicos */
+/** Colores dinamicos 
+ * Obtiene Iconos segun categoria
+*/
 export const colorCategory = (category : string | undefined): string => {
     switch (category) {
         case 'frutas':
@@ -59,69 +63,6 @@ export const colorCategory = (category : string | undefined): string => {
     }
 }
 
-/**
- * 
- * @function getAllparents
- * @param record
- * @description Obtiene todos los padres de un array de registros
- */
-export const getAllParents = (records: ProductRecord[]): string[] => {
-
-    if(records == null) return [];
-
-    const parents : string [] | undefined = [];
-
-    /** Recoremos cada Producto */
-    records.forEach((product) => {
-        
-        /** Reutilizamos funcion indivudual */
-        const parent = getParent(product)
-
-        /** En caso de existir  */
-        if(parent){
-            if(!parents.includes(parent)) parents.push(parent)
-        }
-
-    });
-
-
-    return parents;
-
-    
-}
-
-
-/**
- * Funcion que obtiene el padre de 1 producto
- * @function getParent
- * @param record
- * @description Obtenemos la cateogira padre de 1 producto que puede tener varias categorias
- */
-export const getParent = (record: ProductRecord) : string | undefined => {
-
-    const categories = record.categories_products;
-
-    const obj = categories.find((p) => p.categories?.parent_id == null)
-
-        /** En caso de existir  */
-    if(obj?.categories){
-
-                /** Guardaremos el valor solo en caso de no estar repetido */
-        const parent = obj.categories.name;
-
-        return parent
-    } else {
-
-        return undefined
-    }
-}
-
-
-/**
- * 
- * Funcion de Fechas 
- */
-
 export const formatDate = (date: string | null | undefined): string => {
   if (!date) return 'Sin fecha'
   
@@ -133,3 +74,4 @@ export const formatDate = (date: string | null | undefined): string => {
   const [year, month, day] = parts
   return `${day}/${month}/${year?.slice(2)}`
 }
+
