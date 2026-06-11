@@ -5,9 +5,9 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/supabase',
     '@nuxt/image',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
   ],
-
+  
   pinia: {
      storesDirs: ['./stores/**']
   },
@@ -34,6 +34,6 @@ export default defineNuxtConfig({
    supabase: {
     redirect: false,
      types: '~~/shared/types/database.types.ts'
-  },
+  }
   
 })

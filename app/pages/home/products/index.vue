@@ -3,40 +3,8 @@ definePageMeta({
   title: "Lista de Productos"
 })
 
-
-/** Composables  & Apis */
-const { filter, order, orderBy } = useProductIndex()
-const { data: products } = await useFetch('/api/products');
-
-/** Elementos Reactivos y Modificados  */
-const parents = computed(() => getAllParents(products.value ?? []));
-const items = ['Todos', ...parents.value] // "Todos" como filtro de categoria 
-
-/** Listas en ordern disponibles */
-const listOrders = computed(() => {
-  const list = [...(products.value ?? [])]
-
-  switch (orderBy.value) {
-    case order.value[1]:
-      return list.sort((a, b) => a.name.localeCompare(b.name))
-    default:
-      return list
-  }
-})
-
-const record: Ref<ProductRecord | undefined> = ref(listOrders.value[0])
-  
-
-/** Filtraremos la funcion de obtener el id y etornaremos el json corespondiente */
-const reciveProduct = (product: string | undefined): void => {
-
-  if(product == null) return
-
-  record.value = listOrders.value.find((p) => p.id === product) ?? null;
-}
-
-
-
+/** Composables  & Apis  &  Service*/
+const { filter, order, orderBy , items , record ,listOrders , reciveProduct } = useProducts()
 
 </script>
 
