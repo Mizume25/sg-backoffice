@@ -8,7 +8,10 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.111",
@@ -27,7 +30,9 @@
     "eslint": "^10.4.1",
     "sass-embedded": "^1.100.0",
     "supabase": "^2.105.0",
+    "typedoc": "^0.28.19",
     "typescript": "^6.0.3",
+    "vitepress": "^1.6.4",
     "vue-tsc": "^3.3.3"
   },
   "packageManager": "pnpm@11.5.2"

@@ -4,7 +4,7 @@ definePageMeta({
 })
 
 /** Composables */
-const { filter, order, orderBy, reciveParent } = useProductIndex()
+const { filter, order, orderBy } = useProductIndex()
 
 /** Api Project */
 const { data: products, refresh } = await useFetch('/api/products');
@@ -27,6 +27,17 @@ const listOrders = computed(() => {
   }
 })
 
+const record: Ref<ProductRecord | undefined> = ref(listOrders.value[0])
+  
+
+/** Filtraremos la funcion de obtener el id y etornaremos el json corespondiente */
+const reciveProduct = (product: string | undefined): void => {
+
+  if(product == null) return
+
+  record.value = listOrders.value.find((p) => p.id === product) ?? null;
+}
+
 
 
 
@@ -40,7 +51,7 @@ const listOrders = computed(() => {
       <h2>Filtrar por:</h2>
       <USelect :items="items" default-value="todos" class="w-35 mx-3 capitalize" v-model="filter" />
       <h2> Ordenar Lista por :</h2>
-      <USelect :items="order" default-value="defecto" class="w-35 mx-3 capitalize" v-model="orderBy" />
+      <USelect :items="order" default-value="defecto" class="w-35 mx-3 capitalize" v-model="orderBy"  />
     </div>
 
     <!-- Contenido principal -->
@@ -50,39 +61,14 @@ const listOrders = computed(() => {
       <div
         class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/50 scrollbar-track-transparent scrollbar-thumb-rounded-full">
         <div class="grid grid-cols-2 gap-4 content-start">
-          <Card v-for="product in listOrders" :product="product" :filter="filter" @parent="reciveParent" />
+          <Card v-for="product in listOrders" :product="product" :filter="filter" @product="reciveProduct" />
         </div>
       </div>
 
       <!-- Panel lateral - Mostrar Producto -->
-      <div class="w-96 shrink-0">
-        <div
-          class="sticky top-4 bg-blue-900 rounded-2xl p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent scrollbar-thumb-rounded-full max-h-[calc(100vh-8rem)]">
-          <div class="bg-blue-300 rounded-2xl w-full flex flex-col gap-3 p-4">
-
-            <!-- Imagen y Titulo -->
-            <h2 class="text-black font-bold text-xl">Nombre de Producto</h2>
-            <div class="h-48 w-full rounded-2xl bg-white overflow-hidden shadow-2xl">
-              <NuxtImg src="/carnes/ternera/filete2.webp" class="w-full h-full object-cover" />
-            </div>
-
-            <!-- Categorias -->
-            <h3 class="text-black font-semibold text-md">Categorias</h3>
-            <div class="grid grid-cols-3 gap-2 w-full">
-              <UBadge label="categoria" color="warning" class="w-20 h-10 font-bold" size="md"
-                :ui="{ base: 'flex items-center justify-center' }" />
-              <UBadge label="categoria" color="warning" class="w-20 h-10 font-bold" size="md"
-                :ui="{ base: 'flex items-center justify-center' }" />
-            </div>
-
-            <!-- Tarifas -->
-            <h3 class="text-black font-semibold text-md">Tarifas</h3>
-            <div class="flex flex-col gap-2 w-full">
-              <div class="h-20 w-full bg-blue-200 rounded-xl"></div>
-            </div>
-
-          </div>
-        </div>
+      <div
+        class="w-96 shrink-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent scrollbar-thumb-rounded-full">
+          <Record variant="min-h-full" :record="record" />
       </div>
 
     </div>
