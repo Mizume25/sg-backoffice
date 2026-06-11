@@ -1,20 +1,25 @@
 <script setup lang="ts">
-import { type ProductRecord  } from '../../shared/types/definitons'
+import { type ProductRecord } from '../../shared/types/definitons'
 
 /** Propos del componente */
 const props = defineProps<({
-  product:ProductRecord,
+  product: ProductRecord,
   filter: string | undefined
 })>()
+
+/** Categoria padre */
 const parent = computed(() => getParent(props.product))
+
+/** Estilo de borde */
 const border = computed(() => colorCategory(parent.value))
 
 
 /** Eventos del componente */
 const emit = defineEmits<{
-  product: [parent: string | undefined]
+  product: [product: string | undefined]
 }>()
 
+/** emitimos id product */
 const handleProduct = () => {
   emit('product', props.product.id)
 }
@@ -23,28 +28,27 @@ const handleProduct = () => {
 </script>
 
 <template>
-  <div 
+  <!--- Card -->
+  <div
     class="w-75 min-h-50 bg-blue-900 rounded-2xl border-4 shadow-2xl transition-transform duration-150 hover:scale-105 active:scale-95 cursor-pointer hover:z-20"
-    :class="border"
-     @click="handleProduct"
-     v-show="filter === 'Todos' || filter === parent"
-    >
+    :class="border" @click="handleProduct" v-show="filter === 'Todos' || filter === parent">
+    <!--- Head -->
     <header class="w-full min-h-[25%] p-3 flex flex-col gap-y-1 ">
+      <!--- Title -->
       <h2 class="font-bold ">
         <UIcon :name="iconCategory(parent)" class="me-2" /> {{ props.product.name }}
       </h2>
+
+      <!--- Categorias -->
       <h3 class="font-light italic text-sm"> Categorias</h3>
       <div class="grid grid-cols-3 gap-2">
-        <UBadge variant="solid" color="warning" v-for="cp in props.product.categories_products"
-        :key="cp.categories?.id"
-        :label="cp.categories?.name"
-        class="capitalize"
-        />
+        <UBadge variant="solid" color="warning" v-for="cp in props.product.categories_products" :key="cp.categories?.id"
+          :label="cp.categories?.name" class="capitalize" />
 
 
       </div>
     </header>
-
+    <!--- Descripciones -->
     <section class="w-full min-h-[75%] p-3">
       <h3 class="font-light italic text-sm"> Descripcion</h3>
       <p class="text-sm">{{ props.product.description }}</p>
@@ -52,5 +56,3 @@ const handleProduct = () => {
 
   </div>
 </template>
-
-<style scoped></style>

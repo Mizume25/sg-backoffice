@@ -1,14 +1,12 @@
 <script setup lang="ts">
-
-
+/** Props de Componente */
 const props = defineProps<({
   rate: Rate
 })>()
-
-
 </script>
 
 <template>
+  <!--- Template -->
   <div class="h-10 w-full bg-blue-200 rounded-sm border border-black flex flex-row justify-center items-center">
 
     <!-- Fechas -->

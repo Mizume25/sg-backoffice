@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "sg-backoffice",
-  description: "Documentación técnica del proyecto sg-backoffice",
+  description: "Documentacion Técnica de sg-backoffice",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [

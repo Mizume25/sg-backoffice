@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "sg-backoffice"
-  text: "Documentación técnica del proyecto sg-backoffice"
+  text: "Documentacion Técnica de sg-backoffice"
   tagline: My great project tagline
   actions:
     - theme: brand
