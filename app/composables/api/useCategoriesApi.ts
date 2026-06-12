@@ -1,6 +1,7 @@
 /** Accedemos al endpoint */
 export const useCategoriesApi = () => {
-  return useLazyFetch<CategoryRecord[]>(() => '/api/categories', {
-    default: () => []
-  });
+  return useAsyncData<CategoryRecord[]>('categories', () => 
+    $fetch('/api/categories'),
+    { default: () => [] }
+  )
 }
