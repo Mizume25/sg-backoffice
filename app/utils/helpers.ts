@@ -54,6 +54,17 @@ export const getParent = (record: ProductRecord) : string | undefined => {
     }
 }
 
+/**
+ * 
+ * Retorna la id de una categoria a a partir del nombre
+ * @param {CategoryRecord [] string}
+ * @return uuid
+ */
+export const getCategoryID = (records: CategoryRecord[], name: string | undefined): string | null => {
+  if (!records) return null;
+  return records.find((p) => p.name === name)?.id ?? null;
+  //                                           ^^^ optional chaining directo
+}
 
 
 

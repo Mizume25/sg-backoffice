@@ -1,3 +1,3 @@
 export const useProductsApi = () => {
-  return useFetch(() => '/api/products');
+  return useLazyFetch(() => '/api/products');
 }

@@ -4,7 +4,9 @@ definePageMeta({
 })
 
 /** Composables  & Apis  &  Service*/
-const { filter, order, orderBy , items , record ,listOrders , reciveProduct } = useProducts()
+const { filter, order, orderBy, items, record, listOrders, reciveProduct } = useProducts();
+
+
 
 </script>
 
@@ -16,7 +18,7 @@ const { filter, order, orderBy , items , record ,listOrders , reciveProduct } = 
       <h2>Filtrar por:</h2>
       <USelect :items="items" default-value="todos" class="w-35 mx-3 capitalize" v-model="filter" />
       <h2> Ordenar Lista por :</h2>
-      <USelect :items="order" default-value="defecto" class="w-35 mx-3 capitalize" v-model="orderBy"  />
+      <USelect :items="order" default-value="defecto" class="w-35 mx-3 capitalize" v-model="orderBy" />
     </div>
 
     <!-- Contenido principal -->
@@ -33,12 +35,14 @@ const { filter, order, orderBy , items , record ,listOrders , reciveProduct } = 
       <!-- Panel lateral - Mostrar Producto -->
       <div
         class="w-96 shrink-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent scrollbar-thumb-rounded-full">
-          <Record variant="min-h-full" :record="record" />
+        <!-- en caso de que no exita-->
+        <div v-if="!record" class="bg-blue-900 rounded-2xl p-4 min-h-full flex items-center justify-center">
+          <h2 class="text-xl text-blue-300 italic font-semibold">Selecciona un producto</h2>
+        </div>
+
+        <Record v-else variant="min-h-full" :record="record" />
       </div>
 
     </div>
   </div>
 </template>
-
-
-

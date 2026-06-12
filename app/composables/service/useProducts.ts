@@ -32,7 +32,7 @@ export const useProducts = () => {
   })
 
   /** Objeto Reactivo Especifico  */
-  const record: Ref<ProductRecord | undefined> = ref(listOrders.value[0])
+  const record: Ref<ProductRecord | undefined> = ref(undefined)
 
 
   /** Funcion que modifica el record actual */
