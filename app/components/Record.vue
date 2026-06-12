@@ -2,67 +2,60 @@
 
 /** Props Componentes */
 const props = defineProps<{
-  record?: ProductRecord
-  variant?: string
+  record: ProductRecord
+  variant: string
 }>()
 
 const product = computed(() => props.record)
 
 /** Array de imagenes */
-const images = computed(() => product.value?.product_images ?? [])
+const images = computed(() => product.value.product_images)
 
 /** Index imagenes */
 const i = ref(0)
 
-const parent = computed(() => product.value ? getParent(product.value) : null)
+const parent = computed(() => getParent(product.value))
 
-/** Variable circular */
+let intervalId: ReturnType<typeof setInterval> | null = null
+
 onMounted(() => {
-  watchEffect((onCleanup) => {
-    if (!images.value.length) return
+  if (!images.value.length) return
 
-    const interval = setInterval(() => {
-      i.value = (i.value + 1) % images.value.length
-    }, 3000)
+  intervalId = setInterval(() => {
+    i.value = (i.value + 1) % images.value.length
+  }, 3000)
+})
 
-    onCleanup(() => clearInterval(interval))
-  })
+onUnmounted(() => {
+  if (intervalId) clearInterval(intervalId)
 })
 
 </script>
 
 <template>
-  <div v-if="product" class="bg-blue-900 rounded-2xl p-4" :class="variant">
+  <div class="bg-blue-900 rounded-2xl p-4" :class="variant">
     <div class="bg-blue-300 rounded-2xl w-full flex flex-col gap-3 p-4">
 
       <!-- Imagen y Titulo -->
       <h2 class="text-black font-bold text-xl">
-        {{ product.name }} {{ parent ? iconCategory(parent) : '' }}
+        {{ product.name }} <UIcon :name="iconCategory(parent!)" />
       </h2>
       <div class="h-48 w-full rounded-2xl bg-white overflow-hidden shadow-2xl">
-        <NuxtImg :src="images[i]?.path ?? ''" class="w-full h-full object-cover" />
+        <NuxtImg :src="images[i]?.path" class="w-full h-full object-cover" />
       </div>
 
       <!-- Categorias -->
       <h3 class="text-black font-semibold text-md">Categorias</h3>
       <div class="grid grid-cols-3 gap-2 w-full">
-        <UBadge
-          v-for="category in product.categories_products ?? []"
-          :key="category.categories?.name"
-          :label="category.categories?.name ?? 'Sin categoría'"
-          color="warning"
-          class="w-20 h-10 font-bold"
-          size="md"
+        <UBadge v-for="category in product.categories_products ?? []" :key="category.categories?.name"
+          :label="category.categories?.name ?? 'Sin categoría'" color="warning" class="w-20 h-10 font-bold" size="md"
           :ui="{ base: 'flex items-center justify-center' }" />
       </div>
 
       <!-- Tarifas -->
       <h3 class="text-black font-semibold text-md">Tarifas</h3>
       <div class="flex flex-col gap-2 w-full">
-        <Rate
-          v-for="rate in product.rates ?? []"
-          :key="rate.id"
-          :rate="rate" />
+        <Rate v-for="rate in product.rates" :key="rate.id" :rate="rate" />
       </div>
 
       <!-- Descripcion -->
@@ -76,10 +69,5 @@ onMounted(() => {
     </div>
   </div>
 
-  <!-- Estado vacío -->
-  <div v-else class="bg-blue-900 rounded-2xl p-4" :class="variant">
-    <div class="bg-blue-300 rounded-2xl w-full flex items-center justify-center p-8">
-      <p class="text-black font-light">Selecciona un producto</p>
-    </div>
-  </div>
+
 </template>
