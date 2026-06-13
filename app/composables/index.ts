@@ -15,6 +15,6 @@ export { useLoginForm } from './service/useLoginForm';
 /** Composables Servicios en páginas */
 export { useProducts } from './service/useProducts';
 export { useCategories } from './service/useCategories'
-
+export { useCategory } from './service/useCategory'
 
 

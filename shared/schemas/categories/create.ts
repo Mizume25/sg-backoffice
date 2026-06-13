@@ -1,6 +1,4 @@
 import { string, z } from 'zod'
-import type { CreateCategory } from '~~/shared/types/definitons'
-
 
 /** Esquema para crear una categoria */
 export const Schema : z.ZodType<CreateCategory> = z.object({
