@@ -6,7 +6,7 @@ export const useCategories = () => {
 
 
   /** Obtenemos lista de categorias  */
-  const { data: allcategories , refresh} = useCategoriesApi();
+  const { allcategories }  = storeToRefs(useCategoriesStore())
 
   const parent = ref<string | undefined>(undefined);
 
