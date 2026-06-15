@@ -52,7 +52,7 @@ onUnmounted(() => {
   <h3 :class="props.subtitles">Categorias</h3>
 
 
-  <div class="grid grid-cols-3 gap-2 w-full">
+  <div class="grid grid-cols-3 gap-5 w-full">
     <UBadge v-for="category in product.categories_products ?? []" :key="category.categories?.name"
       :label="category.categories?.name ?? 'Sin categoría'" color="warning" class="w-20 h-10 font-bold" size="md"
       :ui="{ base: 'flex items-center justify-center' }" />

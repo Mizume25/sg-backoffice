@@ -71,7 +71,7 @@ const tester = () => {
       </div>
 
 
-      <SideBarRight class="min-[1024px]" :is-open="isOpen">
+      <SideBarRight class="min-[1024px]" :is-open="isOpen" content="w-[35%] sm:w-[30%]" break="lg:hidden" >
         <div v-if="!record" class="bg-blue-900 rounded-2xl p-4 min-h-full flex items-center justify-center">
           <h2 class="text-xl text-blue-300 italic font-semibold">Selecciona un producto</h2>
         </div>

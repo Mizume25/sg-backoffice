@@ -1,10 +1,10 @@
-import { CategoryRecord, CreateCategory, EditCategory } from "~~/shared/types/definitons";
+import { Category, CategoryRecord, CreateCategory, EditCategory } from "~~/shared/types/definitons";
 import { serverSupabaseClient } from '#supabase/server'
 import type { H3Event } from 'h3'
 import { server } from "typescript";
 
 /** Query para crear Categoria  */
-export async function createCategory(cat: CreateCategory, event: H3Event): Promise<void> {
+export async function createCategory(cat: CreateCategory, event: H3Event) {
 
     const supabase = await serverSupabaseClient(event);
 
@@ -61,7 +61,7 @@ export async function getCategory(e: H3Event, id: string | undefined): Promise<C
 
 
 /** Aztualizar categoria */
-export async function editCategory(e: H3Event, id: string | undefined, edit: EditCategory | undefined): Promise<void> {
+export async function editCategory(e: H3Event, id: string | undefined, edit: EditCategory | undefined) {
 
     if (!id || !edit) return;
 
@@ -83,13 +83,77 @@ export async function editCategory(e: H3Event, id: string | undefined, edit: Edi
 
     if (error) throw createError({ statusCode: 409, message: error.message });
 
+}
+
+/** Borrado general de una categoria  */
+export async function deleteCategories(e:H3Event , category : CategoryRecord) {
+    
+  
+    if(await existsProducts(e , category.id)) throw createError({statusCode: 409 , message: 'Hay productos asociados'});
+
+    if(category.parent_id == null) {
+        const childs = await getChilds(e , category.id);
+
+        childs.forEach((c) => {
+            deleteCategory(e ,c.id);
+        })
+    }
 
 
+    
+    
+   
+
+    
 
 
+}
+
+/*** Borrado especifico de un categoria */
+export async function deleteCategory(e:H3Event , id:string)  {
+
+    const supabase = await serverSupabaseClient(e);
+
+    const { error } = await supabase
+    .from('categories')
+    .delete()
+    .eq('id', id);
+
+    if(error) throw createError({ statusCode:404 , message:'No se ha encontrado la categoria' });
 
 
+}
 
+
+/** Heleper Obtener categorias de padres especificos */
+async function getChilds(e:H3Event , id: string) : Promise<Category[]> {
+
+    const supabase = await serverSupabaseClient(e);
+
+    const { data , error } = await supabase
+    .from('categories')
+    .select('*')
+    .eq('parent_id', id);
+
+    if(error) createError({ statusCode:404 , message:'No se ha encontrado entidades relacionadas'})
+
+    return data ?? [];
+    
+}
+
+/** Helper para saber si exite o no productos asociados  */
+async function existsProducts(e:H3Event , id:string) {
+        const supabase = await serverSupabaseClient(e);
+
+    const { data , error } = await supabase
+    .from('categories')
+    .select(`* , products(*)`)
+    .eq('id', id)
+    .single();
+
+    if(error) throw createError({statusCode:404 , message:'No existe'});
+
+    return data.products.length != 0;
 }
 
 
