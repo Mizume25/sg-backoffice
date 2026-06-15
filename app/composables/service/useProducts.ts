@@ -52,7 +52,7 @@ export const useProducts = () => {
     record.value = listOrders.value.find((p) => p.id === product) ?? null;
 
 
-    if(isMobile) isOpen.value = true;
+    
   
 
   }
