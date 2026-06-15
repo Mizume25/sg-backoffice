@@ -26,12 +26,16 @@ watch(() => FromState.name, (newVal) => {
 
 
 
+
+
+
 </script>
 
 
 <template>
   <!-- Main -->
-  <div class="w-full min-h-screen p-4 sm:p-6 flex flex-col lg:flex-row items-center lg:items-start justify-center gap-6 lg:gap-10">
+  <div
+    class="w-full min-h-screen sm:p-6 flex flex-row lg:flex-row items-center lg:items-start justify-center gap-6 lg:gap-10">
 
     <!-- Container Crear Categoria -->
     <div class="w-full max-w-md lg:w-100 bg-blue-300 p-4 rounded-2xl border border-black shrink-0">
@@ -45,79 +49,65 @@ watch(() => FromState.name, (newVal) => {
         <UForm :schema="Schema" :state="FromState" :validate-on="['input']" @submit="onSubmit" class="w-full">
 
           <UFormField label="Categoria" name="name">
-            <UInput
-              class="mb-4 w-full"
-              :leading-icon="allow ? 'lucide:tag' : 'lucide:tags'"
-              v-model="FromState.name"
-            />
+            <UInput class="mb-4 w-full" :leading-icon="allow ? 'lucide:tag' : 'lucide:tags'" v-model="FromState.name" />
           </UFormField>
 
           <UFormField label="Categoria Padre" name="parent_id" class="flex flex-col gap-1" v-if="parents">
-            <USelect
-              class="w-full mb-2"
-              :leading-icon="allow ? '' : 'lucide:tag'"
-              :items="parents"
-              label-key="name"
-              value-key="id"
-              v-model="FromState.parent_id"
-              :disabled="allow"
-            />
-            <UButton
-              class="block mb-3 cursor-pointer"
-              :label="allow ? 'Activar' : 'Desactivar'"
-              :color="allow ? 'primary' : 'error'"
-              @click="addParent"
-            />
+            <USelect class="w-full mb-2" :leading-icon="allow ? '' : 'lucide:tag'" :items="parents" label-key="name"
+              value-key="id" v-model="FromState.parent_id" :disabled="allow" />
+            <UButton class="block mb-3 cursor-pointer" :label="allow ? 'Activar' : 'Desactivar'"
+              :color="allow ? 'primary' : 'error'" @click="addParent" />
           </UFormField>
 
           <UFormField label="Descripcion" name="description">
             <UTextarea class="mb-4 w-full" v-model="FromState.description" />
           </UFormField>
 
-          <UButton
-            class="w-full sm:w-30 h-10 flex items-center justify-center cursor-pointer"
-            label="Crear"
-            type="submit"
-            :loading="loading"
-          />
+          <UButton class="w-full sm:w-30 h-10 flex items-center justify-center cursor-pointer" label="Crear"
+            type="submit" :loading="loading" />
 
         </UForm>
       </div>
     </div>
 
-    <!-- Editar Categoria -->
-    <!-- Editar Categoria -->
-<div class="w-full max-w-md lg:w-100 bg-blue-400 p-4 rounded-2xl border border-black shadow-2xl flex flex-col justify-start scrollbar-thin scrollbar-thumb-white/50 scrollbar-track-transparent scrollbar-thumb-rounded-full overflow-y-auto lg:max-h-125">
+ 
+    <div
+      class="w-full max-w-md lg:w-100 bg-blue-400 p-4 rounded-2xl border border-black shadow-2xl flex flex-col justify-start scrollbar-thin scrollbar-thumb-white/50 scrollbar-track-transparent scrollbar-thumb-rounded-full overflow-y-auto lg:max-h-full">
 
-      <!-- Contenido -->
+     
       <div class="w-full h-full bg-blue-800 rounded-2xl p-4 sm:p-6 flex flex-col gap-4">
         <h2 class="text-blue-300 font-bold text-xl sm:text-2xl mb-2 sm:mb-4">Editar Categoria</h2>
 
         <div
           class="w-full min-h-10 bg-white rounded-xl border border-black ps-4 sm:ps-8 flex flex-row items-center justify-between gap-2 sm:gap-3"
-          v-for="edit in parents"
-          :key="edit.id"
-        >
+          v-for="edit in parents" :key="edit.id">
           <NuxtLink
-            class="text-black capitalize text-xs sm:text-sm font-bold cursor-pointer transition-transform duration-150 hover:scale-115 hover:bg-yellow-300 rounded-sm p-1 flex-1 min-w-0 truncate"
-            :to="`/home/categories/${edit.id}`"
-          >
+            class="text-black capitalize text-xs sm:text-sm font-bold cursor-pointer transition-transform duration-150 hover:scale-115 hover:bg-yellow-300 rounded-sm p-1 min-w-0 truncate"
+            :to="`/home/categories/${edit.id}`">
             {{ edit.name }}
           </NuxtLink>
 
-          <div class="w-32 sm:w-45 h-full bg-gray-500 rounded-tr-xl rounded-br-xl flex flex-col justify-center items-center gap-2 sm:gap-4 p-2 sm:p-4 shrink-0">
-            <NuxtLink
-              v-for="category in edit.categories"
-              :key="category.id"
+          <div
+            class="w-32 sm:w-45 h-full bg-gray-500 rounded-tr-xl rounded-br-xl flex flex-col justify-center items-center gap-2 sm:gap-4 p-2 sm:p-4 shrink-0">
+            <NuxtLink v-for="category in edit.categories" :key="category.id"
               class="text-white capitalize text-xs sm:text-sm font-bold cursor-pointer transition-transform duration-150 hover:translate-x-1.5 hover:text-yellow-300 w-full text-center"
-              :to="`/home/categories/${category.id}`"
-            >
+              :to="`/home/categories/${category.id}`">
               {{ category.name }}
             </NuxtLink>
           </div>
         </div>
 
       </div>
+
+
     </div>
+
+    
+   
+
+      
+
   </div>
+
+ 
 </template>
