@@ -7,33 +7,22 @@ definePageMeta({
   title: "Gestion de Categorias"
 })
 
-const { allcategories, FromState, parent, onSubmit, loading } = useCategories();
-
-/** Obtenemos lista de categorias padre */
-const parents = computed(() => allcategories.value.filter((p) => p.parent_id === null).map((p) => p.name));
-
-const items = reactive<string[]>(['Nueva Categoria Padre', ...parents.value]);
-type Link = Pick<CategoryRecord , 'id' | 'name' | 'categories'>
-
-const edits = computed(() => 
-  allcategories.value.filter((p) => p.parent_id == null).map((p) => ({ id: p.id, name: p.name , categories: p.categories}))
-)
+const { FromState, parents, onSubmit, loading, addParent, allow } = useCategories();
 
 
+/** Estructura de control de datos */
+watch(allow, (newVal) => {
 
-/** Si cambia la categoria padre cambia su id */
-watch(parent, (newVal) => {
-
-  let id = allcategories.value.find((p) => p.name == newVal)?.id;
-
-  FromState.parent_id = id;
+  /** Si es verdadero carga el primer valor si es falso es undefined  */
+  FromState.parent_id = newVal ? undefined : parents.value[0]?.id;
 
 })
 
+/** Obtener codigo */
 watch(() => FromState.name, (newVal) => {
-
-  FromState.code = newVal?.slice(0, 3).toUpperCase() + "-" + Math.random().toString(36).slice(2, 6).toUpperCase();
+  FromState.code = newVal?.slice(0, 3).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase()
 })
+
 
 
 
@@ -46,27 +35,26 @@ watch(() => FromState.name, (newVal) => {
   <div class="w-full h-full p-4 flex flex-row items-center justify-center gap-10">
 
     <!-- Container Crear Categoria -->
-    <div class="w-100 h-110 bg-blue-300 p-4 rounded-2xl border border-black ">
+    <div class="w-100 h-130 bg-blue-300 p-4 rounded-2xl border border-black ">
 
       <!-- Contendio -->
       <div class="w-full h-full bg-blue-900 rounded-2xl p-6 flex flex-col shadow-2xl items-center justify-center">
-        <h2 class="text-blue-200 font-bold text-2xl mb-4 mt-10">Crear Categorias</h2>
+        <h2 class="text-blue-200 font-bold text-2xl mb-4 mt-10">Crear {{ allow ? 'Categoria Padre' : 'Subcategoria' }}
+        </h2>
         <UForm :schema="Schema" :state="FromState" :validate-on="['input']" @submit="onSubmit">
           <!-- Input -->
 
           <UFormField label="Categoria" name="name">
-            <UInput class="mb-3 w-70" leading-icon="lucide:tag" v-model="FromState.name" />
-          </UFormField>
-
-
-          <UFormField>
-
+            <UInput class="mb-4 w-70" :leading-icon="allow ? 'lucide:tag' : 'lucide:tags'" v-model="FromState.name" />
           </UFormField>
 
           <!-- Select -->
-          <UFormField label="Categoria Padre" name="parent_id">
-            <USelect class="mb-3 capitalize w-70" :items="items" leading-icon="lucide:tags" v-model="parent"
-              default-value="Nueva Categoria Padre" />
+          <UFormField label="Categoria Padre" name="parent_id" class="flex flex-col gap-1" v-if="parents">
+            <USelect class="w-70 mb-2" :leading-icon="allow ? '' : 'lucide:tag'" :items="parents" label-key="name"
+              value-key="id" v-model="FromState.parent_id" :disabled="allow" />
+            <!-- Boton para elegir que tipo de categoria crear -->
+            <UButton class="block mb-3 cursor-pointer" :label="allow ? 'Activar' : 'Desactivar'"
+              :color="allow ? 'primary' : 'error'" @click="addParent" />
           </UFormField>
 
 
@@ -76,7 +64,7 @@ watch(() => FromState.name, (newVal) => {
           </UFormField>
 
           <!-- Enviar -->
-          <UButton class="w-30 h-10 flex items-center justify-center cursor-pointer" label="Crear" type="submit"
+          <UButton class="w-30 h-10 flex items-center justify-center cursor-pointer" label="Crear" type="submit" 
             :loading="loading" />
 
         </UForm>
@@ -95,31 +83,31 @@ watch(() => FromState.name, (newVal) => {
       <div class="w-full h-full bg-blue-800 rounded-2xl p-6 flex flex-col gap-4">
         <h2 class="text-blue-300 font-bold text-2xl mb-4">Editar Categoria</h2>
 
-        <!-- Lista de Links -->
+
         <div
-          class="w-full min-h-10 bg-white rounded-xl border border-black ps-8  flex flex-row items-center justify-between gap-3"   v-for="edit in edits" >
-          <!-- Categoria Padre-->
+          class="w-full min-h-10 bg-white rounded-xl border border-black ps-8  flex flex-row items-center justify-between gap-3"
+          v-for="edit in parents">
+
           <NuxtLink
-            class="text-black capitalize  text-sm font-bold cursor-pointer transition-transform duration-150 hover:scale-115 hover:bg-yellow-300 rounded-sm p-1"   :to="`/home/categories/${edit.id}`" >
+            class="text-black capitalize  text-sm font-bold cursor-pointer transition-transform duration-150 hover:scale-115 hover:bg-yellow-300 rounded-sm p-1"
+            :to="`/home/categories/${edit.id}`">
             {{ edit.name }} </NuxtLink>
-          <!-- Categoria HIja -->
+
           <div
             class="w-45 h-full bg-gray-500 rounded-tr-xl rounded-br-xl flex flex-col justify-center items-center gap-4 p-4">
             <NuxtLink v-for="category in edit.categories"
-              class="text-white capitalize text-sm font-bold cursor-pointer transition-transform duration-150 hover:translate-x-1.5 hover:text-yellow-300" :to="`/home/categories/${category.id}`" >
+              class="text-white capitalize text-sm font-bold cursor-pointer transition-transform duration-150 hover:translate-x-1.5 hover:text-yellow-300"
+              :to="`/home/categories/${category.id}`">
               {{ category.name }} </NuxtLink>
-          
+
+
+
 
           </div>
         </div>
-
-
-
-
-
-
       </div>
 
     </div>
   </div>
+
 </template>

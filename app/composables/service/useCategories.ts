@@ -4,28 +4,35 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 /** Composable de lógica reactiva  */
 export const useCategories = () => {
 
+  const INIT_STATE = {
+    name: '',
+    code: '',
+    description: '',
+    parent_id: undefined,
+  }
 
   /** Obtenemos lista de categorias  */
-  const { allcategories }  = storeToRefs(useCategoriesStore())
+  const { allcategories }  = storeToRefs(useCategoriesStore());
+  const { getParents , refreshCategories} = useCategoriesStore();
 
-  const parent = ref<string | undefined>(undefined);
+  
+  /*** Obtenemos array de objetos padre */
+  const parents = ref<CategoryRecord[]>(getParents() ?? []);  
 
-  const toast = useToast()
+
+  const toast = useToast();
 
 
   /** Construimos el objeto  */
-  const FromState = reactive<Partial<StoreCategorySchema>>({
-    name: undefined,
-    code: undefined,
-    description: undefined,
-    parent_id: undefined,
-  })
+  const FromState = reactive<Partial<StoreCategorySchema>>({...INIT_STATE});
 
   const loading = ref(false)
 
 
   /** Obtenemos lso valores  */
   const onSubmit = async (e: FormSubmitEvent<StoreCategorySchema>) => {
+
+
     loading.value = true;
 
     /** Construir objeto */
@@ -47,38 +54,48 @@ export const useCategories = () => {
       toast.add({ title: 'Categoria Creada Correctamente', color: 'success' })
   
       clean()
+
+ 
       
     } catch (e) {
       toast.add({ title: 'Algo ha fallado', color: 'error' })
+      loading.value = false;
     }
 
    
-
-
+    console.log('Form submitted:', e.data)
+    
 
 
   }
 
 
   const clean = () => {
-    Object.assign(FromState, {
-      name: undefined,
-      code: undefined,
-      description: undefined,
-      parent_id: undefined,
-    })
+  Object.assign(FromState, {...INIT_STATE})
 
-    loading.value = false;
+  loading.value = false
+}
+
+  /** Estructura de control */
+  let allow = ref(true);
+
+
+  /** Funcion añadir o eliminar padre */
+  const addParent = () => {
+    allow.value = !allow.value;
   }
+
 
 
   /**  Valores retornados  */
   return {
-    allcategories,
-    parent,
+    parents,
     FromState,
     onSubmit,
-    loading
+    loading,
+    addParent,
+    allow
+
   }
 
 }
