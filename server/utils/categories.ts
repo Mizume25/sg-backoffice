@@ -1,4 +1,4 @@
-import { CategoryRecord, CreateCategory } from "~~/shared/types/definitons";
+import { CategoryRecord, CreateCategory, EditCategory } from "~~/shared/types/definitons";
 import { serverSupabaseClient } from '#supabase/server'
 import type { H3Event } from 'h3'
 import { server } from "typescript";
@@ -23,40 +23,73 @@ export async function createCategory(cat: CreateCategory, event: H3Event): Promi
 }
 
 /** Query para recoger lista Category */
-export async function getCategories(e: H3Event) : Promise<CategoryRecord[]> {
-     /** Peticion */
+export async function getCategories(e: H3Event): Promise<CategoryRecord[]> {
+    /** Peticion */
     const supabase = await serverSupabaseClient(e);
 
     /** Query */
-    const { data , error } = await supabase
-    .from('categories')
-    .select(`*, categories(*)`);
+    const { data, error } = await supabase
+        .from('categories')
+        .select(`*, categories(*)`);
 
     /** Controlamos Errores */
-    if(error) throw createError({ statusCode:404 , message:error.message})
+    if (error) throw createError({ statusCode: 404, message: error.message })
 
-    
+
     return data;
 }
 
 /*** Obtneer una categoria especifica  */
-export async function getCategory(e:H3Event , id: string | undefined) : Promise<CategoryRecord> {
+export async function getCategory(e: H3Event, id: string | undefined): Promise<CategoryRecord> {
 
-     if(!id) throw createError({ statusCode: 404 , message: 'Id undefined'})
-    
+    if (!id) throw createError({ statusCode: 404, message: 'Id undefined' })
+
     const supabase = await serverSupabaseClient(e);
 
     /** Obtenemos registros individual */
-    const { data , error } = await supabase
-    .from('categories')
-    .select(`*, categories(*)`)
-    .eq('id', id)
-    .single();
+    const { data, error } = await supabase
+        .from('categories')
+        .select(`*, categories(*)`)
+        .eq('id', id)
+        .single();
 
 
-    if(error) throw createError({ statusCode: 404 , message: error.message})
+    if (error) throw createError({ statusCode: 404, message: error.message })
 
     return data;
+}
+
+
+/** Aztualizar categoria */
+export async function editCategory(e: H3Event, id: string | undefined, edit: EditCategory | undefined): Promise<void> {
+
+    if (!id || !edit) return;
+
+
+    const supabase = await serverSupabaseClient(e);
+
+    /** Consulta */
+    const { data, error } = await supabase
+        .from('categories')
+        .update({
+            name: edit.name,
+            code: edit.code,
+            description: edit.description,
+            parent_id: edit.parent_id
+        })
+        .eq('id', id);
+
+    console.log('He recibido los datos', data);
+
+    if (error) throw createError({ statusCode: 409, message: error.message });
+
+
+
+
+
+
+
+
 }
 
 

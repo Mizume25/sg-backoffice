@@ -63,7 +63,7 @@ export const useCategories = () => {
     }
 
    
-    console.log('Form submitted:', e.data)
+
     
 
 
