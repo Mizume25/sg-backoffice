@@ -98,9 +98,15 @@ watch(allow, (newVal) => {
             <UTextarea class="mb-4 w-70" v-model="FormState.description" />
           </UFormField>
 
-          <!-- Enviar -->
-          <UButton class="w-30 h-10 flex items-center justify-center cursor-pointer" label="Editar" type="submit"
-            color="warning" :loading="loading" />
+          <div class="p-4 flex flex-row gap-3">
+            <!-- Enviar -->
+            <UButton class="w-30 h-10 flex items-center justify-center cursor-pointer" label="Editar" type="submit"
+              color="warning" :loading="loading" />
+
+            <UButton class="w-30 h-10 flex items-center justify-center cursor-pointer" label="Eliminar" 
+              color="error" />
+          </div>
+
 
         </UForm>
 
