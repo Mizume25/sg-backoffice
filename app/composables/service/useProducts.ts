@@ -1,3 +1,5 @@
+
+
 /**
  * Variables reactivas de products.index
  * @returns filter, order , orderBY , productID
@@ -6,6 +8,13 @@ export const useProducts = () => {
 
   /** Obtenemos lista de productos */
   const { data: products } = useProductsApi()
+
+  /** Responsive */
+    /** Responsive */
+  const { width }  = useWindowSize();
+
+  const isDesktop = computed(() => width.value > 768)  
+  const isMobile = computed(() => width.value > 0 && width.value < 768)
 
 
   /** Variable reactivas | Filtro & Orden Actual */
@@ -34,14 +43,21 @@ export const useProducts = () => {
   /** Objeto Reactivo Especifico  */
   const record: Ref<ProductRecord | undefined> = ref(undefined)
 
-
+  const isOpen = ref<boolean>(false);
   /** Funcion que modifica el record actual */
   const reciveProduct = (product: string | undefined): void => {
 
     if (product == null) return
 
     record.value = listOrders.value.find((p) => p.id === product) ?? null;
+
+
+    if(isMobile) isOpen.value = true;
+  
+
   }
+
+
 
   return {
     filter,
@@ -51,6 +67,9 @@ export const useProducts = () => {
     items,
     listOrders,
     record,
-    reciveProduct
+    reciveProduct,
+    isMobile,
+    isDesktop,
+    isOpen
   }
 }

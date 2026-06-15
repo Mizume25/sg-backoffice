@@ -10,7 +10,7 @@
       <SideBar />
 
        <!-- Contenido Principal -->
-      <main class="ml-70 flex-1 overflow-hidden p-4">
+      <main class="lg:ml-70 flex-1 overflow-hidden p-4">
        <NuxtPage />
       </main>
     </div>
