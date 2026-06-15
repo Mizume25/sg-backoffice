@@ -1,12 +1,12 @@
-import { string, z } from 'zod'
+import { string, uuid, z } from 'zod'
+import type { CreateCategory } from '~~/shared/types/definitons';
 
-/** Esquema para crear una categoria */
-export const Schema : z.ZodType<CreateCategory> = z.object({
-    name:z.string().min(1, 'Necesitas un nombre'),
-    code:z.string().min(1, 'Necesitas un codigo'),
-    description:string().min(10, 'Necesitas una descripcion mas larga').max(200, 'Maximo de caracteres'),
-    parent_id:z.string().nullish(),
+export const Schema = z.object({
+    name: z.string().min(1, 'Necesitas un nombre'),
+    code: z.string().min(1, 'Necesitas un codigo'),
+    description: z.string().min(10, 'Necesitas una descripcion mas larga').max(200, 'Maximo de caracteres'),
+    parent_id: z.string().optional()
 });
 
-/** Exportamos esquema  */
-export type StoreCategorySchema = z.output<typeof Schema> 
+export type StoreCategorySchema = z.output<typeof Schema>;
+
