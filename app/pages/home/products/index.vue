@@ -8,10 +8,7 @@ definePageMeta({
 const { filter, order, orderBy, items, record, listOrders, reciveProduct, isMobile, isDesktop, isOpen } = useProducts();
 
 
-const tester = () => {
-  isOpen.value = !isOpen.value;
-  console.log(isOpen.value)
-}
+
 
 
 
@@ -40,8 +37,7 @@ const tester = () => {
       <div
         class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/50 scrollbar-track-transparent scrollbar-thumb-rounded-full">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 content-start">
-          <Card v-for="product in listOrders" :product="product" :filter="filter" @product="reciveProduct"
-            @click="tester" />
+          <Card v-for="product in listOrders" :product="product" :filter="filter" @product="reciveProduct" @click="isOpen = !isOpen"/>
         </div>
       </div>
 

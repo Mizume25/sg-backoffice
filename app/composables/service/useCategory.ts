@@ -6,13 +6,15 @@ export const useCategory = (id: string) => {
   const toast = useToast();
 
   /** Categoria espcífica  */
-  const { findCategory, getParent, getParents } = useCategoriesStore();
+  const store = useCategoriesStore();
+  const { findCategory, getParent } = useCategoriesStore();
+  const { parents } = storeToRefs(store);
   const category: Ref<CategoryRecord | null> = ref(findCategory(id));
 
 
   /** Logica de Subcategorica  */
   const parent: Ref<CategoryRecord | undefined> = ref(getParent(category.value?.parent_id));
-  const parents: Ref<CategoryRecord[] | null> = ref(getParents());
+
   /** SI es una subcategoria , tiene la opcion de 1 ver a su padre y poder cambiarlo e incluso eliminarlo */
 
 
