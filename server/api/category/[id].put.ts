@@ -4,15 +4,10 @@ export default eventHandler(async (event) => {
         /** Obtenemos el id  */
         const id = getRouterParam(event, 'id');
 
-     
         const body = await readBody(event);
-
-        
-  
 
         editCategory(event, id, body);
 
-     
 
         return true;
 

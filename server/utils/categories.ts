@@ -1,7 +1,6 @@
 import { Category, CategoryRecord, CreateCategory, EditCategory } from "~~/shared/types/definitons";
 import { serverSupabaseClient } from '#supabase/server'
 import type { H3Event } from 'h3'
-import { server } from "typescript";
 
 /** Query para crear Categoria  */
 export async function createCategory(cat: CreateCategory, event: H3Event) {
@@ -86,74 +85,85 @@ export async function editCategory(e: H3Event, id: string | undefined, edit: Edi
 }
 
 /** Borrado general de una categoria  */
-export async function deleteCategories(e:H3Event , category : CategoryRecord) {
-    
-  
-    if(await existsProducts(e , category.id)) throw createError({statusCode: 409 , message: 'Hay productos asociados'});
+export async function deleteCategories(e: H3Event, category: CategoryRecord) {
+   
+    /** Si exite productosasociados dara erorr */
+    if (await existsProducts(e, category.id)) throw createError({ statusCode: 409, message: 'Hay productos asociados' });
 
-    if(category.parent_id == null) {
-        const childs = await getChilds(e , category.id);
+    /** Si exite productos asociados sus categoiras tambien dara error */
+    if (category.parent_id == null && category.categories.length != 0) {
 
-        childs.forEach((c) => {
-            deleteCategory(e ,c.id);
-        })
+        for (const c of category.categories) {
+
+            if (await existsProducts(e, c.id)) throw createError({ statusCode: 409, message: 'Hay productos asociados' })
+        }
+        
+        await Promise.all(category.categories.map(c => deleteCategory(e, c.id)))
+
+         
     }
 
+    /** Borramos finalmente la categoria */
+    deleteCategory(e, category.id);
 
     
-    
-   
-
-    
-
 
 }
 
 /*** Borrado especifico de un categoria */
-export async function deleteCategory(e:H3Event , id:string)  {
+export async function deleteCategory(e: H3Event, id: string | undefined) {
+
+    if(!id) throw createError({ statusCode: 404 , message:'El id no existe'});
 
     const supabase = await serverSupabaseClient(e);
 
     const { error } = await supabase
-    .from('categories')
-    .delete()
-    .eq('id', id);
+        .from('categories')
+        .delete()
+        .eq('id', id);
 
-    if(error) throw createError({ statusCode:404 , message:'No se ha encontrado la categoria' });
+    if (error) throw createError({ statusCode: 500, message: 'Error al eliminar la categoría' });
 
 
 }
 
 
 /** Heleper Obtener categorias de padres especificos */
-async function getChilds(e:H3Event , id: string) : Promise<Category[]> {
+async function getChilds(e: H3Event, id: string): Promise<Category[]> {
 
     const supabase = await serverSupabaseClient(e);
 
-    const { data , error } = await supabase
-    .from('categories')
-    .select('*')
-    .eq('parent_id', id);
+    const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('parent_id', id);
 
-    if(error) createError({ statusCode:404 , message:'No se ha encontrado entidades relacionadas'})
+    if (error) createError({ statusCode: 404, message: 'No se ha encontrado entidades relacionadas' })
 
     return data ?? [];
-    
+
 }
 
-/** Helper para saber si exite o no productos asociados  */
-async function existsProducts(e:H3Event , id:string) {
-        const supabase = await serverSupabaseClient(e);
+/** Helper para saber si existe o no productos asociados  */
+async function existsProducts(e: H3Event, id: string) {
 
-    const { data , error } = await supabase
-    .from('categories')
-    .select(`* , products(*)`)
-    .eq('id', id)
-    .single();
+    const supabase = await serverSupabaseClient(e);
 
-    if(error) throw createError({statusCode:404 , message:'No existe'});
+    const { data, error } = await supabase
 
-    return data.products.length != 0;
+        .from('categories_products')
+        .select(`*`)
+        .eq('category_id', id)
+        .limit(1);
+
+    console.log('existsProducts error:', error)
+    console.log('existsProducts data:', data)
+
+
+    if (error) throw createError({ statusCode: 500, message: error.message })
+
+    return data && data.length > 0
+
 }
 
 

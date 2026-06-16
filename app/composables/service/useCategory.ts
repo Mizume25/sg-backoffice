@@ -9,6 +9,7 @@ export const useCategory = (id: string) => {
   const { findCategory, getParent, getParents } = useCategoriesStore();
   const category: Ref<CategoryRecord | null> = ref(findCategory(id));
 
+
   /** Logica de Subcategorica  */
   const parent: Ref<CategoryRecord | undefined> = ref(getParent(category.value?.parent_id));
   const parents: Ref<CategoryRecord[] | null> = ref(getParents());
@@ -19,8 +20,11 @@ export const useCategory = (id: string) => {
   const Schema: Ref<z.ZodType<EditCategory> | null> = ref(null);
   const FormState: Ref<EditCategory | null> = ref(null);
 
+
+
   /** Estructura de control */
   const allow = ref(false);
+
 
   /** Funcion añadir o eliminar padre */
   const toggleParent = () => {
@@ -40,7 +44,7 @@ export const useCategory = (id: string) => {
       name: e.data.name?.toLocaleLowerCase(),
       code: e.data.code,
       description: e.data.description,
-      parent_id : allow.value ? undefined : e.data.parent_id
+      parent_id: allow.value ? undefined : e.data.parent_id
     }
 
 
@@ -64,6 +68,28 @@ export const useCategory = (id: string) => {
     }
   }
 
+  /** Funcion para eliminar categoria */
+  const onDelete = async(id:string | undefined) => {
+
+    try {
+
+
+      await $fetch(`/api/category/${id}`, {
+        method:'DELETE'
+      })
+
+      toast.add({ title: 'Categoria Eliminada Correctamente', color: 'success' })
+
+      navigateTo('/home/categories/create');
+      
+    } catch (error) {
+      
+       toast.add({ title: 'Hay productos asociados', color: 'error' })
+    }
+
+    
+  }
+
 
 
 
@@ -76,6 +102,8 @@ export const useCategory = (id: string) => {
     allow,
     toggleParent,
     loading,
-    onSubmit
+    onSubmit,
+    onDelete
+    
   }
 }
