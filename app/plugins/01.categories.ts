@@ -1,5 +1,10 @@
-export default defineNuxtPlugin(nuxtApp => {
+export default defineNuxtPlugin(async () => {
+    
+    const categories = await $fetch('/api/categories');
 
-    /** Obtenemos Categorias */
-    const categories = storeToRefs(useCategoriesStore());
+    const store = useCategoriesStore()
+
+    store.setCategories(categories);
+
+    
 })

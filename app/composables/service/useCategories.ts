@@ -12,13 +12,17 @@ export const useCategories = () => {
   }
 
   /** Obtenemos lista de categorias  */
-  const { allcategories }  = storeToRefs(useCategoriesStore());
-  const { getParents , refreshCategories} = useCategoriesStore();
+  const store = useCategoriesStore()
+  const { allcategories , parents } = storeToRefs(store);
+
+
+
+
+
+  /*** Obtenemos array de objetos padre */
+ 
 
   
-  /*** Obtenemos array de objetos padre */
-  const parents = ref<CategoryRecord[]>(getParents() ?? []);  
-
 
   const toast = useToast();
 
@@ -54,7 +58,10 @@ export const useCategories = () => {
       toast.add({ title: 'Categoria Creada Correctamente', color: 'success' })
   
       clean()
+      await store.refreshCategories();
 
+
+      console.log(allcategories.value)
  
       
     } catch (e) {
@@ -85,7 +92,7 @@ export const useCategories = () => {
     allow.value = !allow.value;
   }
 
-
+     console.log(allcategories.value)
 
   /**  Valores retornados  */
   return {
