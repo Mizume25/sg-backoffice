@@ -1,31 +1,30 @@
 <script setup lang="ts">
 import { Schema } from '~~/shared/schemas/categories/create';
 
-
 /** Titulo */
 definePageMeta({
   title: "Gestion de Categorias"
 })
 
-const { FromState, parents, onSubmit, loading, addParent, allow } = useCategories();
+/** Logica General */
+const { parents, allow } = useCategories();
 
 
-/** Estructura de control de datos */
-watch(allow, (newVal) => {
+/** Funciones Fromulario */
+const { FormState, loading, onSubmit, makeCode } = useCategoryCreate()
 
-  /** Si es verdadero carga el primer valor si es falso es undefined  */
-  FromState.parent_id = newVal ? undefined : parents.value[0]?.id;
 
-})
-
-/** Obtener codigo */
-watch(() => FromState.name, (newVal) => {
-  FromState.code = newVal?.slice(0, 3).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase()
-})
+/** Si activa el padre empeiza el primera valor si no es nulo */
+watch(allow, (newVal) => FormState.parent_id = newVal ? undefined : parents.value[0]?.id);
 
 
 
+/** Si cambia el nombre, cambia el codigo */
+watch(() => FormState.name, (newVal) => FormState.code = makeCode(newVal))
 
+
+
+/** Toggle Sidebar de edits */
 const isOpen = ref(false);
 
 
@@ -53,27 +52,33 @@ const isOpen = ref(false);
           Crear {{ allow ? 'Categoria Padre' : 'Subcategoria' }}
         </h2>
 
-        <UForm :schema="Schema" :state="FromState" :validate-on="['input']" @submit="onSubmit" class="w-full">
+        <!--- Formulario -->
+        <UForm :schema="Schema" :state="FormState" :validate-on="['input']" @submit="onSubmit" class="w-full">
 
+        <!-- Nombre -->
           <UFormField label="Categoria" name="name">
-            <UInput class="mb-4 w-full" :leading-icon="allow ? 'lucide:tag' : 'lucide:tags'" v-model="FromState.name" />
+            <UInput class="mb-4 w-full" :leading-icon="allow ? 'lucide:tag' : 'lucide:tags'" v-model="FormState.name" />
           </UFormField>
 
+        <!-- Categoria Padre -->
           <UFormField label="Categoria Padre" name="parent_id" class="flex flex-col gap-1" v-if="parents">
+
             <USelect class="w-full mb-2" :leading-icon="allow ? '' : 'lucide:tag'" :items="parents" label-key="name"
-              value-key="id" v-model="FromState.parent_id" :disabled="allow" />
+              value-key="id" v-model="FormState.parent_id" :disabled="allow" />
             <UButton class="block mb-3 cursor-pointer" :label="allow ? 'Activar' : 'Desactivar'"
-              :color="allow ? 'primary' : 'error'" @click="addParent" />
+              :color="allow ? 'primary' : 'error'" @click="allow = !allow" />
+
           </UFormField>
 
+        <!-- Descripcion -->
           <UFormField label="Descripcion" name="description">
-            <UTextarea class="mb-4 w-full" v-model="FromState.description" />
+            <UTextarea class="mb-4 w-full" v-model="FormState.description" />
           </UFormField>
 
           <div class="p-4 flex flex-row gap-4">
             <UButton class="w-full sm:w-30 h-10 flex items-center justify-center cursor-pointer" label="Crear"
               type="submit" :loading="loading" />
-            <UButton class="w-full sm:w-30 h-10 flex items-center justify-center cursor-pointer" label="Editar"
+            <UButton class="w-full sm:w-30 h-10 flex items-center justify-center cursor-pointer" label="Ver Categorias"
               color="warning" @click="isOpen = !isOpen" />
 
           </div>
@@ -82,41 +87,8 @@ const isOpen = ref(false);
       </div>
     </div>
 
-    <!--
-    <div
-      class="w-full max-w-md lg:w-100 bg-blue-400 p-4 rounded-2xl border border-black shadow-2xl flex flex-col justify-start scrollbar-thin scrollbar-thumb-white/50 scrollbar-track-transparent scrollbar-thumb-rounded-full overflow-y-auto lg:max-h-full">
 
-
-      <div class="w-full h-full bg-blue-800 rounded-2xl p-4 sm:p-6 flex flex-col gap-4">
-        <h2 class="text-blue-300 font-bold text-xl sm:text-2xl mb-2 sm:mb-4">Editar Categoria</h2>
-
-        <div
-          class="w-full min-h-10 bg-white rounded-xl border border-black ps-4 sm:ps-8 flex flex-row items-center justify-between gap-2 sm:gap-3"
-          v-for="edit in parents" :key="edit.id">
-          <NuxtLink
-            class="text-black capitalize text-xs sm:text-sm font-bold cursor-pointer transition-transform duration-150 hover:scale-115 hover:bg-yellow-300 rounded-sm p-1 min-w-0 truncate"
-            :to="`/home/categories/${edit.id}`">
-            {{ edit.name }}
-          </NuxtLink>
-
-          <div
-            class="w-32 sm:w-45 h-full bg-gray-500 rounded-tr-xl rounded-br-xl flex flex-col justify-center items-center gap-2 sm:gap-4 p-2 sm:p-4 shrink-0">
-            <NuxtLink v-for="category in edit.categories" :key="category.id"
-              class="text-white capitalize text-xs sm:text-sm font-bold cursor-pointer transition-transform duration-150 hover:translate-x-1.5 hover:text-yellow-300 w-full text-center"
-              :to="`/home/categories/${category.id}`">
-              {{ category.name }}
-            </NuxtLink>
-          </div>
-        </div>
-
-      </div>
-
-
-    </div>
-
-
-      --->
-
+    <!-- Lista de categorias para editar -->
     <SideBarRight :is-open="isOpen" content="w-[35%] sm:w-[30%] h-full overflow-y-auto">
 
       <div class="p-4 flex flex-col gap-3">

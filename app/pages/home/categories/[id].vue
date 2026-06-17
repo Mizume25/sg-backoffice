@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { makeEditSchema } from '~~/shared/schemas/categories/edit';
 
+import { Schema } from '~~/shared/schemas/categories/edit'
+import { type FormErrorEvent} from '@nuxt/ui'
 /** Titulo */
 definePageMeta({
   title: `Editar categoria`
@@ -10,22 +11,14 @@ definePageMeta({
 const route = useRoute()
 const id = route.params.id as string;
 
-/** Composables */
-const { category, FormState, Schema, parent, parents, allow, toggleParent, loading, onSubmit, onDelete } = useCategory(id);
 
-/** Cunado la página se monte */
-watch(
-  () => category.value,
-  (newCategory) => {
-    if (!newCategory) return;
-    /** Obtenemos el esquema y estado correspondiente  */
-    const { schema, state } = makeEditSchema(newCategory);
-    Schema.value = schema;
-    FormState.value = state;
 
-  },
-  { immediate: true }
-);
+
+
+/** Logica General  */
+const { category, FormState, parent, parents, allow, loading, onUpdate, onDelete } = useCategoryEdit(id);
+
+
 
 /** Vigilamos el allow */
 watch(allow, (newVal) => {
@@ -38,6 +31,9 @@ watch(allow, (newVal) => {
 
 
 const isOpen = ref(false);
+
+
+
 
 
 </script>
@@ -55,27 +51,30 @@ const isOpen = ref(false);
       <div class="w-full h-full bg-blue-900 rounded-2xl p-6 flex flex-col shadow-2xl items-center justify-center "
         v-if="Schema && FormState">
 
-        <div class="w-full h-10 mt-10">
+        <div class="w-full h-10 mt-2">
             <NuxtLink :to="category?.parent_id == null ? '/home/categories/create' : `/home/categories/${category.parent_id}` "
           class="flex items-center gap-2 text-blue-300 hover:text-blue-100 text-sm transition-colors duration-200 cursor-pointer group mb-4">
           <UIcon name="lucide:arrow-left" class="size-4 group-hover:-translate-x-1 transition-transform duration-200" />
           <span>Volver</span>
         </NuxtLink>
         </div>
-       
+        
+        <!--- Titulo -->
         <h2 class="text-blue-200 font-bold text-xl mb-4  capitalize">Editar {{ category?.parent_id == null ?
           'Categoria' : 'Subcategoria' }} "{{ category?.name }}" </h2>
-        <UForm :schema="Schema" :state="FormState" @submit="onSubmit">
+
+
+        <UForm :schema="Schema" :state="FormState"  @submit="onUpdate">
           
           <!-- Nombre -->
           <UFormField label="Categoria" name="name">
-            <UInput class="mb-3 w-70 capitalize"
+            <UInput class="mb-3 w-full capitalize"
               :leading-icon="category?.parent_id == null ? 'lucide:tag' : 'lucide:tags'" v-model="FormState.name" />
           </UFormField>
 
           <!-- Codigo -->
           <UFormField label="Codigo" name="code">
-            <UInput class="mb-3 w-70 capitalize" leading-icon="lucide:barcode" v-model="FormState.code" disabled />
+            <UInput class="mb-3 w-full capitalize" leading-icon="lucide:barcode" v-model="FormState.code" disabled />
           </UFormField>
 
           <!--- Campo Dinamico -->
@@ -96,10 +95,10 @@ const isOpen = ref(false);
 
           <!-- Campos de categoria padre -->
           <UFormField v-else-if="parents && parent && category?.parent_id" label="Categoria Padre" class="mb-2">
-            <USelect :items="parents" label-key="name" value-key="id" v-model="FormState.parent_id!" class="w-70 mb-2"
+            <USelect :items="parents" label-key="name" value-key="id" v-model="FormState.parent_id!" class="w-full mb-2"
               leading-icon="lucide:tag" :disabled="allow" />
             <UButton class="cursor-pointer" :label="allow ? 'Activar Padre' : 'Desactivar Padre'"
-              :color="allow ? 'primary' : 'error'" @click="toggleParent" />
+              :color="allow ? 'primary' : 'error'" @click="allow = !allow" />
           </UFormField>
 
 
@@ -111,8 +110,8 @@ const isOpen = ref(false);
 
           <div class="p-4 flex flex-row gap-3">
             <!-- Enviar -->
-            <UButton class="w-30 h-10 flex items-center justify-center cursor-pointer" label="Editar" type="submit"
-              color="warning" :loading="loading" />
+            <UButton class="w-30 h-10 flex items-center justify-center cursor-pointer" label="Actualizar" type="submit"
+              color="warning" :loading="loading"  />
 
             <UButton class="w-30 h-10 flex items-center justify-center cursor-pointer" label="Eliminar" color="error"
               @click="isOpen = !isOpen" />

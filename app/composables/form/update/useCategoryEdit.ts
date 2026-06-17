@@ -1,7 +1,8 @@
-import type z from 'zod';
 import type { FormSubmitEvent } from '@nuxt/ui'
+import { initState } from '~~/shared/schemas/categories/edit';
+
 /** Composable para edit  */
-export const useCategory = (id: string) => {
+export const useCategoryEdit = (id: string) => {
 
   const toast = useToast();
 
@@ -15,12 +16,9 @@ export const useCategory = (id: string) => {
   /** Logica de Subcategorica  */
   const parent: Ref<CategoryRecord | undefined> = ref(getParent(category.value?.parent_id));
 
-  /** SI es una subcategoria , tiene la opcion de 1 ver a su padre y poder cambiarlo e incluso eliminarlo */
 
-
-  /** Esquema de Edit */
-  const Schema: Ref<z.ZodType<EditCategory> | null> = ref(null);
-  const FormState: Ref<EditCategory | null> = ref(null);
+  /** Formulario de estado mediante la categoria  */
+  const FormState = ref(initState(category.value));
 
 
 
@@ -28,34 +26,21 @@ export const useCategory = (id: string) => {
   const allow = ref(false);
 
 
-  /** Funcion añadir o eliminar padre */
-  const toggleParent = () => {
-    allow.value = !allow.value;
-  }
 
   /** Estructura de Control */
   const loading = ref(false);
 
   /** Funcion para enviar formulario */
-  const onSubmit = async (e: FormSubmitEvent<EditCategory>) => {
+  const onUpdate = async (e: FormSubmitEvent<EditCategory>) => {
 
     loading.value = true;
-
-    /** Construir objeto */
-    const update: EditCategory = {
-      name: e.data.name?.toLocaleLowerCase(),
-      code: e.data.code,
-      description: e.data.description,
-      parent_id: allow.value ? undefined : e.data.parent_id
-    }
-
 
     /** Peticiones al endpoint  */
     try {
 
       await $fetch(`/api/category/${category.value?.id}`, {
         method: 'PUT',
-        body: update
+        body: e.data
       })
 
       toast.add({ title: 'Categoria Editada Correctamente', color: 'success' })
@@ -98,13 +83,11 @@ export const useCategory = (id: string) => {
   return {
     category,
     FormState,
-    Schema,
     parent,
     parents,
     allow,
-    toggleParent,
     loading,
-    onSubmit,
+    onUpdate,
     onDelete
     
   }
