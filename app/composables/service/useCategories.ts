@@ -20,10 +20,6 @@ export const useCategories = () => {
 
 
   /*** Obtenemos array de objetos padre */
- 
-
-  
-
   const toast = useToast();
 
 
@@ -61,7 +57,7 @@ export const useCategories = () => {
       await store.refreshCategories();
 
 
-      console.log(allcategories.value)
+
  
       
     } catch (e) {

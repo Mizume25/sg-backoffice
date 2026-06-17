@@ -1,5 +1,4 @@
-import { string, uuid, z } from 'zod'
-import type { CreateCategory } from '~~/shared/types/definitons';
+import { z } from 'zod'
 
 export const Schema = z.object({
     name: z.string().min(1, 'Necesitas un nombre'),
