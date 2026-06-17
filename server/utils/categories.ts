@@ -78,7 +78,7 @@ export async function editCategory(e: H3Event, id: string | undefined, edit: Edi
         })
         .eq('id', id);
 
-    console.log('He recibido los datos', data);
+  
 
     if (error) throw createError({ statusCode: 409, message: error.message });
 
@@ -156,8 +156,7 @@ async function existsProducts(e: H3Event, id: string) {
         .eq('category_id', id)
         .limit(1);
 
-    console.log('existsProducts error:', error)
-    console.log('existsProducts data:', data)
+
 
 
     if (error) throw createError({ statusCode: 500, message: error.message })

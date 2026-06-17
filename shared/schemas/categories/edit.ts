@@ -1,20 +1,32 @@
+import { reactive, type Reactive } from 'vue';
 import { string, z } from 'zod'
+import type { CategoryRecord, EditCategory } from '~~/shared/types/definitons';
 
-/** Esquema para editar categorias y pasamos esos valores */
-export const makeEditSchema = (category : CategoryRecord | null): { schema:z.ZodType<EditCategory> | null , state:EditCategory | null }=> {
+/** Esuqmea para editar categorias */
+export const Schema : z.ZodType<EditCategory> = z.object({
+    name:z.string().optional(),
+    code:z.string().optional(),
+    description:z.string().optional(),
+    parent_id: z.string().uuid().nullable()
+})
 
-    if(!category) return { schema: null , state:null};
+/** Tipado de Esquema */
+export type UpdateCategorySchema = z.output<typeof Schema>;
 
-    /** Esquema a partir de la categoria construida  */
-    const Schema : z.ZodType<EditCategory> = z.object({
-        name: z.string().default(category.name),
-        code: z.string().default(category.code),
-        description: z.string().default(category.description),
-        parent_id: z.string().uuid().nullable().default(category.parent_id)
+
+/** Funcion para Estado Inicial */
+export const initState = (category : CategoryRecord | null) : Reactive<UpdateCategorySchema> | undefined => {
+    
+    if(!category) return undefined;
+
+
+    const state = reactive({
+        name: category.name,
+        code: category.code,
+        description: category.description,
+        parent_id:category.parent_id
     })
 
-    return {
-        schema: Schema,
-        state: Schema.parse({})
-    };
+
+    return state
 }

@@ -10,13 +10,17 @@ export { useCategoryApi } from './api/useCategoryApi'
 
 /** ComposablesAutentificacion */
 export { useAuth } from './auth/useAuth'
-export { useLoginForm } from './service/useLoginForm';
 
 /** Composables Servicios en páginas */
 export { useProducts } from './service/useProducts';
 export { useCategories } from './service/useCategories'
-export { useCategory } from './service/useCategory'
 export { useProductCreate } from './service/useProductCreate';
 
 /** Composable para el creado de imagenes */
 export { useImageCreate} from './service/useImageCreate'
+
+
+/** Formularios Store */
+export { useCategoryCreate } from './form/store/useCategoryCreate' 
+export { useCategoryEdit } from './form/update/useCategoryEdit'
+export { useLoginForm } from './auth/useLoginForm'
