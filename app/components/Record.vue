@@ -45,7 +45,7 @@ onUnmounted(() => {
     <UIcon :name="iconCategory(parent!)" />
   </h2>
   <div :class="props.contentIMG">
-    <NuxtImg :src="images[i]?.path" class="w-full h-full object-cover" />
+    <NuxtImg :src="IMAGE_URL + images[i]?.path" class="w-full h-full object-cover" />
   </div>
 
   <!-- Categorias -->

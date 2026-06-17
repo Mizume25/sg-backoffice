@@ -75,3 +75,6 @@ export const formatDate = (date: string | null | undefined): string => {
   return `${day}/${month}/${year?.slice(2)}`
 }
 
+
+
+export const IMAGE_URL = "https://mjufkujxxuakhdmyxgou.supabase.co/storage/v1/object/public/"
