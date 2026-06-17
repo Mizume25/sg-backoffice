@@ -10,6 +10,8 @@ export { useCategoryApi } from './api/useCategoryApi'
 
 /** ComposablesAutentificacion */
 export { useAuth } from './auth/useAuth'
+export { useLoginForm } from './auth/useLoginForm'
+
 
 /** Composables Servicios en páginas */
 export { useProducts } from './service/useProducts';
@@ -23,4 +25,3 @@ export { useImageCreate} from './service/useImageCreate'
 /** Formularios Store */
 export { useCategoryCreate } from './form/store/useCategoryCreate' 
 export { useCategoryEdit } from './form/update/useCategoryEdit'
-export { useLoginForm } from './auth/useLoginForm'

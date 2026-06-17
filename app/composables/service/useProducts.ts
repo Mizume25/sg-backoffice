@@ -13,9 +13,6 @@ export const useProducts = () => {
     /** Responsive */
   const { width }  = useWindowSize();
 
-  const isDesktop = computed(() => width.value > 768)  
-  const isMobile = computed(() => width.value > 0 && width.value < 768)
-
 
   /** Variable reactivas | Filtro & Orden Actual */
   const filter: Ref<string | undefined> = ref('Todos');
@@ -68,8 +65,6 @@ export const useProducts = () => {
     listOrders,
     record,
     reciveProduct,
-    isMobile,
-    isDesktop,
     isOpen
   }
 }
