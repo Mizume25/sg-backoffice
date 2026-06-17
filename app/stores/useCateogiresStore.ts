@@ -36,6 +36,8 @@ export const useCategoriesStore = defineStore('categories', () => {
         return allcategories.value.find((p) => p.id === id) ?? undefined;
     }
 
+    /** Obtener hijos a partir de un padre */
+
 
     return { allcategories, findCategory, parents, getParent, setCategories, refreshCategories };
 

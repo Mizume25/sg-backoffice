@@ -28,10 +28,7 @@ watch(() => FromState.name, (newVal) => {
 
 const isOpen = ref(false);
 
-const tester = () => {
-  isOpen.value = !isOpen.value
-  console.log(isOpen.value)
-}
+
 
 
 
@@ -49,6 +46,9 @@ const tester = () => {
 
       <!-- Contenido -->
       <div class="w-full bg-blue-900 rounded-2xl p-4 sm:p-6 flex flex-col shadow-2xl items-center justify-center me-10">
+
+
+
         <h2 class="text-blue-200 font-bold text-xl sm:text-2xl mb-4 mt-4 sm:mt-10 text-center">
           Crear {{ allow ? 'Categoria Padre' : 'Subcategoria' }}
         </h2>
@@ -74,7 +74,7 @@ const tester = () => {
             <UButton class="w-full sm:w-30 h-10 flex items-center justify-center cursor-pointer" label="Crear"
               type="submit" :loading="loading" />
             <UButton class="w-full sm:w-30 h-10 flex items-center justify-center cursor-pointer" label="Editar"
-              color="warning" @click="tester" />
+              color="warning" @click="isOpen = !isOpen" />
 
           </div>
 

@@ -16,5 +16,7 @@ export { useLoginForm } from './service/useLoginForm';
 export { useProducts } from './service/useProducts';
 export { useCategories } from './service/useCategories'
 export { useCategory } from './service/useCategory'
+export { useProductCreate } from './service/useProductCreate';
 
-
+/** Composable para el creado de imagenes */
+export { useImageCreate} from './service/useImageCreate'
