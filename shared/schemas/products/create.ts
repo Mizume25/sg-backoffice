@@ -1,11 +1,18 @@
 import { z } from 'zod';
 
+/** Esquema para imagenes */
+export const imagesSchema = z.object({
+    path:z.string(),
+    file:z.file(),
+})
+
+export type StoreImageSchema = z.output<typeof imagesSchema>;
+
 /** Esquema para tarifas */
 const ratesSchema = z.object({
     price:z.number().min(1, 'Debe tener un valor incial'),
     start_date:z.string().min(1,'Debe tener Fecha final'),
     end_date:z.string().min(1,'Debe tener Fecha de final'),
-    product_id:z.string()
 })
 
 export type StoreRateSchema = z.output<typeof ratesSchema>;
@@ -18,6 +25,8 @@ const Schema = z.object({
     category:z.uuid(),
     subcategory:z.uuid(),
     rates:z.array(ratesSchema),
+    image: imagesSchema,
+    
 })
 
 export type StoreProductSchema = z.output<typeof Schema>;

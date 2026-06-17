@@ -17,16 +17,20 @@ export const useCategoriesStore = defineStore('categories', () => {
 
 
     /** Funcion para obtener categoria */
-    const findCategory = (id: string): CategoryRecord | null => {
+    const findCategory = (id: string | undefined): CategoryRecord | undefined => {
 
-        if (!allcategories.value.length || !id) return null;
+        if (!allcategories.value.length || !id) return undefined;
 
-        return allcategories.value.find((p) => p.id == id) ?? null;
+        return allcategories.value.find((p) => p.id == id) ?? undefined;
 
     }
 
     /** Obtener solo listado padre */
-    const parents = computed(() => allcategories.value.filter((p) => p.parent_id === null));
+    const parents = computed(() => allcategories.value
+        .filter((p) => p.parent_id === null)
+        .sort((a, b) => a.name.localeCompare(b.name)));
+
+
 
 
     /** Obtener padre especifico a partir del id */

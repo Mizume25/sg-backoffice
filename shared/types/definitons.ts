@@ -29,6 +29,12 @@ export type Order = Database['public']['Tables']['categories']['Row'];
 export type Images = Database['public']['Tables']['product_images']['Row']; 
 export type Profile = Database['public']['Tables']['profiles']['Row'];
 
+
+
+
+/** Storage */
+
+
 /** 
  * @type Perfil
  */
