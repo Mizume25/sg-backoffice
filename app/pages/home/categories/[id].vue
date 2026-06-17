@@ -33,7 +33,9 @@ watch(allow, (newVal) => {
 const isOpen = ref(false);
 
 
-
+function onError(event: FormErrorEvent) {
+  console.log('errores de validación:', event.errors)
+}
 
 
 </script>
@@ -64,7 +66,7 @@ const isOpen = ref(false);
           'Categoria' : 'Subcategoria' }} "{{ category?.name }}" </h2>
 
 
-        <UForm :schema="Schema" :state="FormState"  @submit="onUpdate">
+        <UForm :schema="Schema" :state="FormState"  @submit="onUpdate" @error="onError">
           
           <!-- Nombre -->
           <UFormField label="Categoria" name="name">

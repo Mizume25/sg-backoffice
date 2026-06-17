@@ -1,5 +1,5 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { initState } from '~~/shared/schemas/categories/edit';
+import { initState, type UpdateCategorySchema } from '~~/shared/schemas/categories/edit';
 
 /** Composable para edit  */
 export const useCategoryEdit = (id: string) => {
@@ -35,18 +35,27 @@ export const useCategoryEdit = (id: string) => {
 
     loading.value = true;
 
+    const update : UpdateCategorySchema = {
+      name: e.data.name,
+      code:e.data.code,
+      description:e.data.description,
+      parent_id: e.data.parent_id === undefined ? null : e.data.parent_id
+    }
+
     /** Peticiones al endpoint  */
     try {
 
       await $fetch(`/api/category/${category.value?.id}`, {
         method: 'PUT',
-        body: e.data
+        body:update
       })
 
       toast.add({ title: 'Categoria Editada Correctamente', color: 'success' })
       loading.value = false
 
 
+
+      
 
     } catch (e) {
       toast.add({ title: 'Algo ha fallado', color: 'error' })

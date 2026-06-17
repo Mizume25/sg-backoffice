@@ -5,12 +5,7 @@ definePageMeta({
 })
 
 /** Composables  & Apis  &  Service*/
-const { filter, order, orderBy, items, record, listOrders, reciveProduct, isMobile, isDesktop, isOpen } = useProducts();
-
-
-
-
-
+const { filter, order, orderBy, items, record, listOrders, reciveProduct, isOpen } = useProducts();
 
 
 </script>
