@@ -12,6 +12,8 @@ export type CreateProduct = Database['public']['Tables']['products']['Insert'];
 export type CreateRate = Database['public']['Tables']['rates']['Insert'];
 export type CreateOrder = Database['public']['Tables']['categories']['Insert'];
 export type CreateProfile = Database['public']['Tables']['profiles']['Insert'];
+export type CreateImage = Database['public']['Tables']['product_images']['Insert'];
+
 
 
 /** Tipos de updates para las entidades de la base de datos */
@@ -20,6 +22,7 @@ export type EditProduct = Database['public']['Tables']['products']['Update'];
 export type EditRate = Database['public']['Tables']['rates']['Update'];
 export type EditOrder = Database['public']['Tables']['categories']['Update'];
 export type EditProfile = Database['public']['Tables']['profiles']['Update']
+export type EditImage = Database['public']['Tables']['product_images']['Update'];
 
 /** Tipos de returns para las entidades de la base de datos */
 export type Category = Database['public']['Tables']['categories']['Row']

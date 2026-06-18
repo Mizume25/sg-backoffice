@@ -3,7 +3,7 @@ import { z } from 'zod';
 /** Esquema para imagenes */
 export const imagesSchema = z.object({
     path:z.string(),
-    file:z.file(),
+    file: z.instanceof(File).nullable(),
 })
 
 export type StoreImageSchema = z.output<typeof imagesSchema>;
@@ -18,7 +18,7 @@ const ratesSchema = z.object({
 export type StoreRateSchema = z.output<typeof ratesSchema>;
 
 /** Esquema de fomrulario de un Producto */
-const Schema = z.object({
+export const Schema = z.object({
     name: z.string().min(1, 'Necesitas un nombre'),
     code: z.string().min(1, 'Necesitas un codigo'),
     description: z.string().min(10, 'Necesitas una descripcion mas larga').max(200, 'Maximo de caracteres'),

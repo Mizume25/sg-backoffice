@@ -35,6 +35,13 @@ export default defineNuxtConfig({
    supabase: {
     redirect: false,
      types: '~~/shared/types/database.types.ts'
+  },
+  runtimeConfig:{
+    supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    public:{
+      supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_UR,
+      supabaseAnonKey: process.env.NUXT_PUBLIC_SUPABASE_KEY,
+    }
   }
   
 })

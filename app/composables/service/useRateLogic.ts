@@ -88,7 +88,8 @@ export const useRateLogic = () => {
 
 
 
-
+  const clearRates = () =>  rates.splice(0, rates.length) ; 
+  
 
 
 
@@ -97,7 +98,8 @@ export const useRateLogic = () => {
     rate,
     rates,
     addRate,
-    removeRate
+    removeRate,
+    clearRates
 
   }
 

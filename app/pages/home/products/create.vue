@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Schema } from '~~/shared/schemas/categories/create';
+import { Schema } from '~~/shared/schemas/products/create'
 import { type FormErrorEvent} from '@nuxt/ui'
 
 /** Titulo */
@@ -8,10 +8,10 @@ definePageMeta({
 })
 
 /** Logica de fomrulario general */
-const { parents, FormState, subcategories , makeCode } = useProductCreate();
+const { parents, FormState, subcategories , makeCode , store , loading , onSubmit} = useProductCreate();
 
 /** Logica de Imagenes */
-const { inputRef, preview, triggerInput, loadPreview, onFileChange, onDrop , image} = useImageCreate();
+const { inputRef, preview, triggerInput, loadPreview, onFileChange, onDrop , image} = useImageLogic();
 
 
 /** Logica de Tarifas */
@@ -20,7 +20,7 @@ const { rate, rates, addRate, removeRate } = useRateLogic();
 /** Logica de rates */
 const isOpen = ref(false);
 
-/** Observador */
+/** Iteramos items hijos degun el padre */
 watch(subcategories, (newSubcats) => {
     const sigueSiendoValida = newSubcats?.some((c) => c.id === FormState.subcategory)
 
@@ -30,14 +30,20 @@ watch(subcategories, (newSubcats) => {
 }, { immediate: true })
 
 
+/** Iteramos rates para los datos de formulario */
 watch(rates , (newVal) => FormState.rates = newVal);
 
 
-watch(image , (newVal) => FormState.image = newVal);
+/** Iteramos paths a partir de las categorias */
+watch(image , (newVal) => {
+    /** Modificamos el nombre par estableceer una ruta dinamica */
+    FormState.image.path = newVal.path
+    FormState.image.file = newVal.file
+});
 
 
-
-watch(() => FormState.name, (newVal) => FormState.code = makeCode(newVal))
+/** Iteramos codigo en base al nombre */
+watch(() => FormState.name, (newVal) => FormState.code = makeCode(newVal));
 
 
 const onError = (err : FormErrorEvent) => console.log(err)
@@ -61,7 +67,7 @@ const onError = (err : FormErrorEvent) => console.log(err)
                 <!-- Única zona scrolleable -->
                 <div
                     class="w-full flex-1 overflow-y-auto overflow-x-hidden pr-2 flex flex-col items-start gap-6 scrollbar-thin scrollbar-thumb-white/50 scrollbar-track-transparent scrollbar-thumb-rounded-full">
-                    <UForm :schema="Schema" :state="FormState" class="w-full flex flex-col gap-6" @submit="(e) => console.log(e.data)" @error="onError">
+                    <UForm :schema="Schema" :state="FormState" class="w-full flex flex-col gap-6" @submit="onSubmit" @error="onError">
 
                         <!-- Nombre -->
                         <UFormField label="Nombre" name="name" class="mb-3">
@@ -128,7 +134,7 @@ const onError = (err : FormErrorEvent) => console.log(err)
                         </UFormField>
 
                         <!-- Enviar -->
-                        <UButton class="w-full h-10 flex flex-row justify-center items-center cursor-pointer" label="Añadir" type="submit"  />
+                        <UButton class="w-full h-10 flex flex-row justify-center items-center cursor-pointer" label="Añadir" type="submit" :loading="loading" />
 
                     </UForm>
                 </div>

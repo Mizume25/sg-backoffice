@@ -10,7 +10,7 @@ export const useCategoryEdit = (id: string) => {
   const store = useCategoriesStore();
   const { findCategory, getParent } = useCategoriesStore();
   const { parents } = storeToRefs(store);
-  const category: Ref<CategoryRecord | null> = ref(findCategory(id));
+  const category: Ref<CategoryRecord | undefined> = ref(findCategory(id));
 
 
   /** Logica de Subcategorica  */
