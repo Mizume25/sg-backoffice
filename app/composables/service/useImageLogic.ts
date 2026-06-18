@@ -49,15 +49,14 @@ export const useImageLogic = () => {
   }
 
   const clearPreview = () => {
-    preview.value = ''
+    preview.value = null
     
     Object.assign(image, {
       path: '',
       file: {} as File
     })
-    if (inputRef.value) {
-      inputRef.value.value = ''
-    }
+    
+    inputRef.value = null
   }
 
 

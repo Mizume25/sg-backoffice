@@ -111,7 +111,9 @@ export const useProductCreate = () => {
     parent,
     makeCode,
     loading,
-    onSubmit
+    onSubmit,
+    seralizeJSON,
+    cleanForm
   }
 
 }

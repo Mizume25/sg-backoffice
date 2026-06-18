@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Schema } from '~~/shared/schemas/products/create'
-import { type FormErrorEvent} from '@nuxt/ui'
+import { Schema, type StoreProductSchema } from '~~/shared/schemas/products/create'
+import { type FormErrorEvent } from '@nuxt/ui'
+import type { FormSubmitEvent } from '@nuxt/ui'
 
 /** Titulo */
 definePageMeta({
@@ -8,14 +9,14 @@ definePageMeta({
 })
 
 /** Logica de fomrulario general */
-const { parents, FormState, subcategories , makeCode , store , loading , onSubmit} = useProductCreate();
+const { parents, FormState, subcategories, makeCode, store, loading, onSubmit, seralizeJSON, cleanForm } = useProductCreate();
 
 /** Logica de Imagenes */
-const { inputRef, preview, triggerInput, loadPreview, onFileChange, onDrop , image} = useImageLogic();
+const { inputRef, preview, triggerInput, loadPreview, onFileChange, onDrop, image, clearPreview } = useImageLogic();
 
 
 /** Logica de Tarifas */
-const { rate, rates, addRate, removeRate } = useRateLogic();
+const { rate, rates, addRate, removeRate, clearRates } = useRateLogic();
 
 /** Logica de rates */
 const isOpen = ref(false);
@@ -31,11 +32,11 @@ watch(subcategories, (newSubcats) => {
 
 
 /** Iteramos rates para los datos de formulario */
-watch(rates , (newVal) => FormState.rates = newVal);
+watch(rates, (newVal) => FormState.rates = newVal);
 
 
 /** Iteramos paths a partir de las categorias */
-watch(image , (newVal) => {
+watch(image, (newVal) => {
     /** Modificamos el nombre par estableceer una ruta dinamica */
     FormState.image.path = newVal.path
     FormState.image.file = newVal.file
@@ -46,7 +47,38 @@ watch(image , (newVal) => {
 watch(() => FormState.name, (newVal) => FormState.code = makeCode(newVal));
 
 
-const onError = (err : FormErrorEvent) => console.log(err)
+const onError = (err: FormErrorEvent) => console.log(err)
+
+
+/** testeado  */
+const tester = (e: FormSubmitEvent<StoreProductSchema>) => {
+    console.log(e.data);
+
+    const fd = seralizeJSON(e);
+
+    for (const [key, value] of fd.entries()) {
+        console.log(key, value);
+    }
+
+    cleanForm();
+
+    rates.forEach((r) => {
+        console.log(r)
+    })
+
+
+    console.log(inputRef.value);
+
+
+    console.log('Estado testado')
+
+}
+
+watch(rates, (newVal) => console.log(newVal), { immediate: true});
+
+
+
+
 
 </script>
 
@@ -67,7 +99,8 @@ const onError = (err : FormErrorEvent) => console.log(err)
                 <!-- Única zona scrolleable -->
                 <div
                     class="w-full flex-1 overflow-y-auto overflow-x-hidden pr-2 flex flex-col items-start gap-6 scrollbar-thin scrollbar-thumb-white/50 scrollbar-track-transparent scrollbar-thumb-rounded-full">
-                    <UForm :schema="Schema" :state="FormState" class="w-full flex flex-col gap-6" @submit="onSubmit" @error="onError">
+                    <UForm :schema="Schema" :state="FormState" class="w-full flex flex-col gap-6" @submit="tester"
+                        @error="onError">
 
                         <!-- Nombre -->
                         <UFormField label="Nombre" name="name" class="mb-3">
@@ -99,20 +132,21 @@ const onError = (err : FormErrorEvent) => console.log(err)
                             </div>
                         </UFormField>
 
-                          <!--Acciones -->
+                        <!--Acciones -->
                         <div class="w-full flex flex-row justify-end items-center gap-2">
+                               <UButton class="w-10 h-10 cursor-pointer flex flex-row items-center justify-center "
+                                icon="lucide:test-tube" color="info" @click="clearRates" />
                             <UButton class="w-10 h-10 cursor-pointer flex flex-row items-center justify-center "
                                 icon="lucide:upload" color="primary" @click="addRate" />
 
                             <UButton @click="isOpen = !isOpen"
                                 class="w-10 h-10 cursor-pointer flex flex-row items-center justify-center "
                                 :color="isOpen ? 'warning' : 'error'"
-                                :leading-icon="isOpen ? 'lucide:eye' : 'lucide:eye-closed'" 
-                               />
+                                :leading-icon="isOpen ? 'lucide:eye' : 'lucide:eye-closed'" />
                         </div>
 
                         <!-- Descripcion -->
-                        <UFormField label="Descripcion" name="description" >
+                        <UFormField label="Descripcion" name="description">
                             <UTextarea v-model="FormState.description" class="w-full" />
                         </UFormField>
 
@@ -134,7 +168,8 @@ const onError = (err : FormErrorEvent) => console.log(err)
                         </UFormField>
 
                         <!-- Enviar -->
-                        <UButton class="w-full h-10 flex flex-row justify-center items-center cursor-pointer" label="Añadir" type="submit" :loading="loading" />
+                        <UButton class="w-full h-10 flex flex-row justify-center items-center cursor-pointer"
+                            label="Añadir" type="submit" :loading="loading" />
 
                     </UForm>
                 </div>
@@ -148,9 +183,9 @@ const onError = (err : FormErrorEvent) => console.log(err)
 
         <div class="p-4 flex flex-col gap-3 ">
             <h2 class="text-blue-300 font-bold text-xl sm:text-2xl mb-2">Tarifas</h2>
-             <ItemRate v-for="(r, i) in rates" :rate="r" :id="i" :key="i" @id="removeRate(i)" /> 
+            <ItemRate v-for="(r, i) in rates" :rate="r" :id="i" :key="i" @id="removeRate(i)" />
 
-           
+
         </div>
 
     </SideBarRight>
