@@ -1,6 +1,6 @@
 import { type StoreImageSchema } from "~~/shared/schemas/products/create"
 
-export const useImageCreate = () => {
+export const useImageLogic = () => {
 
   /** Imagenes reactivas  */
   const image = reactive<StoreImageSchema>({
@@ -16,7 +16,7 @@ export const useImageCreate = () => {
 
   /** Guardamos las variables */
   const onSave = (file: File | undefined) => {
-    if(!file) return;
+    if (!file) return;
 
     image.path = file.name;
     image.file = file;
@@ -39,7 +39,7 @@ export const useImageCreate = () => {
     const file = (e.target as HTMLInputElement).files?.[0]
 
     onSave(file)
-    
+
     if (file) loadPreview(file)
   }
 
@@ -48,8 +48,20 @@ export const useImageCreate = () => {
     if (file) loadPreview(file)
   }
 
+  const clearPreview = () => {
+    preview.value = ''
+    
+    Object.assign(image, {
+      path: '',
+      file: {} as File
+    })
+    if (inputRef.value) {
+      inputRef.value.value = ''
+    }
+  }
 
-  
+
+
 
 
 
@@ -63,6 +75,7 @@ export const useImageCreate = () => {
     loadPreview,
     onFileChange,
     onDrop,
-    image
+    image,
+    clearPreview
   }
 }

@@ -15,7 +15,7 @@ export type UpdateCategorySchema = z.output<typeof Schema>;
 
 
 /** Funcion para Estado Inicial */
-export const initState = (category : CategoryRecord | null) : Reactive<UpdateCategorySchema> | undefined => {
+export const initState = (category : CategoryRecord | undefined) : Reactive<UpdateCategorySchema> | undefined => {
     
     if(!category) return undefined;
 

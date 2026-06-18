@@ -1,14 +1,14 @@
 import { Category, CategoryRecord, CreateCategory, EditCategory } from "~~/shared/types/definitons";
-import { serverSupabaseClient } from '#supabase/server'
 import type { H3Event } from 'h3'
+import { initClient } from "./service";
 
 /** Query para crear Categoria  */
-export async function createCategory(cat: CreateCategory, event: H3Event) {
+export async function createCategory(cat: CreateCategory, e: H3Event) {
 
-    const supabase = await serverSupabaseClient(event);
+    const supabase = await initClient(e);
 
     /** Comprobamos que el valor no existe */
-    if (await existField(event, cat.name)) throw createError({ statusCode: 409, message: 'El valor ya existe' });
+    if (await existField(e, cat.name)) throw createError({ statusCode: 409, message: 'El valor ya existe' });
 
     /** Realizamos el insert */
     const { error } = await supabase
@@ -24,7 +24,7 @@ export async function createCategory(cat: CreateCategory, event: H3Event) {
 /** Query para recoger lista Category */
 export async function getCategories(e: H3Event): Promise<CategoryRecord[]> {
     /** Peticion */
-    const supabase = await serverSupabaseClient(e);
+    const supabase = await initClient(e);
 
     /** Query */
     const { data, error } = await supabase
@@ -43,7 +43,7 @@ export async function getCategory(e: H3Event, id: string | undefined): Promise<C
 
     if (!id) throw createError({ statusCode: 404, message: 'Id undefined' })
 
-    const supabase = await serverSupabaseClient(e);
+    const supabase = await initClient(e);
 
     /** Obtenemos registros individual */
     const { data, error } = await supabase
@@ -65,7 +65,7 @@ export async function editCategory(e: H3Event, id: string | undefined, edit: Edi
     if (!id || !edit) return;
 
 
-    const supabase = await serverSupabaseClient(e);
+    const supabase = await initClient(e);
 
     /** Consulta */
     const { data, error } = await supabase
@@ -115,7 +115,7 @@ export async function deleteCategory(e: H3Event, id: string | undefined) {
 
     if(!id) throw createError({ statusCode: 404 , message:'El id no existe'});
 
-    const supabase = await serverSupabaseClient(e);
+    const supabase = await initClient(e);
 
     const { error } = await supabase
         .from('categories')
@@ -131,7 +131,7 @@ export async function deleteCategory(e: H3Event, id: string | undefined) {
 /** Heleper Obtener categorias de padres especificos */
 async function getChilds(e: H3Event, id: string): Promise<Category[]> {
 
-    const supabase = await serverSupabaseClient(e);
+    const supabase = await initClient(e);
 
     const { data, error } = await supabase
         .from('categories')
@@ -147,7 +147,7 @@ async function getChilds(e: H3Event, id: string): Promise<Category[]> {
 /** Helper para saber si existe o no productos asociados  */
 async function existsProducts(e: H3Event, id: string) {
 
-    const supabase = await serverSupabaseClient(e);
+    const supabase = await initClient(e);
 
     const { data, error } = await supabase
 
@@ -169,7 +169,7 @@ async function existsProducts(e: H3Event, id: string) {
 /** Helper para saber si exite un valor o no del campo categories */
 async function existField(e: H3Event, name: string): Promise<boolean> {
 
-    const supabase = await serverSupabaseClient(e);
+    const supabase = await initClient(e);
 
     const { data, error } = await supabase
         .from('categories')

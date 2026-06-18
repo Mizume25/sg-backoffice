@@ -1,3 +1,5 @@
+
+/** Plugin para arrancar con store de categorias */
 export default defineNuxtPlugin(async () => {
     
     const store = useCategoriesStore()
