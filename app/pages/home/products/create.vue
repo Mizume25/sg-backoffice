@@ -169,7 +169,9 @@ const onError = (err: FormErrorEvent) => console.log(err)
     </div>
 
     <!--- Tarifas   -->
-    <SideBarRight :is-open="isOpen" content="w-[25%] sm:w-[25%] h-full overflow-y-auto">
+    <SideBarRight 
+    :is-open="isOpen" 
+    content="w-[25%] sm:w-[25%] p-4" >
 
         <div class="p-4 flex flex-col gap-3 ">
             <h2 class="text-blue-300 font-bold text-xl sm:text-2xl mb-2">Tarifas</h2>

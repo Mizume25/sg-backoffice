@@ -37,6 +37,14 @@ export async function createEntities(e: H3Event, data: StoreProductSchema) {
 }
 
 
+/** Funcion para borrar producto y relaciones de producto */
+export async function deleteEntitis(e:H3Event , id:string) {
+    
+
+    
+}
+
+
 /** Queria para relacionar producto y categoria */
 async function attachCategories(e: H3Event, productID: string, categories: string[]) {
     const supabase = await initClient(e);
