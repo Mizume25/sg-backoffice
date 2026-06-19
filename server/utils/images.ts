@@ -1,14 +1,14 @@
 /** Funciones para crear y subir imagenes */
 import type { H3Event } from 'h3'
 import { initService } from './service';
-import { StoreImageSchema } from '~~/shared/schemas/products/create';
 
 
 
 /** Base de datos */
 
 /** Creamos registros y creamos imagen */
-export const createImage = async (e: H3Event, img: CreateImage, data: StoreImageSchema, code:string) => {
+export const createImage = async (e: H3Event, img: CreateImage, file: Buffer , path:string | undefined, code:string | undefined) => {
+  if(!code || !path ) return
 
   const supabase = await initService(e);
 
@@ -24,7 +24,7 @@ export const createImage = async (e: H3Event, img: CreateImage, data: StoreImage
   imageService.create(e, code);
 
 
-  imageService.upload(e, data.file, data.path , code);
+  imageService.upload(e, file, path , code , 'application/octet-stream');
 
 }
 
@@ -42,7 +42,7 @@ export const imageService = {
   },
 
   /** Subimos imagen */
-  async upload(e: H3Event, file: File | null, path: string , code:string) {
+  async upload(e: H3Event, file: Buffer, path: string , code:string , contentType: string) {
 
     if(!file) return;
     
@@ -50,7 +50,7 @@ export const imageService = {
 
     const { error } = await supabase.storage
       .from(code)
-      .upload(path, file);
+      .upload(path, file, { contentType , upsert: true });
 
 
     if (error) throw createError({ statusCode: 409, message: error.message })
