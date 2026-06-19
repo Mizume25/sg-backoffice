@@ -1,8 +1,13 @@
 import { Category, CategoryRecord, CreateCategory, EditCategory } from "~~/shared/types/definitons";
 import type { H3Event } from 'h3'
 import { initClient } from "./service";
+import { SupabaseClient } from "@supabase/supabase-js";
 
-/** Query para crear Categoria  */
+/** Query para crear Categoria 
+ * @param category 
+ * @param H3Event
+ * 
+ * */
 export async function createCategory(cat: CreateCategory, e: H3Event) {
 
     const supabase = await initClient(e);
@@ -15,13 +20,16 @@ export async function createCategory(cat: CreateCategory, e: H3Event) {
         .from('categories')
         .insert(cat);
 
-    if (error) throw error;
+    if (error) throw createError({ statusCode: 409 , message: error.message});
 
 
 
 }
 
-/** Query para recoger lista Category */
+/** Query para recoger lista categories
+ * @param H3Event
+ * @return categories
+ */
 export async function getCategories(e: H3Event): Promise<CategoryRecord[]> {
     /** Peticion */
     const supabase = await initClient(e);
@@ -38,15 +46,20 @@ export async function getCategories(e: H3Event): Promise<CategoryRecord[]> {
     return data;
 }
 
-/*** Obtneer una categoria especifica  */
-export async function getCategory(e: H3Event, id: string | undefined): Promise<CategoryRecord> {
+/*** Obtener una Categoria Especifica 
+ * 
+ * @param SupabaseClient
+ * @param category_id
+ * @return Category
+  */
+export async function getCategory(s: SupabaseClient, id: string | undefined): Promise<CategoryRecord> {
 
     if (!id) throw createError({ statusCode: 404, message: 'Id undefined' })
 
-    const supabase = await initClient(e);
+  
 
     /** Obtenemos registros individual */
-    const { data, error } = await supabase
+    const { data, error } = await s
         .from('categories')
         .select(`*, categories(*)`)
         .eq('id', id)
@@ -59,7 +72,12 @@ export async function getCategory(e: H3Event, id: string | undefined): Promise<C
 }
 
 
-/** Aztualizar categoria */
+/**
+ * Actualizar categoria
+ * @param H3Event
+ * @param categoria_id
+ * @param EditCategory
+ */
 export async function editCategory(e: H3Event, id: string | undefined, edit: EditCategory | undefined) {
 
     if (!id || !edit) return;
@@ -68,7 +86,7 @@ export async function editCategory(e: H3Event, id: string | undefined, edit: Edi
     const supabase = await initClient(e);
 
     /** Consulta */
-    const { data, error } = await supabase
+    const { error } = await supabase
         .from('categories')
         .update({
             name: edit.name,
@@ -98,7 +116,7 @@ export async function deleteCategories(e: H3Event, category: CategoryRecord) {
             if (await existsProducts(e, c.id)) throw createError({ statusCode: 409, message: 'Hay productos asociados' })
         }
         
-        await Promise.all(category.categories.map(c => deleteCategory(e, c.id)))
+        await Promise.all(category.categories.map((c) => deleteCategory(e, c.id)))
 
          
     }
