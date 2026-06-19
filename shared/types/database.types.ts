@@ -1,390 +1,59 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+DESCRIPTION
+  Supabase CLI (stable channel).
 
-export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
-  public: {
-    Tables: {
-      categories: {
-        Row: {
-          code: string
-          created_at: string | null
-          description: string
-          id: string
-          name: string
-          parent_id: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          code: string
-          created_at?: string | null
-          description: string
-          id?: string
-          name: string
-          parent_id?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          code?: string
-          created_at?: string | null
-          description?: string
-          id?: string
-          name?: string
-          parent_id?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_categoires_parent_id"
-            columns: ["parent_id"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      categories_products: {
-        Row: {
-          category_id: string
-          created_at: string | null
-          product_id: string
-          updated_at: string | null
-        }
-        Insert: {
-          category_id: string
-          created_at?: string | null
-          product_id: string
-          updated_at?: string | null
-        }
-        Update: {
-          category_id?: string
-          created_at?: string | null
-          product_id?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_categories_products_category_id_categories_id"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_categories_products_product_id_products_id"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      orders: {
-        Row: {
-          amount: number
-          created_at: string | null
-          id: string
-          order_date: string
-          product_id: string
-          units: number
-          updated_at: string | null
-        }
-        Insert: {
-          amount: number
-          created_at?: string | null
-          id?: string
-          order_date: string
-          product_id: string
-          units: number
-          updated_at?: string | null
-        }
-        Update: {
-          amount?: number
-          created_at?: string | null
-          id?: string
-          order_date?: string
-          product_id?: string
-          units?: number
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_orders_product_id_products_id"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      product_images: {
-        Row: {
-          created_at: string | null
-          id: string
-          path: string
-          product_id: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          path: string
-          product_id: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          path?: string
-          product_id?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_product_images_product_id_products_id"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      products: {
-        Row: {
-          code: string
-          created_at: string | null
-          description: string
-          id: string
-          name: string
-          updated_at: string | null
-        }
-        Insert: {
-          code: string
-          created_at?: string | null
-          description: string
-          id?: string
-          name: string
-          updated_at?: string | null
-        }
-        Update: {
-          code?: string
-          created_at?: string | null
-          description?: string
-          id?: string
-          name?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          age: number
-          created_at: string | null
-          id: string
-          name: string
-          surname: string
-          updated_at: string | null
-        }
-        Insert: {
-          age: number
-          created_at?: string | null
-          id: string
-          name: string
-          surname: string
-          updated_at?: string | null
-        }
-        Update: {
-          age?: number
-          created_at?: string | null
-          id?: string
-          name?: string
-          surname?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      rates: {
-        Row: {
-          created_at: string | null
-          end_date: string
-          id: string
-          price: number
-          product_id: string
-          start_date: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          end_date: string
-          id?: string
-          price: number
-          product_id: string
-          start_date: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          end_date?: string
-          id?: string
-          price?: number
-          product_id?: string
-          start_date?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_rates_product_id_products_id"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      [_ in never]: never
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-}
+USAGE
+  supabase <subcommand> [flags]
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+GLOBAL FLAGS
+  --help, -h                Show help information
+  --version                 Show version information
+  --completions choice      Print shell completion script (choices: bash, zsh, fish, sh)
+  --log-level choice        Sets the minimum log level (choices: all, trace, debug, info, warn, warning, error, fatal, none)
+  --output-format choice    Output format: text (default), json, or stream-json (NDJSON) (choices: text, json, stream-json)
+  --output, -o choice       Output format of status variables. (choices: env, pretty, json, toml, yaml)
+  --profile string          Use a specific profile for connecting to Supabase API.
+  --debug                   Output debug logs to stderr.
+  --workdir string          Path to a Supabase project directory.
+  --experimental            Enable experimental features.
+  --network-id string       Use the specified Docker network instead of a generated one.
+  --yes                     Answer yes to all prompts.
+  --dns-resolver choice     Look up domain names using the specified resolver. (choices: native, https)
+  --create-ticket           Create a support ticket for any CLI error.
+  --agent choice            Override agent detection: yes, no, or auto. (choices: auto, yes, no)
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
-
-export type Tables<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
-    }
-    ? R
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
-      }
-      ? R
-      : never
-    : never
-
-export type TablesInsert<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
-    }
-    ? I
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I
-      }
-      ? I
-      : never
-    : never
-
-export type TablesUpdate<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
-    }
-    ? U
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U
-      }
-      ? U
-      : never
-    : never
-
-export type Enums<
-  DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
-> = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never
-
-export type CompositeTypes<
-  PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
-> = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
-
-export const Constants = {
-  public: {
-    Enums: {},
-  },
-} as const
+SUBCOMMANDS
+  backups             Manage Supabase physical backups
+  bootstrap           Bootstrap a Supabase project from a starter template
+  branches            Manage preview branches
+  completion          Generate autocompletion scripts
+  config              Manage project configurations
+  db                  Manage databases
+  domains             Manage custom domain names for Supabase projects
+  encryption          Manage encryption keys
+  functions           Manage Supabase Edge functions
+  gen                 Run code generation tools
+  init                Initialize a local project
+  inspect             Inspect project tools
+  link                Link to a Supabase project
+  login               Authenticate using an access token
+  logout              Log out and delete access tokens locally
+  migration, migrationsManage database migration scripts
+  network-bans        Manage network bans
+  network-restrictionsManage network restrictions
+  orgs                Manage Supabase organizations
+  postgres-config     Manage Postgres database config
+  projects            Manage projects
+  secrets             Manage Supabase secrets
+  seed                Seed a Supabase project
+  services            Show versions of all Supabase services
+  snippets            Manage Supabase SQL snippets
+  ssl-enforcement     Manage SSL enforcement
+  sso                 Manage Single Sign-On (SSO) authentication
+  start               Start local Supabase stack
+  status              Show status of local Supabase containers
+  stop                Stop all local Supabase containers
+  storage             Manage Supabase Storage objects
+  telemetry           Manage telemetry
+  test                Run tests on local Supabase containers
+  unlink              Unlink a Supabase project
+  vanity-subdomains   Manage vanity subdomains
