@@ -4,10 +4,11 @@
 const props = defineProps<{
   record: ProductRecord,
   styleTitle:string,
-  contentIMG:string,
+  image:string,
   subtitles:string,
   contentTarifas:string,
   description:string
+  categories:string
 }>()
 
 const product = computed(() => props.record)
@@ -44,7 +45,7 @@ onUnmounted(() => {
     {{ product.name }}
     <UIcon :name="iconCategory(parent!)" />
   </h2>
-  <div :class="props.contentIMG">
+  <div :class="props.image">
     <NuxtImg :src="IMAGE_URL + product.code + '/' +images[i]?.path" class="w-full h-full object-cover" />
   </div>
 
@@ -52,7 +53,7 @@ onUnmounted(() => {
   <h3 :class="props.subtitles">Categorias</h3>
 
 
-  <div class="grid grid-cols-3 gap-5 w-full">
+  <div :class="props.categories">
     <UBadge v-for="category in product.categories_products ?? []" :key="category.categories?.name"
       :label="category.categories?.name ?? 'Sin categoría'" color="warning" class="w-20 h-10 font-bold" size="md"
       :ui="{ base: 'flex items-center justify-center' }" />
@@ -62,14 +63,20 @@ onUnmounted(() => {
   <h3 :class="props.subtitles" >Tarifas</h3>
   <div :class="props.contentTarifas" >
     <Rate v-for="rate in product.rates" :key="rate.id" :rate="rate" />
+  
   </div>
 
   <!-- Descripcion -->
   <h3 :class="props.subtitles">Descripcion</h3>
-  <div class="w-full">
+  <div class="w-full mb-3">
     <p :class="props.description">
       {{ product.description ?? 'Sin descripción' }}
     </p>
+  </div>
+
+  <div class="w-full flex flex-row gap-2 items-center justify-center">
+    <UButton label="Editar" color="warning"  class="cursor-pointer w-50 flex flex-row items-center justify-center" :to="`/home/products/${product.id}`"   />
+        <UButton label="Eliminar" color="error"  class="cursor-pointer w-50 flex flex-row items-center justify-center" :to="`/home/products/${product.id}`"   />
   </div>
 
 

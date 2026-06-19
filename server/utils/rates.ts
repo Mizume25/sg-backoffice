@@ -11,3 +11,5 @@ export async function createRates(e:H3Event , data:CreateRate[]) {
 
     if(error) throw createError({ statusCode: 409 , message:error.message})
 }
+
+
