@@ -34,17 +34,6 @@ export async function createEntities(e: H3Event, data: StoreProductSchema) {
     /** Relacionamos producto y su categoria */
     await attachCategories(e, product.id, [data.category, data.subcategory]);
 
-
-    /** Creamos el registro */
-    const img : CreateImage = {
-        path:data.image.path,
-        product_id:product.id
-    }
-
-    /** Insertamos y subimos la imagen */
-    await createImage(e, img , data.image , data.code);
-
-
 }
 
 
@@ -61,7 +50,7 @@ async function attachCategories(e: H3Event, productID: string, categories: strin
             }))
         )
 
-    if(error) throw createError({statusCode: 409 , message: 'No se ha podido crear la relacion'})
+    if(error) throw createError({statusCode: 409 , message: error.message})
 }
 
 
@@ -78,7 +67,7 @@ async function createProduct(e: H3Event, data: CreateProduct) {
         .from('products')
         .insert(product);
 
-    if (error) throw createError({ statusCode: 409, message: 'Ha habido problemas para añadir el producto' })
+    if (error) throw createError({ statusCode: 409, message: error.message })
 
 }
 
@@ -114,7 +103,7 @@ async function getProduct(e: H3Event, code: string) {
         .eq('code', code)
         .single();
 
-    if (error) throw createError({ statusCode: 404, message: 'El producto no existe' });
+    if (error) throw createError({ statusCode: 404, message: error.message });
 
     return data;
 }

@@ -9,10 +9,6 @@ export const useProducts = () => {
   /** Obtenemos lista de productos */
   const { data: products } = useProductsApi()
 
-  /** Responsive */
-    /** Responsive */
-  const { width }  = useWindowSize();
-
 
   /** Variable reactivas | Filtro & Orden Actual */
   const filter: Ref<string | undefined> = ref('Todos');
@@ -46,9 +42,9 @@ export const useProducts = () => {
 
     if (product == null) return
 
-    record.value = listOrders.value.find((p) => p.id === product) ?? null;
+    record.value = listOrders.value.find((p) => p.id === product);
 
-
+    console.log(product)
     
   
 

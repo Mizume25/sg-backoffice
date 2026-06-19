@@ -1,83 +1,62 @@
 <script setup lang="ts">
-import { Schema, type StoreProductSchema } from '~~/shared/schemas/products/create'
+import { Schema } from '~~/shared/schemas/products/create'
 import { type FormErrorEvent } from '@nuxt/ui'
-import type { FormSubmitEvent } from '@nuxt/ui'
-
 /** Titulo */
 definePageMeta({
     title: "Añadir Productos"
 })
 
 /** Logica de fomrulario general */
-const { parents, FormState, subcategories, makeCode, store, loading, onSubmit, seralizeJSON, cleanForm } = useProductCreate();
+const { parents, FormState, subcategories, loading, onSubmit, code } = useProductCreate();
 
 /** Logica de Imagenes */
 const { inputRef, preview, triggerInput, loadPreview, onFileChange, onDrop, image, clearPreview } = useImageLogic();
 
 
 /** Logica de Tarifas */
-const { rate, rates, addRate, removeRate, clearRates } = useRateLogic();
+const { rate, rates, addRate, removeRate } = useRateLogic();
 
 /** Logica de rates */
 const isOpen = ref(false);
 
-/** Iteramos items hijos degun el padre */
-watch(subcategories, (newSubcats) => {
-    const sigueSiendoValida = newSubcats?.some((c) => c.id === FormState.subcategory)
+const hasChildren = computed(() => (subcategories.value?.length ?? 0) > 0)
 
-    if (!sigueSiendoValida) {
-        FormState.subcategory = newSubcats?.[0]?.id ?? ''
+watch(subcategories, (newSubcats) => {
+    const list = newSubcats ?? []
+
+    if (list.length === 0) {
+        // categoría sin hijos: limpia la selección
+        FormState.subcategory = ''
+        return
+    }
+
+    // hay hijos: si la selección actual no es válida, selecciona el primero
+    const stillValid = list.some((c) => c.id === FormState.subcategory)
+    if (!stillValid) {
+        FormState.subcategory = list[0]!.id
     }
 }, { immediate: true })
 
 
-/** Iteramos rates para los datos de formulario */
-watch(rates, (newVal) => FormState.rates = newVal);
+/** Obtener codigo dinamico */
+watch(code, (newCode) => {
+    FormState.code = newCode ?? ''
+}, { immediate: true })
 
 
-/** Iteramos paths a partir de las categorias */
-watch(image, (newVal) => {
-    /** Modificamos el nombre par estableceer una ruta dinamica */
-    FormState.image.path = newVal.path
-    FormState.image.file = newVal.file
-});
+/** Copiar rates actuales */
+watch(rates, (newRates) => {
+    FormState.rates = newRates
+    FormState.rates.forEach((r) => {
+        console.log(r)
+    })
+})
 
 
-/** Iteramos codigo en base al nombre */
-watch(() => FormState.name, (newVal) => FormState.code = makeCode(newVal));
+
 
 
 const onError = (err: FormErrorEvent) => console.log(err)
-
-
-/** testeado  */
-const tester = (e: FormSubmitEvent<StoreProductSchema>) => {
-    console.log(e.data);
-
-    const fd = seralizeJSON(e);
-
-    for (const [key, value] of fd.entries()) {
-        console.log(key, value);
-    }
-
-    cleanForm();
-
-    rates.forEach((r) => {
-        console.log(r)
-    })
-
-
-    console.log(inputRef.value);
-
-
-    console.log('Estado testado')
-
-}
-
-watch(rates, (newVal) => console.log(newVal), { immediate: true});
-
-
-
 
 
 </script>
@@ -99,7 +78,7 @@ watch(rates, (newVal) => console.log(newVal), { immediate: true});
                 <!-- Única zona scrolleable -->
                 <div
                     class="w-full flex-1 overflow-y-auto overflow-x-hidden pr-2 flex flex-col items-start gap-6 scrollbar-thin scrollbar-thumb-white/50 scrollbar-track-transparent scrollbar-thumb-rounded-full">
-                    <UForm :schema="Schema" :state="FormState" class="w-full flex flex-col gap-6" @submit="tester"
+                    <UForm :schema="Schema" :state="FormState" class="w-full flex flex-col gap-6" @submit="onSubmit"
                         @error="onError">
 
                         <!-- Nombre -->
@@ -116,7 +95,9 @@ watch(rates, (newVal) => console.log(newVal), { immediate: true});
                         <!-- Subcategoria -->
                         <UFormField label="Subcategoria" name="subcategory" class="mb-3">
                             <USelect :items="subcategories" label-key="name" value-key="id"
-                                v-model="FormState.subcategory" class="w-full" />
+                                v-model="FormState.subcategory" class="w-full" :disabled="!hasChildren" />
+                                <span v-if="!hasChildren" class="text-sm text-red-500 font-bold">No tiene subcategorias disponibles</span>
+
                         </UFormField>
 
                         <!-- Precio y fechas -->
@@ -134,8 +115,7 @@ watch(rates, (newVal) => console.log(newVal), { immediate: true});
 
                         <!--Acciones -->
                         <div class="w-full flex flex-row justify-end items-center gap-2">
-                               <UButton class="w-10 h-10 cursor-pointer flex flex-row items-center justify-center "
-                                icon="lucide:test-tube" color="info" @click="clearRates" />
+                             
                             <UButton class="w-10 h-10 cursor-pointer flex flex-row items-center justify-center "
                                 icon="lucide:upload" color="primary" @click="addRate" />
 
@@ -154,8 +134,15 @@ watch(rates, (newVal) => console.log(newVal), { immediate: true});
                         <UFormField label="Imagen" name="image" class="mb-3">
                             <div class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-500 rounded-lg cursor-pointer hover:border-primary transition-colors"
                                 @click="triggerInput" @dragover.prevent @drop.prevent="onDrop">
-                                <img v-if="preview" :src="preview" class="h-full w-full object-cover rounded-lg" />
 
+                                <!-- Estado: archivo cargado -->
+                                <div v-if="image.file" class="flex flex-col items-center gap-2 text-green-500">
+                                    <UIcon name="lucide:check-circle" class="text-4xl" />
+                                    <span class="text-sm font-medium">{{ image.file.name }}</span>
+                                    <span class="text-xs text-gray-400">Click para cambiar</span>
+                                </div>
+
+                                <!-- Estado: vacío -->
                                 <div v-else class="flex flex-col items-center gap-2 text-gray-400">
                                     <UIcon name="lucide:image-plus" class="text-4xl" />
                                     <span class="text-sm">Arrastra o haz click para subir</span>
@@ -184,8 +171,6 @@ watch(rates, (newVal) => console.log(newVal), { immediate: true});
         <div class="p-4 flex flex-col gap-3 ">
             <h2 class="text-blue-300 font-bold text-xl sm:text-2xl mb-2">Tarifas</h2>
             <ItemRate v-for="(r, i) in rates" :rate="r" :id="i" :key="i" @id="removeRate(i)" />
-
-
         </div>
 
     </SideBarRight>

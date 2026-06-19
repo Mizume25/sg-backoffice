@@ -9,5 +9,5 @@ export async function createRates(e:H3Event , data:CreateRate[]) {
     .from('rates')
     .insert(data);
 
-    if(error) throw createError({ statusCode: 409 , message:'No se pudo añadir las tarifas'})
+    if(error) throw createError({ statusCode: 409 , message:error.message})
 }
