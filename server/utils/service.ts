@@ -18,3 +18,24 @@ export function initService(e: H3Event): SupabaseClient {
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 }
+
+//** Transfeerencia de Fomrs Data */
+export function parseFormData<T extends Record<string, any>>(formData: FormData): T {
+    const result: Record<string, any> = {}
+
+    for (const [key, value] of formData.entries()) {
+        if (value instanceof File) {
+            result[key] = value
+            continue
+        }
+
+
+        try {
+            result[key] = JSON.parse(value)
+        } catch {
+            result[key] = value
+        }
+    }
+
+    return result as T
+}

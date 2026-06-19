@@ -1,11 +1,6 @@
 import type { StoreRateSchema } from "~~/shared/schemas/products/create";
-export const useRateLogic = () => {
 
-  const toast = useToast();
-
-
-
-  /*** Tarifa Reactiva */
+ /*** Tarifa Reactiva */
   const rate = reactive<StoreRateSchema>({
     price: 0,
     start_date: '',
@@ -15,7 +10,9 @@ export const useRateLogic = () => {
   /*** Array de rates creados */
   const rates = reactive<StoreRateSchema[]>([])
 
+export const useRateLogic = () => {
 
+  const toast = useToast();
 
   const isValidDate = (startDate: string, endDate: string): boolean => {
     const start = new Date(startDate).getTime()
@@ -36,6 +33,8 @@ export const useRateLogic = () => {
   const checkValues = (): boolean => {
 
     let check = true;
+
+    
 
     if (rate.price < 0) toast.add({ title: 'El precio es incoherente', color: 'error' }), check = false;
 
@@ -88,9 +87,8 @@ export const useRateLogic = () => {
 
 
 
-  const clearRates = () =>  {
-    rates.splice(0, rates.length)
-  } ; 
+  const clearRates = () =>  rates.splice(0, rates.length);
+  
   
 
 

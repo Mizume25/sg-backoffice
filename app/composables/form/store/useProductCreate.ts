@@ -1,6 +1,6 @@
-import { type StoreImageSchema, type StoreProductSchema } from '~~/shared/schemas/products/create';
+import { type StoreProductSchema } from '~~/shared/schemas/products/create';
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { toast } from '#build/ui';
+
 
 export const useProductCreate = () => {
 
@@ -9,7 +9,16 @@ export const useProductCreate = () => {
   const { parents } = storeToRefs(store);
 
 
-  const { clearPreview } = useImageLogic();
+
+
+  /** Helper para obtener un codigo  */
+  const makeCode = (name: string | undefined) => {
+    if (!name) return null;
+
+    return name?.slice(0, 2).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase()
+  }
+
+
   const { clearRates } = useRateLogic()
 
 
@@ -26,11 +35,6 @@ export const useProductCreate = () => {
     category: parents?.value?.[0]?.id ?? '',
     subcategory: parents?.value?.[0]?.categories[0]?.id ?? '',
     rates: [],
-    image: {
-      path: '',
-      file: null
-    } as StoreImageSchema,
-
   }
 
   /** Estado reactivo */
@@ -42,78 +46,55 @@ export const useProductCreate = () => {
 
   const subcategory = computed(() => parent.value?.categories[0])
 
-  /** Helper para obtener un codigo  */
-  const makeCode = (name: string | undefined) => {
-    return name?.slice(0, 2).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase()
-  }
+
+  const code = computed(() => makeCode(FormState.name));
+
+
 
 
 
   const cleanForm = () => {
     Object.assign(FormState, { ...INIT_STATE })
-    clearPreview()
     clearRates()
   }
 
 
-  const seralizeJSON = (e: FormSubmitEvent<StoreProductSchema>) => {
-    const fd = new FormData();
 
-
-    Object.entries(e.data).forEach(([key, value]) => {
-
-      if (key === 'image') return;
-
-      fd.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value));
-    });
-
-
-    if (e.data.image?.file) {
-      fd.append('image', e.data.image.file);
-      fd.append('imagePath', e.data.image.path);
-    }
-
-    return fd;
-  }
 
 
   /** Funcion para subir datos */
   const onSubmit = async (e: FormSubmitEvent<StoreProductSchema>) => {
-    loading.value = false;
+    loading.value = true;
 
-    const fd = seralizeJSON(e);
+
 
     try {
+      await $fetch('/api/product', { method: 'POST', body: e.data });
 
-      await $fetch('/api/product', {
-        method: 'POST',
-        body: fd
-      })
 
-      toast.add({ title: 'Se ha añadido el producto correctamente', color: 'success' })
-      loading.value = false;
+      toast.add({ title: 'Se ha añadido el producto correctamente', color: 'success' });
       cleanForm();
 
-    } catch (e) {
-
+    } catch (err) {
+      console.log('ERROR:', err);
+      toast.add({ title: 'Ha habido un problema', color: 'error' });
+    } finally {
       loading.value = false;
-      console.log(e)
-      toast.add({ title: 'Ha habido un problema', color: 'error' })
     }
+
+
   }
 
   return {
     parents,
     FormState,
     subcategories,
-    store,
     subcategory,
     parent,
-    makeCode,
     loading,
     onSubmit,
-    seralizeJSON,
-    cleanForm
+    cleanForm,
+    code
   }
 
 }
