@@ -10,7 +10,7 @@ definePageMeta({
 const { parents, FormState, subcategories, loading, onSubmit, code } = useProductCreate();
 
 /** Logica de Imagenes */
-const { inputRef, preview, triggerInput, loadPreview, onFileChange, onDrop, image, clearPreview } = useImageLogic();
+const { inputRef, preview, triggerInput, onFileChange, onDrop, image } = useImageLogic();
 
 
 /** Logica de Tarifas */
@@ -51,6 +51,9 @@ watch(rates, (newRates) => {
         console.log(r)
     })
 })
+
+
+
 
 
 

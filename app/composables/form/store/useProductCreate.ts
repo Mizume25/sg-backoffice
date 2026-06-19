@@ -20,6 +20,7 @@ export const useProductCreate = () => {
 
 
   const { clearRates } = useRateLogic()
+  const { image, clearimage } = useImageLogic();
 
 
   /** Decorado */
@@ -56,6 +57,7 @@ export const useProductCreate = () => {
   const cleanForm = () => {
     Object.assign(FormState, { ...INIT_STATE })
     clearRates()
+    clearimage()
   }
 
 
@@ -73,13 +75,37 @@ export const useProductCreate = () => {
 
 
       toast.add({ title: 'Se ha añadido el producto correctamente', color: 'success' });
+
+
+      if (image.value.file && image.value.path) {
+
+        const fd = new FormData();
+
+        fd.append('file', image.value.file, image.value.file.name)
+        fd.append('path', `${FormState.code}/${image.value.path}`)
+
+        try {
+
+
+          await $fetch('/api/picture', {
+            method: 'POST',
+            body: fd
+          })
+
+
+
+        } catch (error) {
+          console.log(error)
+        }
+
+      } 
       cleanForm();
+      loading.value = false;
 
     } catch (err) {
       console.log('ERROR:', err);
       toast.add({ title: 'Ha habido un problema', color: 'error' });
-    } finally {
-      loading.value = false;
+           loading.value = false;
     }
 
 

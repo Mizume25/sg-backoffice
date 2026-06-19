@@ -1,7 +1,7 @@
 /** Funciones para productos */
 import type { H3Event } from 'h3'
 import { type StoreProductSchema } from '~~/shared/schemas/products/create'
-import { CreateImage, CreateProduct, CreateRate, ProductRecord } from '~~/shared/types/definitons';
+import { CreateProduct, CreateRate, ProductRecord } from '~~/shared/types/definitons';
 import { createRates } from './rates';
 import { initClient } from './service';
 
@@ -93,7 +93,7 @@ export async function getProducts(e:H3Event) : Promise<ProductRecord[]> {
 }
 
 /** Obtenemos el codigo del producto */
-async function getProduct(e: H3Event, code: string) {
+export async function getProduct(e: H3Event, code: string | undefined) : Promise<Product> {
 
     const supabase = await initClient(e);
 
