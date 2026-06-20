@@ -3,7 +3,7 @@
  */
 
 /** @import Tipado de el archivo generado con supabase cli */
-import { type Database } from "./database.types";
+import { type Database } from "../database.types";
 
 
 /** Tipos de inserción para las entidades de la base de datos */

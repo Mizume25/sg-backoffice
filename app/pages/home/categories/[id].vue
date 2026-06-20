@@ -37,8 +37,8 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
 
 <template>
   <FormLayout>
-    <FormCard :title="`Editar categoria ${category.name}`" :back="back"  >
-      <UForm :schema="Schema" :state="FormState" @submit="onUpdate" @error="onError">
+    <FormCard :title="`Editar categoria ${category?.name}`" :back="back" v-if="FormState" >
+      <UForm :schema="Schema" :state="FormState" @submit="onUpdate" @error="onError" class="w-full">
 
         <!-- Nombre -->
         <UFormField label="Categoria" name="name">
@@ -54,7 +54,7 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
         <!--- Campo Dinamico -->
 
         <!-- Campos de categorias padre -->
-        <UFormField v-if="!category?.parent_id" label="Subcategorias">
+        <UFormField v-if="category?.parent_id == null" label="Subcategorias">
 
           <!-- Iteracion de todas las caegorias hijas que tiene -->
           <NuxtLink v-for="cat in category?.categories" :to="`/home/categories/${cat.id}`"
@@ -67,7 +67,7 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
         </UFormField>
 
         <!-- Campos de categoria padre -->
-        <UFormField v-else-if="parents && parent && category?.parent_id" label="Categoria Padre" class="mb-2">
+        <UFormField v-else-if="parents && parent" label="Categoria Padre" class="mb-2">
           <USelect :items="parents" label-key="name" value-key="id" v-model="FormState.parent_id!" class="w-full mb-2"
             leading-icon="lucide:tag" :disabled="allow" />
           <UButton class="cursor-pointer" :label="allow ? 'Activar Padre' : 'Desactivar Padre'"
@@ -78,7 +78,7 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
 
         <!-- Select -->
         <UFormField label="Descripcion" name="description" class="mt-4">
-          <UTextarea class="mb-4 w-70" v-model="FormState.description" />
+          <UTextarea class="mb-4 w-full" v-model="FormState.description" />
         </UFormField>
 
         <div class="p-4 flex flex-row gap-3">

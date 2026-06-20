@@ -1,3 +1,4 @@
+import { findProduct } from "../utils/products";
 
 
 
@@ -19,7 +20,7 @@ export default eventHandler(async (e) => {
 
     const [code, name] = path.split('/');
 
-    const product = await getProduct(supabase, code);
+    const product = await findProduct(supabase, code);
 
     const img: CreateImage = {
       path: name!,
