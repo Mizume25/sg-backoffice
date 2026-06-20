@@ -30,12 +30,12 @@ export const SideBarItems: NavigationMenuItem[] = [
 /** Icono dinamicos 
  * Obtiene Iconos segun categoria
 */
-export const iconCategory = (category : string | undefined): string => {
+export const iconCategory = (category: string | undefined): string => {
     switch (category) {
         case 'frutas':
             return 'lucide:apple'
         case 'verduras':
-            return'lucide:leaf'
+            return 'lucide:leaf'
         case 'carnes':
             return 'lucide:beef'
         case 'lacteos':
@@ -48,12 +48,12 @@ export const iconCategory = (category : string | undefined): string => {
 /** Colores dinamicos 
  * Obtiene Iconos segun categoria
 */
-export const colorCategory = (category : string | undefined): string => {
+export const colorCategory = (category: string | undefined): string => {
     switch (category) {
         case 'frutas':
             return 'border-yellow-400'
         case 'verduras':
-            return'border-green-400'
+            return 'border-green-400'
         case 'carnes':
             return 'border-red-400'
         case 'lacteos':
@@ -64,15 +64,15 @@ export const colorCategory = (category : string | undefined): string => {
 }
 
 export const formatDate = (date: string | null | undefined): string => {
-  if (!date) return 'Sin fecha'
-  
-  const clean = date.split('T')[0] ?? ''
-  const parts = clean.split('-')
-  
-  if (parts.length < 3) return 'Sin fecha'
-  
-  const [year, month, day] = parts
-  return `${day}/${month}/${year?.slice(2)}`
+    if (!date) return 'Sin fecha'
+
+    const clean = date.split('T')[0] ?? ''
+    const parts = clean.split('-')
+
+    if (parts.length < 3) return 'Sin fecha'
+
+    const [year, month, day] = parts
+    return `${day}/${month}/${year?.slice(2)}`
 }
 
 

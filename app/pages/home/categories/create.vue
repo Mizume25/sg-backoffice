@@ -36,61 +36,47 @@ const isOpen = ref(false);
 
 
 <template>
-  <!-- Main -->
-  <div
-    class="w-full min-h-screen sm:p-6 flex flex-row lg:flex-row items-center lg:items-start justify-center gap-6 lg:gap-10">
+  <FormLayout>
+    <FormCard :title="allow ? 'Crear Categoria' : 'Crear Subcategoria'">
 
-    <!-- Container Crear Categoria -->
-    <div class="w-full max-w-md lg:w-100 bg-blue-300 p-4 rounded-2xl border border-black shrink-0">
-
-      <!-- Contenido -->
-      <div class="w-full bg-blue-900 rounded-2xl p-4 sm:p-6 flex flex-col shadow-2xl items-center justify-center me-10">
-
-
-
-        <h2 class="text-blue-200 font-bold text-xl sm:text-2xl mb-4 mt-4 sm:mt-10 text-center">
-          Crear {{ allow ? 'Categoria Padre' : 'Subcategoria' }}
-        </h2>
-
-        <!--- Formulario -->
-        <UForm :schema="Schema" :state="FormState" :validate-on="['input']" @submit="onSubmit" class="w-full">
+      <!--- Formulario -->
+      <UForm :schema="Schema" :state="FormState" :validate-on="['input']" @submit="onSubmit" class="w-full">
 
         <!-- Nombre -->
-          <UFormField label="Categoria" name="name">
-            <UInput class="mb-4 w-full" :leading-icon="allow ? 'lucide:tag' : 'lucide:tags'" v-model="FormState.name" />
-          </UFormField>
+        <UFormField label="Categoria" name="name">
+          <UInput class="mb-4 w-full" :leading-icon="allow ? 'lucide:tag' : 'lucide:tags'" v-model="FormState.name" />
+        </UFormField>
 
         <!-- Categoria Padre -->
-          <UFormField label="Categoria Padre" name="parent_id" class="flex flex-col gap-1" v-if="parents">
+        <UFormField label="Categoria Padre" name="parent_id" class="flex flex-col gap-1" v-if="parents">
 
-            <USelect class="w-full mb-2" :leading-icon="allow ? '' : 'lucide:tag'" :items="parents" label-key="name"
-              value-key="id" v-model="FormState.parent_id" :disabled="allow" />
-            <UButton class="block mb-3 cursor-pointer" :label="allow ? 'Activar' : 'Desactivar'"
-              :color="allow ? 'primary' : 'error'" @click="allow = !allow" />
+          <USelect class="w-full mb-2" :leading-icon="allow ? '' : 'lucide:tag'" :items="parents" label-key="name"
+            value-key="id" v-model="FormState.parent_id" :disabled="allow" />
+          <UButton class="block mb-3 cursor-pointer" :label="allow ? 'Activar' : 'Desactivar'"
+            :color="allow ? 'primary' : 'error'" @click="allow = !allow" />
 
-          </UFormField>
+        </UFormField>
 
         <!-- Descripcion -->
-          <UFormField label="Descripcion" name="description">
-            <UTextarea class="mb-4 w-full" v-model="FormState.description" />
-          </UFormField>
+        <UFormField label="Descripcion" name="description">
+          <UTextarea class="mb-4 w-full" v-model="FormState.description" />
+        </UFormField>
 
-          <div class="p-4 flex flex-row gap-4">
-            <UButton class="w-full sm:w-30 h-10 flex items-center justify-center cursor-pointer" label="Crear"
-              type="submit" :loading="loading" />
-            <UButton class="w-full sm:w-30 h-10 flex items-center justify-center cursor-pointer" label="Ver Categorias"
-              color="warning" @click="isOpen = !isOpen" />
+        <div class="p-4 flex flex-row gap-4">
+          <UButton class="w-full sm:w-30 h-10 flex items-center justify-center cursor-pointer" label="Crear"
+            type="submit" :loading="loading" />
+          <UButton class="w-40 sm:w-30 h-10 flex items-center justify-center cursor-pointer" label="Categorias"
+            :color="isOpen ? 'warning' : 'error'" :leading-icon="isOpen ? 'lucide:eye' : 'lucide:eye-closed'"
+            @click="isOpen = !isOpen" />
 
-          </div>
+        </div>
 
-        </UForm>
-      </div>
-    </div>
+      </UForm>
 
-
+    </FormCard>
     <!-- Lista de categorias para editar -->
-    <SideBarRight :is-open="isOpen" content="w-[35%] sm:w-[30%] h-full overflow-y-auto">
-
+    <SideBarRight :is-open="isOpen" content="w-[30%] max-md:w-[100%] h-full overflow-y-auto">
+      <UButton icon="lucide:x" color="error" class="w-10 lg:hidden flex flex-row justify-center items-center cursor-pointer" @click="isOpen = !isOpen"  />
       <div class="p-4 flex flex-col gap-3">
         <h2 class="text-blue-300 font-bold text-xl sm:text-2xl mb-2">Editar Categoria</h2>
 
@@ -118,7 +104,7 @@ const isOpen = ref(false);
     </SideBarRight>
 
 
-  </div>
 
 
+  </FormLayout>
 </template>
