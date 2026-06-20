@@ -13,7 +13,7 @@ const id = route.params.id as string;
 
 <template>
   <div>
-    Page: [id]
+
   </div>
 </template>
 
