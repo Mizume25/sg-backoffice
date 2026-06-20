@@ -7,7 +7,9 @@
 export const useProducts = () => {
 
   /** Obtenemos lista de productos */
-  const { data: products } = useProductsApi()
+  const { list } = useProductsApi();
+  const { data:products } = list();
+
 
 
   /** Variable reactivas | Filtro & Orden Actual */
@@ -17,7 +19,7 @@ export const useProducts = () => {
 
   /** Listas reactivas | Tipos de Filtro & Tipos de Orden */
   const order = computed(() => ['Defecto', 'Nombre A-Z'])
-  const parents = computed(() => getAllParents(products.value ?? []));
+  const parents = computed(() => getAllParents(products.value));
   const items = ['Todos', ...parents.value] // "Todos" como filtro de categoria
 
 

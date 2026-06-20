@@ -1,12 +1,16 @@
 
 /**  Endpoint individual  */
-export default eventHandler ((event) => {
+export default eventHandler (async(event) => {
     try {
         
    
     const id = getRouterParam(event , 'id');
 
-    const category = getCategory(event , id);
+    
+    const supabase = await initService(event);
+
+
+    const category = getCategory(supabase , id);
 
     return category;
 

@@ -19,7 +19,7 @@ export async function createEntities(e: H3Event, data: StoreProductSchema) {
 
   // Secuencial obligatorio: crear → obtener id
   await createProduct(supabase, obj)
-  const product = await getProduct(supabase, data.code)
+  const product = await findProduct(supabase, data.code)
 
   const rates: CreateRate[] = data.rates.map(rate => ({
     ...rate,
@@ -43,7 +43,7 @@ export async function deleteEntitis(e:H3Event , id:string | undefined) {
 
     /** Eliminamos todaas sus relaciones */
     await Promise.all([
-        deleteImage(supabase , id),
+  
         deletRate(supabase , id),
         breakCategories(supabase , id),
     ])
@@ -125,8 +125,34 @@ export async function getProducts(e:H3Event) : Promise<ProductRecord[]> {
     return data;
 }
 
+
+export async function getProduct(e:H3Event, id:string | undefined) : Promise<ProductRecord>  {
+    
+     if(!id) throw createError({ statusCode: 409 , message:'El id no existe'});
+
+
+    const supabase = await initService(e);
+
+    const { data,  error } = await supabase
+    .from('products')
+     .select(`*,
+        categories_products(categories(*)),
+        rates(*),
+        product_images (*)
+    `)
+    .eq('id', id)
+    .single();
+
+    if(error) createError({ statusCode:404 , message: error.message });
+
+
+    return data;
+
+    
+}
+
 /** Obtenemos el codigo del producto */
-export async function getProduct(s: SupabaseClient, code: string | undefined) : Promise<Product> {
+export async function findProduct(s: SupabaseClient, code: string | undefined) : Promise<Product> {
     const { data, error } = await s
         .from('products')
         .select('*')

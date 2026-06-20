@@ -5,8 +5,7 @@
 
 /** Composables para apis */
 export { useProductsApi } from './api/useProductsApi';
-export { useCategoriesApi } from './api/useCategoriesApi'
-export { useCategoryApi } from './api/useCategoryApi'
+
 
 /** ComposablesAutentificacion */
 export { useAuth } from './auth/useAuth'
@@ -26,3 +25,4 @@ export { useProductCreate } from './form/store/useProductCreate';
 
 /** Fomrularios Edit */
 export { useCategoryEdit } from './form/update/useCategoryEdit'
+export { useProductEdit } from './form/update/useProductEdit'
