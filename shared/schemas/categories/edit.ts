@@ -14,19 +14,3 @@ export const Schema : z.ZodType<Partial<EditCategory>> = z.object({
 export type UpdateCategorySchema = z.output<typeof Schema>;
 
 
-/** Funcion para Estado Inicial */
-export const initState = (category : CategoryRecord | undefined) : Reactive<UpdateCategorySchema> | undefined => {
-    
-    if(!category) return undefined;
-
-
-    const state = reactive({
-        name: category.name,
-        code: category.code,
-        description: category.description,
-        parent_id:category.parent_id
-    })
-
-
-    return state
-}
