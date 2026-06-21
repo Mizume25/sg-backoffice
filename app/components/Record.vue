@@ -1,14 +1,14 @@
 <script setup lang="ts">
-
+import { saveAs } from 'file-saver'
 /** Props Componentes */
 const props = defineProps<{
   record: ProductRecord,
-  styleTitle:string,
-  image:string,
-  subtitles:string,
-  contentTarifas:string,
-  description:string
-  categories:string
+  styleTitle: string,
+  image: string,
+  subtitles: string,
+  contentTarifas: string,
+  description: string
+  categories: string
 }>()
 
 const product = computed(() => props.record)
@@ -35,6 +35,9 @@ onUnmounted(() => {
   if (intervalId) clearInterval(intervalId)
 })
 
+
+
+
 </script>
 
 <template>
@@ -46,7 +49,7 @@ onUnmounted(() => {
     <UIcon :name="iconCategory(parent!)" />
   </h2>
   <div :class="props.image">
-    <NuxtImg :src="IMAGE_URL + product.code + '/' +images[i]?.path" class="w-full h-full object-cover" />
+    <NuxtImg :src="IMAGE_URL + product.code + '/' + images[i]?.path" class="w-full h-full object-cover" />
   </div>
 
   <!-- Categorias -->
@@ -60,10 +63,10 @@ onUnmounted(() => {
   </div>
 
   <!-- Tarifas -->
-  <h3 :class="props.subtitles" >Tarifas</h3>
-  <div :class="props.contentTarifas" >
+  <h3 :class="props.subtitles">Tarifas</h3>
+  <div :class="props.contentTarifas">
     <Rate v-for="rate in product.rates" :key="rate.id" :rate="rate" />
-  
+
   </div>
 
   <!-- Descripcion -->
@@ -75,8 +78,17 @@ onUnmounted(() => {
   </div>
 
   <div class="w-full flex flex-row gap-2 items-center justify-center">
-    <UButton label="Editar" color="warning"  class="cursor-pointer w-50 flex flex-row items-center justify-center" :to="`/home/products/${product.id}`"   />
-        <UButton label="Eliminar" color="error"  class="cursor-pointer w-50 flex flex-row items-center justify-center" :to="`/home/products/${product.id}`"   />
+    <UButton label="Editar" color="warning" class="cursor-pointer  flex flex-row items-center justify-center"
+      :to="`/home/products/${product.id}`" />
+    <UButton label="Eliminar" color="error" class="cursor-pointer flex flex-row items-center justify-center"
+      :to="`/home/products/${product.id}`" />
+    <UButton 
+    :to="`/api/pdf/${product.id}`"
+    label="PDF" 
+    leading-icon="lucide:download" 
+    color="error" 
+    class="cursor-pointer"  
+    download />
   </div>
 
 

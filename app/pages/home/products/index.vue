@@ -24,7 +24,12 @@ const { filter, order, orderBy, items, record, listOrders, reciveProduct, isOpen
       <h2>Ordenar Lista por:</h2>
       <USelect :items="order" default-value="defecto" class="w-35 mx-3 capitalize" v-model="orderBy" />
 
-
+      <UButton  
+      leading-icon="lucide:download"
+      label="Excel"
+      :to="`/api/products/xlsx`"    
+      class="w-30"  
+      />
 
 
     </div>
