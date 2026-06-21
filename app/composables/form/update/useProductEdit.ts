@@ -1,4 +1,4 @@
-import { initStateProduct, type UpdateProductSchema } from '~~/shared/schemas/products/edit';
+import {type UpdateProductSchema } from '~~/shared/schemas/products/edit';
 
 export const useProductEdit = (id : string) => {
   
@@ -6,20 +6,29 @@ export const useProductEdit = (id : string) => {
   const { get , refreshGet } = useProductsApi();
   const { data: productRecord } = get(id);
 
- 
 
-  const p : UpdateProductSchema = {
+  const product : EditProduct = {
     name: productRecord.value?.name,
     code: productRecord.value?.code,
     description: productRecord.value?.description,
-  }
+  }     
+
+  /*** Estado de Fomrulario */
+  const FormProductState = reactive<UpdateProductSchema>({
+    name: '',
+    code:'',
+    description:'',
+  });
 
 
-  const FormStateProduct = initStateProduct(p)
+  
+
   
 
   return {
-    productRecord
+    productRecord,
+    FormProductState,
+    product
     
   }
 }

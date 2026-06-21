@@ -11,9 +11,20 @@ definePageMeta({
 const route = useRoute()
 const id = route.params.id as string;
 
-const { productRecord  } = useProductEdit(id);
+const { productRecord, FormProductState, product } = useProductEdit(id);
 
 
+watch(productRecord, (newProduct) => {
+  FormProductState.name = newProduct?.name,
+    FormProductState.code = newProduct?.code,
+    FormProductState.description = newProduct?.description
+
+
+}, { immediate: true , });
+
+
+
+console.log(FormProductState.description)
 
 </script>
 
@@ -22,13 +33,23 @@ const { productRecord  } = useProductEdit(id);
   <FormLayout>
 
     <!--- Formulario -->
-    <FormCard :title="`Editar Producto`">
-      <UForm >
+    <FormCard :title="`Editar ${productRecord?.name}`">
+      <UForm :schema="ProductSchema" :state="FormProductState" class="w-full">
+        <!--- Name --->
+        <UFormField label="Name" name="name">
+          <UInput class="w-full mb-3" v-model="FormProductState.name" />
+        </UFormField>
+        <!--- Code --->
+        <UFormField label="Code" name="code">
+          <UInput class="w-full mb-3" v-model="FormProductState.code" />
+        </UFormField>
+        <UFormField label="Descripcion" name="description">
+          <UTextarea class="w-full mb-3" v-model="FormProductState.description"
+            :key="FormProductState.description ? 'loaded' : 'empty'" />
+        </UFormField>
 
-       
-
-
-
+        <!-- línea de prueba temporal, justo debajo -->
+        <p style="color: red">DEBUG: [{{ FormProductState.description }}]</p>
       </UForm>
     </FormCard>
 
