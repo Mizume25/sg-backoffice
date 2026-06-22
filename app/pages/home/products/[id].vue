@@ -12,7 +12,7 @@ definePageMeta({
 const route = useRoute()
 const id = route.params.id as string;
 
-const { productRecord, FormProductState, status } = useProductEdit(id);
+const { FormProductState, product } = useProductEdit(id);
 
 
 
@@ -27,27 +27,39 @@ const { productRecord, FormProductState, status } = useProductEdit(id);
   <FormLayout>
 
     <!--- Formulario -->
-    <FormCard :title="`Editar ${productRecord?.name}`">
+    <FormCard :title="`Editar ${product?.name}`" v-if="FormProductState && product">
       <UForm :schema="ProductSchema" :state="FormProductState" class="w-full">
         <!--- Name --->
         <UFormField label="Name" name="name">
-          <UInput class="w-full mb-3" />
+          <UInput class="w-full mb-3" v-model="FormProductState.name" />
         </UFormField>
         <!--- Code --->
         <UFormField label="Code" name="code">
-          <UInput class="w-full mb-3" />
+          <UInput class="w-full mb-3" v-model="FormProductState.code" />
         </UFormField>
 
         <!-- Descripcion -->
         <UFormField label="Descripcion" name="description">
-          <UTextarea class="w-full mb-3" />
+          <UTextarea class="w-full mb-3" v-model="FormProductState.description" />
         </UFormField>
 
+        <div class="p-4 flex flex-row items-center justify-between">
+          <UButton class="w-30 h-10 cursor-pointer" color="warning" label="Actualizar" leading-icon="lucide:pen" />
+          <UButton class="w-30 h-10 cursor-pointer" color="error" label="Borrar" leading-icon="lucide:trash" />
+        </div>
 
-        <UButton label="test" class="w-30" />
-        <UButton label="tost" class="w-30" />
+
+
       </UForm>
+
+
     </FormCard>
+
+    <div v-else class="flex justify-center p-4">
+      <UIcon name="i-heroicons-arrow-path" class="animate-spin h-20 w-20 text-primary" size="lg" />
+    </div>
+
+
 
 
     <!--- Side lateral izquierdo -->

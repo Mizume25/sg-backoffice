@@ -3,15 +3,16 @@ import { type UpdateProductSchema } from '~~/shared/schemas/products/edit';
 export const useProductEdit = (id: string) => {
 
   /** Obtenemos el pproducto */
-  const { getProduct, refreshGet } = useProductsApi();
-  const { data: productRecord, status } = getProduct(id);
+  const ProductRecord = useProductsStore();
+  const { allproducts } = storeToRefs(ProductRecord);
+  const product = computed(() => ProductRecord.findProduct(id))
 
 
   /*** Estado de Fomrulario */
   const FormProductState = reactive<UpdateProductSchema>({
-    name: productRecord.value?.name ?? undefined,
-    code: productRecord.value?.code ?? undefined,
-    description: productRecord.value?.description ?? undefined,
+    name: product.value?.name,
+    code: product.value?.code,
+    description: product.value?.description
   });
 
 
@@ -20,10 +21,5 @@ export const useProductEdit = (id: string) => {
 
 
 
-  return {
-    productRecord,
-    FormProductState,
-    status,
-
-  }
+  return {FormProductState , product}
 }

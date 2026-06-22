@@ -37,7 +37,7 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
 
 <template>
   <FormLayout>
-    <FormCard :title="`Editar categoria ${category?.name}`" :back="back" v-if="FormState" >
+    <FormCard :title="`Editar categoria ${category?.name}`" :back="back" v-if="FormState">
       <UForm :schema="Schema" :state="FormState" @submit="onUpdate" @error="onError" class="w-full">
 
         <!-- Nombre -->
@@ -93,6 +93,12 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
 
       </UForm>
     </FormCard>
+
+    <div v-else class="flex justify-center p-4">
+      <UIcon name="i-heroicons-arrow-path" class="animate-spin h-20 w-20 text-primary" size="lg" />
+    </div>
+
+
     <!--Modal de confirmacion de eliminado-->
     <UModal v-model:open="isOpen">
       <template #title>
