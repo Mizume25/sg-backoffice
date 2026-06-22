@@ -103,7 +103,11 @@ export async function editCategory(e: H3Event, id: string | undefined, edit: Edi
 }
 
 /** Borrado general de una categoria  */
-export async function deleteCategories(e: H3Event, category: CategoryRecord) {
+export async function deleteCategories(e: H3Event , id:string | undefined) {
+
+      const supabase = await initService(e);
+
+     const category = await getCategory(supabase, id);
    
     /** Si exite productosasociados dara erorr */
     if (await existsProducts(e, category.id)) throw createError({ statusCode: 409, message: 'Hay productos asociados' });

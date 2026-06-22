@@ -7,6 +7,29 @@ definePageMeta({
 /** Composables  & Apis  &  Service*/
 const { filter, order, orderBy, items, record, listOrders, reciveProduct, isOpen } = useProducts();
 
+/** Funcion que descarga un Excel */
+async function downloadExcel() {
+  try {
+    const response = await fetch('/api/products/xlsx', { method: 'GET' })
+    /** Convertimso en blob */
+    const blob = await response.blob()
+    const url = URL.createObjectURL(blob)
+
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'export.xlsx'
+    a.click()
+
+
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    console.log(error)
+  }
+
+}
+
+const openSide = () => isOpen.value = isOpen.value == false ? true : true; 
+
 
 </script>
 
@@ -24,12 +47,8 @@ const { filter, order, orderBy, items, record, listOrders, reciveProduct, isOpen
       <h2>Ordenar Lista por:</h2>
       <USelect :items="order" default-value="defecto" class="w-35 mx-3 capitalize" v-model="orderBy" />
 
-      <UButton  
-      leading-icon="lucide:download"
-      label="Excel"
-      :to="`/api/products/xlsx`"    
-      class="w-30"  
-      />
+      <!-- Exportacion de datos en Excel -->
+      <UButton leading-icon="lucide:download" label="Excel" @click="downloadExcel" class="w-30 cursor-pointer" />
 
 
     </div>
@@ -41,13 +60,15 @@ const { filter, order, orderBy, items, record, listOrders, reciveProduct, isOpen
       <div
         class="flex-1 
         overflow-y-auto scrollbar-gutter-stable scrollbar-thumb-white/50 scrollbar-track-transparent scrollbar-thumb-rounded-full">
-       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 content-start">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 content-start">
           <Card v-for="product in listOrders" :product="product" :filter="filter" @product="reciveProduct"
-            @click="isOpen = !isOpen" />
+            @click="openSide" />
         </div>
       </div>
 
-      <SideBarRight class="min-[1024px]" :is-open="isOpen" content="max-lg:w-[35%] max-md:w-[100%]" scroll="overflow-y-auto">
+      <!--- Side Bar Lateral -->
+      <SideBarRight class="min-[1024px]" :is-open="isOpen" content="max-lg:w-[35%] max-md:w-[100%]"
+        scroll="overflow-y-auto">
         <div class="h-full flex flex-col ">
           <div class="shrink-0">
             <UButton icon="lucide:x" @click="isOpen = !isOpen" color="error" class="cursor-pointer" />
@@ -60,8 +81,7 @@ const { filter, order, orderBy, items, record, listOrders, reciveProduct, isOpen
             </div>
 
             <Record v-else :record="record" style-title="text-white font-bold text-2xl mb-2"
-              subtitles="mt-3 italic mb-3" 
-              image="h-70 w-full rounded-2xl bg-white overflow-hidden shadow-2xl"
+              subtitles="mt-3 italic mb-3" image="h-70 w-full rounded-2xl bg-white overflow-hidden shadow-2xl"
               content-tarifas="flex flex-col gap-2 w-full"
               description="text-white text-sm font-light leading-relaxed break-all"
               categories="flex flex-wrap gap-3 w-full" />

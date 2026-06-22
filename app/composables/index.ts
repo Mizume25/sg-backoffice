@@ -5,6 +5,7 @@
 
 /** Composables para apis */
 export { useProductsApi } from './api/useProductsApi';
+export { useCategoriesApi } from './api/useCategoriesApi';
 
 
 /** ComposablesAutentificacion */

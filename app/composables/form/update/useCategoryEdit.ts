@@ -8,9 +8,9 @@ export const useCategoryEdit = (id: string) => {
   const toast = useToast();
 
   /** Categoria espcífica  */
-  const store = useCategoriesStore();
+  const CategoryStore = useCategoriesStore();
   const { findCategory, getParent } = useCategoriesStore();
-  const { parents } = storeToRefs(store);
+  const { parents } = storeToRefs(CategoryStore);
   const category: Ref<CategoryRecord | undefined> = ref(findCategory(id));
 
 
@@ -51,10 +51,7 @@ export const useCategoryEdit = (id: string) => {
     /** Peticiones al endpoint  */
     try {
 
-      await $fetch(`/api/category/${category.value?.id}`, {
-        method: 'PUT',
-        body: update
-      })
+      useCategoriesApi().updateCategoy(category.value?.id , update);
 
       toast.add({ title: 'Categoria Editada Correctamente', color: 'success' })
       loading.value = false
@@ -76,17 +73,15 @@ export const useCategoryEdit = (id: string) => {
     try {
 
 
-      await $fetch(`/api/category/${id}`, {
-        method: 'DELETE'
-      })
+      useCategoriesApi().deleteCategory(id);
 
       toast.add({ title: 'Categoria Eliminada Correctamente', color: 'success' })
 
       navigateTo('/home/categories/create');
 
     } catch (error) {
-
-      toast.add({ title: 'Hay productos asociados', color: 'error' })
+      console.log(error)
+      toast.add({ title: 'Ha habido un problema', color: 'error' })
     }
 
 

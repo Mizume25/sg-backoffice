@@ -10,7 +10,7 @@ export default eventHandler(async (event) => {
         createCategory(body, event);
 
         return true;
-        
+
     } catch (e) {
         throw createError({ statusCode: 500, message: "No se ha podido crear la categoria" });
     }

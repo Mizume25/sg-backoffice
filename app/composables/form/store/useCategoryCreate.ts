@@ -5,7 +5,9 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 export const useCategoryCreate = () => {
 
 
+
   const toast = useToast()
+
 
   /** Estado incial del formulario */
   const INIT_STATE = {
@@ -39,13 +41,12 @@ export const useCategoryCreate = () => {
 
     /** Peticiones al endpoint  */
     try {
-      await $fetch('/api/category', {
-        method: 'POST',
-        body: category
-      })
+
+      await useCategoriesApi().postCategory(category);
 
       toast.add({ title: 'Categoria Creada Correctamente', color: 'success' })
       clean()
+
 
     } catch (e) {
       loading.value = false;

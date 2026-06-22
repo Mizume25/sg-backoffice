@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { saveAs } from 'file-saver'
 /** Props Componentes */
 const props = defineProps<{
   record: ProductRecord,
@@ -19,10 +18,14 @@ const images = computed(() => product.value.product_images)
 /** Index imagenes */
 const i = ref(0)
 
+/**  Categoria padre */
 const parent = computed(() => getParent(product.value))
 
+/** INterval  */
 let intervalId: ReturnType<typeof setInterval> | null = null
 
+
+  /** Iniciar intervalo de imagenes */
 onMounted(() => {
   if (!images.value.length) return
 
@@ -31,11 +34,24 @@ onMounted(() => {
   }, 3000)
 })
 
+/** Termina intervalo */
 onUnmounted(() => {
   if (intervalId) clearInterval(intervalId)
 })
 
 
+/** Funcion para descargar PDf */
+async function downloadPDF() {
+  const blob =  await $fetch(`/api/pdf/${product.value.id}`, { method:'GET', responseType:'blob' })
+
+  const url = URL.createObjectURL(blob as Blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${product.value.name} - ${product.value.code}`
+  a.click()
+
+  URL.revokeObjectURL(url);
+}
 
 
 </script>
@@ -77,17 +93,24 @@ onUnmounted(() => {
     </p>
   </div>
 
+    <!-- Evenetos -->
   <div class="w-full flex flex-row gap-2 items-center justify-center">
+
+    <!-- Editar  -->
     <UButton label="Editar" color="warning" class="cursor-pointer  flex flex-row items-center justify-center"
       :to="`/home/products/${product.id}`" />
+
+    <!-- Borrar  -->
     <UButton label="Eliminar" color="error" class="cursor-pointer flex flex-row items-center justify-center"
       :to="`/home/products/${product.id}`" />
+
+  <!-- Descargar en PDF -->
     <UButton 
-    :to="`/api/pdf/${product.id}`"
     label="PDF" 
     leading-icon="lucide:download" 
     color="error" 
     class="cursor-pointer"  
+    @click="downloadPDF"
     download />
   </div>
 

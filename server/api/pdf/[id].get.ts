@@ -11,11 +11,11 @@ export default eventHandler(async (e) => {
     let page = pdfDoc.addPage([595, 842])
     let y = page.getSize().height - 50
 
-  
+
 
     /*** Lineas de producto  */
     const linea = (texto: string, opts: { size?: number; bold?: boolean } = {}) => {
-        
+
         const size = opts.size ?? 12
 
         if (y < 50) {                       // se acabó la página
@@ -73,5 +73,6 @@ export default eventHandler(async (e) => {
     const pdfBytes = await pdfDoc.save()
     setHeader(e, 'Content-Type', 'application/pdf')
     setHeader(e, 'Content-Disposition', `attachment; filename="producto-${id}.pdf"`)
-    return Buffer.from(pdfBytes)
+
+    return send(e, Buffer.from(pdfBytes))
 })
