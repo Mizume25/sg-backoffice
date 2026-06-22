@@ -5,7 +5,7 @@ import { CreateProduct, CreateRate, ProductRecord } from '~~/shared/types/defini
 import { createRates, deletRate } from './rates';
 import { initClient } from './service';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { deleteImage } from './images';
+
 
 /*** Crear Productos */
 export async function createEntities(e: H3Event, data: StoreProductSchema) {
@@ -41,9 +41,11 @@ export async function deleteEntitis(e:H3Event , id:string | undefined) {
 
     const supabase = await initClient(e);
 
+    const product = await getProduct(e , id);
+
     /** Eliminamos todaas sus relaciones */
     await Promise.all([
-  
+        deleteImage(supabase , id , product.code),
         deletRate(supabase , id),
         breakCategories(supabase , id),
     ])

@@ -1,18 +1,14 @@
 
 
 /** Endpoint para eliminar una categoria */
-export default eventHandler(async (event) => {
-
+export default eventHandler(async (e) => {
     try {
-
-
         /* Obtenemos Parametro */
-        const id = getRouterParam(event, 'id');
+        const id = getRouterParam(e, 'id');
 
-        const category = await getCategory(event, id);
-
+    
         /** Borramos categorias */
-        await deleteCategories(event , category)
+        await deleteCategories(e , id)
 
 
     } catch (error) {

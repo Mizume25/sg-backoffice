@@ -18,8 +18,8 @@ const { category, FormState, parent, parents, allow, loading, onUpdate, onDelete
 /** Vigilamos el allow */
 watch(allow, (newVal) => {
 
-  FormState.value!.parent_id = newVal ? undefined : parents.value?.[0]?.id
-  console.log(FormState.value?.parent_id);
+  FormState.parent_id = newVal ? undefined : parents.value?.[0]?.id
+  console.log(FormState.parent_id);
 }
 )
 

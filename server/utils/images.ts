@@ -1,6 +1,4 @@
 /** Funciones para crear y subir imagenes */
-import type { H3Event } from 'h3'
-import { initService } from './service';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 
@@ -34,7 +32,7 @@ export const deleteImage = async (s: SupabaseClient, id: string, code: string) =
     .eq('product_id', id)
 
   if (error) createError({ statusCode: 404, message: error.message });
-  if (!data) createError({ statusCode: 404, message: error.message });
+
 
   if (data!.length > 1) {
     const paths: string[] = data?.map(item => item.path) ?? []
@@ -55,7 +53,7 @@ export const deleteImage = async (s: SupabaseClient, id: string, code: string) =
 /** Subir Imagenes */
 export const imageService = {
 
-
+  /** Creamos Bucket */
   async create(s: SupabaseClient, code: string) {
     await s.storage.createBucket(code, { public: true });
 
@@ -71,9 +69,9 @@ export const imageService = {
 
 
   },
+
+  /** Rescribimso bucket */
   async rename(s: SupabaseClient, newPath: string, oldPath: string) {
-
-
 
     const { error } = await s.storage
       .from('public')
@@ -82,6 +80,7 @@ export const imageService = {
     if (error) throw createError({ statusCode: 409, message: error.message })
   },
 
+  /*** Borrammos varias imagenes */
   async removes(s: SupabaseClient, code: string, names: string[]) {
 
     const { error } = await s.storage.from(code).remove(names)
@@ -89,6 +88,7 @@ export const imageService = {
     if (error) throw createError({ statusCode: 409, message: error.message })
   },
 
+  /** Borramos solo una */
   async remove(s: SupabaseClient, code: string, name: string) {
 
     const { error } = await s.storage.from(code).remove([name])

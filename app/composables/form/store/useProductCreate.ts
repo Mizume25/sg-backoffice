@@ -9,8 +9,6 @@ export const useProductCreate = () => {
   const { parents } = storeToRefs(store);
 
 
-
-
   /** Helper para obtener un codigo  */
   const makeCode = (name: string | undefined) => {
     if (!name) return null;

@@ -1,12 +1,15 @@
 
 /** Plugin para arrancar con store de categorias */
-export default defineNuxtPlugin(async () => {
+export default defineNuxtPlugin( () => {
     
     const store = useCategoriesStore()
 
     const categories = useState<CategoryRecord []>('categories', () => [])
 
-    if(!categories.value.length) categories.value = await $fetch<CategoryRecord[]>('/api/categories');
+
+    const { data:allcategories } = useCategoriesApi().listCategories();
+
+    if(!categories.value.length) categories.value = allcategories.value
 
     store.setCategories(categories.value);
 

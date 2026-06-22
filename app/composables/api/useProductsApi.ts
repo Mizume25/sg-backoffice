@@ -2,7 +2,7 @@
 export const useProductsApi = () => {
   
   /** Get lista de productos */
-  const list = () => useAsyncData<ProductRecord []>(
+  const listProducts = () => useAsyncData<ProductRecord []>(
     'products',
     () => $fetch('/api/products'),
     { default: () => []}
@@ -12,17 +12,19 @@ export const useProductsApi = () => {
   const refreshList = () => refreshNuxtData('products')
 
   /** Get de producto individual */
-  const get = (id: string) => useAsyncData<ProductRecord | null>(
-    'product',
+  const getProduct = (id: string) => useAsyncData<ProductRecord | null>(
+    `product-${id}`,
     () => $fetch<ProductRecord>(`/api/products/${id}`, {method: 'GET'}),
     { default: () => null}
   )
 
-  const refreshGet = () => refreshNuxtData('product')
+  const refreshGet = (id:string) => refreshNuxtData(`product-${id}`)
+
+ 
   
   return {
-    list,
-    get,
+    listProducts,
+    getProduct,
     refreshList,
     refreshGet
   }

@@ -7,9 +7,9 @@
 export const useProducts = () => {
 
   /** Obtenemos lista de productos */
-  const { list } = useProductsApi();
-  const { data:products } = list();
+  const ProductStore = useProductsStore();
 
+  const { allproducts } = storeToRefs(ProductStore);
 
 
   /** Variable reactivas | Filtro & Orden Actual */
@@ -19,13 +19,13 @@ export const useProducts = () => {
 
   /** Listas reactivas | Tipos de Filtro & Tipos de Orden */
   const order = computed(() => ['Defecto', 'Nombre A-Z'])
-  const parents = computed(() => getAllParents(products.value));
+  const parents = computed(() => getAllParents(allproducts.value));
   const items = ['Todos', ...parents.value] // "Todos" como filtro de categoria
 
 
   /** Control de Listas  */
   const listOrders = computed(() => {
-    const list = [...(products.value ?? [])]
+    const list = [...(allproducts.value ?? [])]
 
     switch (orderBy.value) {
       case order.value[1]:
@@ -47,8 +47,8 @@ export const useProducts = () => {
     record.value = listOrders.value.find((p) => p.id === product);
 
     console.log(product)
-    
-  
+
+
 
   }
 

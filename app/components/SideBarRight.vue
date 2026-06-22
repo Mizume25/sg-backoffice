@@ -7,6 +7,8 @@ const props = defineProps<{
 </script>
 
 <template>
+  
+  <!-- Sidebar Dinamico  -->
   <aside :class="[
     'fixed right-0 top-18 bg-[#0f172a] p-5 z-50',
     'h-[calc(100vh-4.5rem)] overflow-y-auto',
