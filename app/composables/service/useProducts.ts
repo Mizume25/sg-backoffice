@@ -12,6 +12,10 @@ export const useProducts = () => {
   const { allproducts } = storeToRefs(ProductStore);
 
 
+  
+
+
+
   /** Variable reactivas | Filtro & Orden Actual */
   const filter: Ref<string | undefined> = ref('Todos');
   const orderBy: Ref<string | undefined> = ref('Defecto')
@@ -19,7 +23,7 @@ export const useProducts = () => {
 
   /** Listas reactivas | Tipos de Filtro & Tipos de Orden */
   const order = computed(() => ['Defecto', 'Nombre A-Z'])
-  const parents = computed(() => getAllParents(allproducts.value));
+  const parents = computed(() => ProductStore.allCategoryParents(allproducts.value));
   const items = ['Todos', ...parents.value] // "Todos" como filtro de categoria
 
 
@@ -47,8 +51,8 @@ export const useProducts = () => {
     record.value = listOrders.value.find((p) => p.id === product);
 
     console.log(product)
-
-
+    
+  
 
   }
 
