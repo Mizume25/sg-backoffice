@@ -28,6 +28,7 @@ export { useProductCreate } from './form/store/useProductCreate';
 export { useCategoryEdit } from './form/update/useCategoryEdit'
 export { useProductEdit } from './form/update/useProductEdit'
 export { useRateEdit } from './form/update/useRateEdit';
+export { useImageEdit } from './form/update/useImageEdit';
 
 /** Items reutilizables */
 export { useConfirm } from './service/useConfirm';

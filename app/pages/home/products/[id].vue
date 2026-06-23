@@ -12,17 +12,22 @@ definePageMeta({
 const route = useRoute()
 const id = route.params.id as string;
 
-const { FormProductState, product, isOpen, edit, showSection, closeSection } = useProductEdit(id);
+const { FormProductState, product, isOpen, edit, showSection } = useProductEdit(id);
 
-const { rates, deleteRate, rateStatus, RateSchema, RateState, changeRate , actionRate} = useRateEdit(id);
+const { rates, deleteRate, rateStatus, RateSchema, RateState, changeRate, actionRate } = useRateEdit(id);
 
 
-watch(rateStatus , (NewStatus) => {
-  console.log('Esquema actual:', RateSchema.value.shape)
-  console.log('Estado Actual del estquema', RateState.value);
-  console.log('Estado actual del bolean' , NewStatus);
+const { images, URL } = useImageEdit(id);
 
-})
+
+  const closeSection = () => {
+    isOpen.value = false;
+    edit.value = '';
+    rateStatus.value = false;
+    
+    
+  }
+
 
 </script>
 
@@ -81,7 +86,7 @@ watch(rateStatus , (NewStatus) => {
 
 
 
-    <SideBarRight :is-open="isOpen" content="w-[25%] max-md:w-[100%] h-full overflow-y-auto">
+    <SideBarRight :is-open="isOpen" content="w-[40%] max-md:w-[100%] h-full overflow-y-auto">
       <div class="mb-3">
         <UButton icon="lucide:x" @click="closeSection" color="error" class="cursor-pointer" />
       </div>
@@ -89,40 +94,35 @@ watch(rateStatus , (NewStatus) => {
 
       <!-- Rates -->
       <div v-if="edit == 'rates'">
+        <div class="p-3 flex flex-row items-center justify-start gap-6">
+          <USwitch icon="lucide:pencil" color="warning" class="cursor-pointer" @change="rateStatus = !rateStatus"
+            size="xl" />
+          <h2 class="shrink-0 mb-1 text-start text-2xl font-bold text-blue-200">{{ rateStatus ? 'Edit' : 'Create' }}
+            Rates</h2>
+        </div>
 
-        <h2 class="shrink-0 mb-1 text-start text-2xl font-bold text-blue-200">{{ rateStatus ? 'Edit' : 'Create' }} Rates
-        </h2>
-
-
-
-        <UForm :schema="RateSchema" :state="RateState" class="flex flex-row items-center gap-3 mb-4" v-if="RateState" @submit="actionRate">
+        <UForm :schema="RateSchema" :state="RateState" class="flex flex-row items-center gap-3 mb-4" v-if="RateState"
+          @submit="actionRate">
 
           <UFormField>
             <UInput class=" w-24" trailing-icon="lucide:euro" type="number" placeholder="0.00"
               v-model="RateState.price" />
           </UFormField>
-          <div class="flex flex-col gap-2">
 
-            <UFormField>
-              <UInput class="w-36" type="date" v-model="RateState.start_date" />
-            </UFormField>
 
-            <UFormField>
-              <UInput class="w-36" type="date" v-model="RateState.end_date" />
-            </UFormField>
-          </div>
+          <UFormField>
+            <UInput class="w-36" type="date" v-model="RateState.start_date" />
+          </UFormField>
 
-          <div class="flex flex-col gap-2">
-            <UButton 
-            
-            :icon="rateStatus ? 'lucide:download' : 'lucide:upload'" 
-            class="cursor-pointer" 
-            :color="rateStatus ? 'warning' : 'primary'"
-            type="submit"
-            
-            />
-            <USwitch icon="lucide:pencil" color="warning" class="cursor-pointer" @change="rateStatus = !rateStatus" />
-          </div>
+          <UFormField>
+            <UInput class="w-36" type="date" v-model="RateState.end_date" />
+          </UFormField>
+
+
+
+          <UButton :icon="rateStatus ? 'lucide:download' : 'lucide:upload'" class="cursor-pointer"
+            :color="rateStatus ? 'warning' : 'primary'" type="submit" />
+
         </UForm>
 
 
@@ -149,6 +149,34 @@ watch(rateStatus , (NewStatus) => {
       <!-- Images -->
       <div v-else-if="edit == 'images'">
         <h2 class="shrink-0 mb-4 text-start text-2xl font-bold text-blue-200">Edit Images </h2>
+
+        <!-- Lista de Imagenes-->
+        <ul class="flex flex-col gap-2">
+
+          <!--- Itemos Iterados -->
+          <li class="flex items-center gap-3 rounded-lg border border-gray-200 p-2 dark:border-gray-800" v-for="img in images">
+           
+            <a href="#" target="_blank" class="shrink-0">
+             <NuxtImg :src="URL + img.path"   class="h-14 w-14 rounded-md object-cover"/>
+            </a>
+
+            <!-- Info en el centro -->
+            <div class="min-w-0 flex-1">
+              <a href="#" target="_blank" class="truncate text-sm hover:underline">
+                {{ img.path }}
+              </a>
+            </div>
+
+            <!-- Botones a la derecha -->
+            <div class="flex shrink-0 items-center gap-1">
+              <UButton icon="lucide:replace" color="warning"  size="sm" class="cursor-pointer" />
+              <UButton icon="i-lucide-trash-2" color="error"  size="sm" class="cursor-pointer" />
+            </div>
+          </li>
+
+          <UButton label="Añadir Imagen" class="flex flex-row items-center justify-center cursor-pointer" variant="ghost" size="xl"  />
+
+        </ul>
       </div>
 
       <!-- Categorias -->

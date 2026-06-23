@@ -32,10 +32,6 @@ export const useProductEdit = (id: string) => {
     isOpen.value = true
   }
 
-  const closeSection = () => {
-    isOpen.value = false;
-    edit.value = '';
-  }
 
   
 
@@ -48,5 +44,5 @@ export const useProductEdit = (id: string) => {
 
 
 
-  return { FormProductState, product, isOpen, edit, showSection, closeSection }
+  return { FormProductState, product, isOpen, edit, showSection }
 }
