@@ -1,10 +1,14 @@
 import { type UpdateProductSchema } from '~~/shared/schemas/products/edit';
 
+/*** Composable logica edit  */
 export const useProductEdit = (id: string) => {
 
-  /** Obtenemos el pproducto */
+  /** Items  */
+  const { confirm } = useConfirm();
+  const toast = useToast();
+  
+  /** Objetos Necesarios */
   const ProductRecord = useProductsStore();
-  const { allproducts } = storeToRefs(ProductRecord);
   const product = computed(() => ProductRecord.findProduct(id))
 
 
@@ -15,11 +19,34 @@ export const useProductEdit = (id: string) => {
     description: product.value?.description
   });
 
+  type Section = '' | 'rates' | 'images' | 'categories';
+
+
+
+  const isOpen = ref(false);
+
+  const edit = ref<Section>('');
+
+  const showSection = (section: Section) => {
+    edit.value = section;
+    isOpen.value = true
+  }
+
+  const closeSection = () => {
+    isOpen.value = false;
+    edit.value = '';
+  }
+
+  
+
+
+
+ 
 
 
 
 
 
 
-  return {FormProductState , product}
+  return { FormProductState, product, isOpen, edit, showSection, closeSection }
 }
