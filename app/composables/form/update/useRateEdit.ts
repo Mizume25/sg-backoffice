@@ -1,7 +1,6 @@
 import { ratesSchemaCreate, type StoreRateSchema } from "~~/shared/schemas/products/create";
 import { ratesSchemaEdit, type EditRateSchema } from "~~/shared/schemas/products/edit";
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { z } from 'zod'
 export const useRateEdit = (id: string) => {
   const ProductRecord = useProductsStore();
 
@@ -121,6 +120,8 @@ export const useRateEdit = (id: string) => {
     }
   }
 
+
+ 
 
   return {
     rates, deleteRate, rateStatus, RateSchema, RateState, EditRate, CreateRate, changeRate, actionRate
