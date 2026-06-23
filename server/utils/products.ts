@@ -2,7 +2,7 @@
 import type { H3Event } from 'h3'
 import { type StoreProductSchema } from '~~/shared/schemas/products/create'
 import { CreateProduct, CreateRate, ProductRecord } from '~~/shared/types/definitons';
-import { createRates, deletRate } from './rates';
+import { createRates, deletRates } from './rates';
 import { initClient } from './service';
 import { SupabaseClient } from '@supabase/supabase-js';
 
@@ -46,7 +46,7 @@ export async function deleteEntitis(e:H3Event , id:string | undefined) {
     /** Eliminamos todaas sus relaciones */
     await Promise.all([
         deleteImage(supabase , id , product.code),
-        deletRate(supabase , id),
+        deletRates(supabase , id),
         breakCategories(supabase , id),
     ])
 

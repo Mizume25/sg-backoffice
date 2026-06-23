@@ -27,3 +27,7 @@ export { useProductCreate } from './form/store/useProductCreate';
 /** Fomrularios Edit */
 export { useCategoryEdit } from './form/update/useCategoryEdit'
 export { useProductEdit } from './form/update/useProductEdit'
+export { useRateEdit } from './form/update/useRateEdit';
+
+/** Items reutilizables */
+export { useConfirm } from './service/useConfirm';

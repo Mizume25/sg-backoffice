@@ -9,13 +9,14 @@ export const imagesSchema = z.object({
 export type StoreImageSchema = z.output<typeof imagesSchema>;
 
 /** Esquema para tarifas */
-const ratesSchema = z.object({
+export const ratesSchemaCreate = z.object({
     price:z.number().min(1, 'Debe tener un valor incial'),
     start_date:z.string().min(1,'Debe tener Fecha final'),
     end_date:z.string().min(1,'Debe tener Fecha de final'),
+    product_id:z.string().optional()
 })
 
-export type StoreRateSchema = z.output<typeof ratesSchema>;
+export type StoreRateSchema = z.output<typeof ratesSchemaCreate>;
 
 /** Esquema de fomrulario de un Producto */
 export const Schema = z.object({
@@ -24,7 +25,7 @@ export const Schema = z.object({
     description: z.string().min(10, 'Necesitas una descripcion mas larga').max(200, 'Maximo de caracteres'),
     category:z.uuid(),
     subcategory:z.uuid(),
-    rates:z.array(ratesSchema),
+    rates:z.array(ratesSchemaCreate),
     
 })
 

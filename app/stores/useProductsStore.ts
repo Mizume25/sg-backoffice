@@ -9,9 +9,12 @@ export const useProductsStore = defineStore('products', () => {
         allproducts.value = products;
     }
 
+    /** Encontrar producto */
     const findProduct = (id : string) : ProductRecord | undefined => {
         return allproducts.value.find((p) => p.id == id);
     }
+
+    
 
 
     /**
