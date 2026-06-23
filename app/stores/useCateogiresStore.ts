@@ -11,7 +11,7 @@ export const useCategoriesStore = defineStore('categories', () => {
 
     /** Refrescar datos */
     const refreshCategories = async () => {
-        const data = await $fetch<CategoryRecord[]>('/api/categories')
+        const data = await $fetch<CategoryRecord[]>('/api/categories', {method:'GET'})
         setCategories(data)
     }
 

@@ -4,7 +4,7 @@ export const useProductsApi = () => {
   /** Get lista de productos */
   const listProducts = () => useAsyncData<ProductRecord []>(
     'products',
-    () => $fetch('/api/products'),
+    () => $fetch('/api/products', { method: 'GET'}),
     { default: () => []}
   )
 

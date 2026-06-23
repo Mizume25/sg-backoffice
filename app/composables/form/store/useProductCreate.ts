@@ -69,7 +69,7 @@ export const useProductCreate = () => {
 
 
     try {
-      await $fetch('/api/product', { method: 'POST', body: e.data });
+      await $fetch('/api/products', { method: 'POST', body: e.data });
 
 
       toast.add({ title: 'Se ha añadido el producto correctamente', color: 'success' });
@@ -85,7 +85,7 @@ export const useProductCreate = () => {
         try {
 
 
-          await $fetch('/api/picture', {
+          await $fetch('/api/images', {
             method: 'POST',
             body: fd
           })
