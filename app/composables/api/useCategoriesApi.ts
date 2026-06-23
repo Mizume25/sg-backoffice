@@ -7,7 +7,7 @@ export const useCategoriesApi = () => {
   /** Get lista de categorias */
   const listCategories = () => useAsyncData<CategoryRecord[]>(
     'categories',
-    () => $fetch('/api/categories'),
+    () => $fetch('/api/categories', {method:'GET'}),
     { default: () => [] }
   )
 
@@ -17,7 +17,7 @@ export const useCategoriesApi = () => {
 
   /** Crear una categoria */
   const postCategory = async (data: CreateCategory) => {
-    await $fetch('/api/category', {
+    await $fetch('/api/categories', {
       method: 'POST',
       body: data
     })
@@ -25,7 +25,7 @@ export const useCategoriesApi = () => {
 
   /** Editar una categoria */
   const updateCategoy = async (id: string | undefined, update: UpdateCategorySchema) => {
-    await $fetch(`/api/category/${id}`, {
+    await $fetch(`/api/categories/${id}`, {
       method: 'PUT',
       body: update
     })
@@ -34,9 +34,7 @@ export const useCategoriesApi = () => {
 
   /** Editar una categoria */
   const deleteCategory = async (id: string | undefined) => {
-    await $fetch(`/api/category/${id}`, {
-      method: 'DELETE'
-    })
+    await $fetch(`/api/categories/${id}`, { method: 'DELETE'})
   }
 
   /** Eliminar */

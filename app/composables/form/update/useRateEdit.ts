@@ -110,7 +110,7 @@ export const useRateEdit = (id: string) => {
 
       try {
 
-        await $fetch('/api/rates/create', { method: 'POST', body: e.data })
+        await $fetch('/api/rates/', { method: 'POST', body: e.data })
 
         toast.add({ title: 'Tarifa Creada Correctamente', color: 'primary' });
 

@@ -1,4 +1,4 @@
-import { findProduct } from "../utils/products";
+import { findProduct } from "../../utils/products";
 
 
 
