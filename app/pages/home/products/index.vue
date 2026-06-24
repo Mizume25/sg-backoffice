@@ -67,10 +67,10 @@ const openSide = () => isOpen.value = isOpen.value == false ? true : true;
       </div>
 
       <!--- Side Bar Lateral -->
-      <SideBarRight class="min-[1024px]" :is-open="isOpen" content="max-lg:w-[35%] max-md:w-[100%]"
+      <SideBarRight class="min-[1024px]" :is-open="isOpen" content="min-lg:w-[35%] max-md:w-[100%]"
         scroll="overflow-y-auto">
         <div class="h-full flex flex-col ">
-          <div class="shrink-0">
+          <div class="shrink-0 mb-4">
             <UButton icon="lucide:x" @click="isOpen = !isOpen" color="error" class="cursor-pointer" />
           </div>
 
@@ -81,7 +81,7 @@ const openSide = () => isOpen.value = isOpen.value == false ? true : true;
             </div>
 
             <Record v-else :record="record" style-title="text-white font-bold text-2xl mb-2"
-              subtitles="mt-3 italic mb-3" image="h-70 w-full rounded-2xl bg-white overflow-hidden shadow-2xl"
+              subtitles="mt-3 italic mb-3" image="relative h-[280px] w-full shrink-0 rounded-2xl bg-white overflow-hidden shadow-2xl"
               content-tarifas="flex flex-col gap-2 w-full"
               description="text-white text-sm font-light leading-relaxed break-all"
               categories="flex flex-wrap gap-3 w-full" />

@@ -4,7 +4,9 @@ export default eventHandler(async (e) => {
 
     /** Obtenemos id */
     const id = getRouterParam(e, 'id');
-    const producto = await getProduct(e, id)
+
+    const supabase = await initClient(e);
+    const producto = await getProduct(supabase, id)
 
     const pdfDoc = await PDFDocument.create()
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica)

@@ -1,14 +1,9 @@
 /** Endpoint par aeliminar una tarifa */
-export default eventHandler(async(e) => {
-    try {
+export default eventHandler(async (e) => {
+    const id = getRouterParam(e, 'rateID');
+    if (!id) throw createError({ statusCode: 404, message: 'No se ha encontrado el ID' });
 
-        const id = getRouterParam(e , 'rateID');
-        
-        const supabase = await initService(e);
+    const supabase = await initService(e);
 
-        await deleteRate(supabase, id);
-
-    } catch (e:any) {
-         throw createError({ statusCode: 409, message: e.message })
-    }
+    await deleteRate(supabase, id);
 })

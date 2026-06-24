@@ -3,9 +3,10 @@
  * Creamos imagenes
  */
 export default eventHandler(async (e) => {
-
+  const id = getRouterParam(e, 'id');
   const form = await readMultipartFormData(e);
 
+  if (!id) throw createError({ statusCode: 404, message: 'La id no existe' })
   if (!form) throw createError({ statusCode: 400, message: 'No se recibió ningún dato' });
 
 
@@ -15,12 +16,9 @@ export default eventHandler(async (e) => {
   if (!file || !path) throw createError({ statusCode: 400, message: 'Falta el archivo o la ruta' })
 
   const supabase = await initService(e);
-
-  const id = getRouterParam(e, 'id');
-
   const product = await getProduct(supabase, id);
 
-  if (!id) throw createError({ statusCode: 404, message: 'La id no existe' })
+
 
   const img: CreateImage = {
     path: path,

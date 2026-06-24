@@ -157,10 +157,13 @@ const onError = (err: FormErrorEvent) => console.log(err)
 
         <!--- Tarifas   -->
         <SideBarRight :is-open="isOpen" content="w-[25%] max-md:w-[100%] p-4">
-        <UButton icon="lucide:x" color="error" class="w-10 lg:hidden flex flex-row justify-center items-center cursor-pointer" @click="isOpen = !isOpen"  />
+            <UButton icon="lucide:x" color="error"
+                class="w-10 lg:hidden flex flex-row justify-center items-center cursor-pointer"
+                @click="isOpen = !isOpen" />
             <div class="p-4 flex flex-col gap-3 ">
                 <h2 class="text-blue-300 font-bold text-xl sm:text-2xl mb-2">Tarifas</h2>
                 <ItemRate v-for="(r, i) in rates" :rate="r" :id="i" :key="i" @id="removeRate(i)" />
+               
             </div>
 
         </SideBarRight>

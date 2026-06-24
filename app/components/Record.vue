@@ -25,7 +25,7 @@ const parent = computed(() => getParent(product.value))
 let intervalId: ReturnType<typeof setInterval> | null = null
 
 
-  /** Iniciar intervalo de imagenes */
+/** Iniciar intervalo de imagenes */
 onMounted(() => {
   if (!images.value.length) return
 
@@ -42,7 +42,7 @@ onUnmounted(() => {
 
 /** Funcion para descargar PDf */
 async function downloadPDF() {
-  const blob =  await $fetch(`/api/pdf/${product.value.id}`, { method:'GET', responseType:'blob' })
+  const blob = await $fetch(`/api/pdf/${product.value.id}`, { method: 'GET', responseType: 'blob' })
 
   const url = URL.createObjectURL(blob as Blob)
   const a = document.createElement('a')
@@ -64,8 +64,9 @@ async function downloadPDF() {
     {{ product.name }}
     <UIcon :name="iconCategory(parent!)" />
   </h2>
-  <div :class="props.image">
-    <NuxtImg :src="IMAGE_URL + product.code + '/' + images[i]?.path" class="w-full h-full object-cover" />
+  <div :class="props.image" class="relative">
+    <NuxtImg :src="IMAGE_URL + product.code + '/' + images[i]?.path"
+      class="absolute inset-0 w-full h-full object-cover" />
   </div>
 
   <!-- Categorias -->
@@ -80,10 +81,15 @@ async function downloadPDF() {
 
   <!-- Tarifas -->
   <h3 :class="props.subtitles">Tarifas</h3>
-  <div :class="props.contentTarifas">
-    <Rate v-for="rate in product.rates" :key="rate.id" :rate="rate" />
+  <!--- Tabla de Valores-->
+  <TableRate>
+    <tr v-for="rate in product.rates" class="border-t border-blue-900/40 text-blue-100 transition-colors text-center">
+      <td class="px-4 py-3">{{ rate.price }}</td>
+      <td class="px-4 py-3">{{ formatDate(rate.start_date) }}</td>
+      <td class="px-4 py-3">{{ formatDate(rate.end_date) }}</td>
+    </tr>
 
-  </div>
+  </TableRate>
 
   <!-- Descripcion -->
   <h3 :class="props.subtitles">Descripcion</h3>
@@ -93,25 +99,20 @@ async function downloadPDF() {
     </p>
   </div>
 
-    <!-- Evenetos -->
+  <!-- Eventos -->
   <div class="w-full flex flex-row gap-2 items-center justify-center">
 
-    <!-- Editar  -->
-    <UButton label="Editar" color="warning" class="cursor-pointer  flex flex-row items-center justify-center"
+    <!-- Editar -->
+    <UButton label="Editar" color="warning" class="cursor-pointer flex-1 justify-center py-3 text-base font-semibold"
       :to="`/home/products/${product.id}`" />
 
-    <!-- Borrar  -->
-    <UButton label="Eliminar" color="error" class="cursor-pointer flex flex-row items-center justify-center"
+    <!-- Borrar -->
+    <UButton label="Eliminar" color="error" class="cursor-pointer flex-1 justify-center py-3 text-base font-semibold"
       :to="`/home/products/${product.id}`" />
 
-  <!-- Descargar en PDF -->
-    <UButton 
-    label="PDF" 
-    leading-icon="lucide:download" 
-    color="error" 
-    class="cursor-pointer"  
-    @click="downloadPDF"
-    download />
+    <!-- Descargar en PDF -->
+    <UButton label="PDF" leading-icon="lucide:download" color="error"
+      class="cursor-pointer flex-1 justify-center py-3 text-base font-semibold" @click="downloadPDF" download />
   </div>
 
 

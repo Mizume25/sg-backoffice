@@ -28,7 +28,7 @@ export const useImageEdit = (product_id: string) => {
       try {
 
 
-         await postImage(fd , product_id);
+         await postImage(fd, product_id);
 
 
          toast.add({ title: 'Imagen Subida correctamente', color: 'info', icon: 'lucide:info' })
@@ -57,7 +57,7 @@ export const useImageEdit = (product_id: string) => {
       }
    }
 
-   
+
 
 
 

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 
+const props = defineProps<{
+  deletable?: boolean 
+}>();
 
 </script>
 
@@ -10,7 +13,7 @@
         <th class="px-4 py-3 font-semibold">Precio</th>
         <th class="px-4 py-3 font-semibold">Inicio</th>
         <th class="px-4 py-3 font-semibold">Final</th>
-        <th class="px-4 py-3 font-semibold">
+        <th v-if="deletable" class="px-4 py-3 font-semibold">
           <UIcon name="lucide:pencil" />
         </th>
       </tr>

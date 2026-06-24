@@ -55,8 +55,6 @@ const closeSection = () => {
         <div class="p-4 flex flex-row items-center justify-start mb-1 gap-3">
           <UButton class="w-30 h-10 cursor-pointer" color="warning" label="Actualizar" leading-icon="lucide:pen"
             :disabled="isOpen" />
-          <UButton class="w-30 h-10 cursor-pointer" color="error" label="Borrar" leading-icon="lucide:trash"
-            :disabled="isOpen" />
         </div>
 
 
@@ -126,7 +124,7 @@ const closeSection = () => {
 
 
         <!--- Tabla de Valores-->
-        <TableRate>
+        <TableRate editable>
           <tr v-for="rate in rates" class="border-t border-blue-900/40 text-blue-100 transition-colors text-center "
             :class="rateStatus ? 'cursor-pointer hover:bg-blue-800  duration-100 ease-in-out hover:scale-105' : ''"
             @click="changeRate(rate.id, rateStatus)">
