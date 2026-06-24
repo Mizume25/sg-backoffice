@@ -1,7 +1,9 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
-
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+/** Obtenemos PDF Maquetado */
 export default eventHandler(async (e) => {
-    const id = getRouterParam(e, 'id')
+
+    /** Obtenemos id */
+    const id = getRouterParam(e, 'id');
     const producto = await getProduct(e, id)
 
     const pdfDoc = await PDFDocument.create()

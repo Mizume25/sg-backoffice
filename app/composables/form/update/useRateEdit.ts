@@ -1,13 +1,13 @@
 import { ratesSchemaCreate, type StoreRateSchema } from "~~/shared/schemas/products/create";
 import { ratesSchemaEdit, type EditRateSchema } from "~~/shared/schemas/products/edit";
 import type { FormSubmitEvent } from '@nuxt/ui'
-export const useRateEdit = (id: string) => {
+export const useRateEdit = (product_id: string) => {
   const ProductRecord = useProductsStore();
 
   /** Items  */
   const { confirm } = useConfirm();
   const toast = useToast();
-  const rates = computed(() => ProductRecord.findProduct(id)).value?.rates;
+  const rates = computed(() => ProductRecord.findProduct(product_id)).value?.rates;
   const rateStatus = ref(false);
   const { checkValues } = useRateLogic();
 
@@ -21,7 +21,7 @@ export const useRateEdit = (id: string) => {
     price: rates![0]!.price,
     start_date: rates![0]!.start_date!.split('T')[0],
     end_date: rates![0]!.end_date!.split('T')[0],
-    product_id: id
+    product_id: product_id
   });
 
  
@@ -30,7 +30,7 @@ export const useRateEdit = (id: string) => {
     price: 0,
     start_date: '',
     end_date: '',
-    product_id: id
+    product_id: product_id
   });
 
   /** Actualizacion de estados */
@@ -55,7 +55,7 @@ export const useRateEdit = (id: string) => {
 
     try {
 
-      await $fetch(`/api/rates/${id}`, { method: 'DELETE' })
+      await $fetch(`/api/products/${product_id}/rates/${id}`, { method: 'DELETE' })
 
       toast.add({ title: 'Tarifa Borrada correctamente', color: 'primary' })
 
@@ -96,7 +96,7 @@ export const useRateEdit = (id: string) => {
 
       try {
 
-        await $fetch(`/api/rates/${e.data.id}`, { method: 'PUT', body: e.data })
+        await $fetch(`/api/products/${product_id}/rates/${e.data.id}`, { method: 'PUT', body: e.data })
 
         toast.add({ title: 'Tarifa Actualizada Correctamente', color: 'primary' });
 
@@ -110,7 +110,7 @@ export const useRateEdit = (id: string) => {
 
       try {
 
-        await $fetch('/api/rates/', { method: 'POST', body: e.data })
+        await $fetch(`/api/products/${product_id}/rates/`, { method: 'POST', body: e.data })
 
         toast.add({ title: 'Tarifa Creada Correctamente', color: 'primary' });
 

@@ -1,22 +1,19 @@
+/** /api/categories/:id GET 
+ * Obtiene una categoria
+*/
+export default eventHandler(async (e) => {
+    /** Obtenemos ID */
+    const id = getRouterParam(e, 'id');
 
-/**  Endpoint individual  */
-export default eventHandler (async(event) => {
-    try {
-        
-   
-    const id = getRouterParam(event , 'id');
+    /** Iniciamos cliente */
+    const supabase = await initService(e);
 
-    
-    const supabase = await initService(event);
+    /** Obtenemos category */
+    const category = await getCategory(supabase, id);
 
-
-    const category = getCategory(supabase , id);
-
+    /** Retornamos valor */
     return category;
 
-     } catch (error) {
-             throw createError({ statusCode: 500, message: "No se ha podido crear la categoria" });
-    }
+    return { success: true, get: id }
 
-    
 })

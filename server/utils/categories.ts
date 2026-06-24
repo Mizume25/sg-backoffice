@@ -8,34 +8,24 @@ import { SupabaseClient } from "@supabase/supabase-js";
  * @param H3Event
  * 
  * */
-export async function createCategory(cat: CreateCategory, e: H3Event) {
-
-    const supabase = await initClient(e);
-
-    /** Comprobamos que el valor no existe */
-    if (await existField(e, cat.name)) throw createError({ statusCode: 409, message: 'El valor ya existe' });
-
+export async function createCategory(cat: CreateCategory, s: SupabaseClient) {
     /** Realizamos el insert */
-    const { error } = await supabase
+    const { error } = await s
         .from('categories')
         .insert(cat);
 
-    if (error) throw createError({ statusCode: 409 , message: error.message});
-
-
-
+    if (error) throw createError({ statusCode: 409, message: error.message });
 }
 
 /** Query para recoger lista categories
  * @param H3Event
  * @return categories
  */
-export async function getCategories(e: H3Event): Promise<CategoryRecord[]> {
-    /** Peticion */
-    const supabase = await initClient(e);
+export async function getCategories(s: SupabaseClient): Promise<CategoryRecord[]> {
+
 
     /** Query */
-    const { data, error } = await supabase
+    const { data, error } = await s
         .from('categories')
         .select(`*, categories(*)`);
 
@@ -56,7 +46,7 @@ export async function getCategory(s: SupabaseClient, id: string | undefined): Pr
 
     if (!id) throw createError({ statusCode: 404, message: 'Id undefined' })
 
-  
+
 
     /** Obtenemos registros individual */
     const { data, error } = await s
@@ -78,15 +68,12 @@ export async function getCategory(s: SupabaseClient, id: string | undefined): Pr
  * @param categoria_id
  * @param EditCategory
  */
-export async function editCategory(e: H3Event, id: string | undefined, edit: EditCategory | undefined) {
+export async function editCategory(s: SupabaseClient, id: string | undefined, edit: EditCategory | undefined) {
 
     if (!id || !edit) return;
 
-
-    const supabase = await initClient(e);
-
     /** Consulta */
-    const { error } = await supabase
+    const { error } = await s
         .from('categories')
         .update({
             name: edit.name,
@@ -96,50 +83,53 @@ export async function editCategory(e: H3Event, id: string | undefined, edit: Edi
         })
         .eq('id', id);
 
-  
+
 
     if (error) throw createError({ statusCode: 409, message: error.message });
 
 }
 
-/** Borrado general de una categoria  */
-export async function deleteCategories(e: H3Event , id:string | undefined) {
+/**
+ * Borra Categoria y sus relaciones autoreflexivas
+ * @param s SupabaseClient 
+ * @param id string | undefined
+ */
+export async function deleteCategories(s: SupabaseClient, id: string | undefined) {
 
-      const supabase = await initService(e);
+    /** Obtenmos Categoria */
+    const category = await getCategory(s, id);
 
-     const category = await getCategory(supabase, id);
-   
-    /** Si exite productosasociados dara erorr */
-    if (await existsProducts(e, category.id)) throw createError({ statusCode: 409, message: 'Hay productos asociados' });
+    /** Si exite productos asociados dara erorr */
+    if (await existsProducts(s, category.id)) throw createError({ statusCode: 409, message: 'Hay productos asociados' });
 
     /** Si exite productos asociados sus categoiras tambien dara error */
     if (category.parent_id == null && category.categories.length != 0) {
 
         for (const c of category.categories) {
 
-            if (await existsProducts(e, c.id)) throw createError({ statusCode: 409, message: 'Hay productos asociados' })
+            if (await existsProducts(s, c.id)) throw createError({ statusCode: 409, message: 'Hay productos asociados' })
         }
-        
-        await Promise.all(category.categories.map((c) => deleteCategory(e, c.id)))
 
-         
+        await Promise.all(category.categories.map((c) => deleteCategory(s, c.id)))
+
+
     }
 
     /** Borramos finalmente la categoria */
-    deleteCategory(e, category.id);
+    deleteCategory(s, category.id);
 
-    
+
 
 }
 
 /*** Borrado especifico de un categoria */
-export async function deleteCategory(e: H3Event, id: string | undefined) {
+export async function deleteCategory(s: SupabaseClient, id: string | undefined) {
 
-    if(!id) throw createError({ statusCode: 404 , message:'El id no existe'});
+    if (!id) throw createError({ statusCode: 404, message: 'El id no existe' });
 
-    const supabase = await initClient(e);
 
-    const { error } = await supabase
+
+    const { error } = await s
         .from('categories')
         .delete()
         .eq('id', id);
@@ -151,11 +141,11 @@ export async function deleteCategory(e: H3Event, id: string | undefined) {
 
 
 /** Heleper Obtener categorias de padres especificos */
-async function getChilds(e: H3Event, id: string): Promise<Category[]> {
+async function getChilds(s: SupabaseClient, id: string): Promise<Category[]> {
 
-    const supabase = await initClient(e);
 
-    const { data, error } = await supabase
+
+    const { data, error } = await s
         .from('categories')
         .select('*')
         .eq('parent_id', id);
@@ -167,11 +157,11 @@ async function getChilds(e: H3Event, id: string): Promise<Category[]> {
 }
 
 /** Helper para saber si existe o no productos asociados  */
-async function existsProducts(e: H3Event, id: string) {
+async function existsProducts(s: SupabaseClient, id: string) {
 
-    const supabase = await initClient(e);
 
-    const { data, error } = await supabase
+
+    const { data, error } = await s
 
         .from('categories_products')
         .select(`*`)
@@ -187,20 +177,3 @@ async function existsProducts(e: H3Event, id: string) {
 
 }
 
-
-/** Helper para saber si exite un valor o no del campo categories */
-async function existField(e: H3Event, name: string): Promise<boolean> {
-
-    const supabase = await initClient(e);
-
-    const { data, error } = await supabase
-        .from('categories')
-        .select('name')
-        .eq('name', name)
-        .maybeSingle();
-
-    if (error) throw createError({ statusCode: 404, message: 'Ha habido un error' })
-
-    return data ? true : false;
-
-}

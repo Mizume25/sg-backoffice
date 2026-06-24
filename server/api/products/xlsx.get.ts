@@ -5,9 +5,11 @@ import ExcelJS from 'exceljs'
 /** Endpoint para pbtener lista de datos */
 export default eventHandler(async (e) => {
 
-   /** Obtenemos producto */ 
-  const products = await getProducts(e)
-  
+  const supabase = await initClient(e);
+
+  /** Obtenemos producto */
+  const products = await getProducts(supabase)
+
   /** Creamos el objeto excel */
   const excel = new ExcelJS.Workbook()
 
@@ -18,17 +20,17 @@ export default eventHandler(async (e) => {
   page.columns = [
     { header: 'Nombre', key: 'name', width: 30 },
     { header: 'Codigo', key: 'code', width: 20 },
-    { header: 'Descripcion', key: 'description', width: 40 },  
+    { header: 'Descripcion', key: 'description', width: 40 },
     { header: 'Categorias', key: 'categories', width: 30 },
     { header: 'Tarifas', key: 'rates', width: 30 },
     { header: 'Imagenes', key: 'images', width: 30 }
   ]
 
-  
+
   /** Iteramos los objetos  */
   for (const p of products) {
     page.addRow({
-      name: p.name ,
+      name: p.name,
       code: p.code,
       description: p.description,
       categories: (p.categories_products)

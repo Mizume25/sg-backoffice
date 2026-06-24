@@ -1,18 +1,16 @@
 /** Enpoint para actualizar una categoría */
-export default eventHandler(async (event) => {
-    try {
-        /** Obtenemos el id  */
-        const id = getRouterParam(event, 'id');
+export default eventHandler(async (e) => {
+    /** Obtenemos el id  */
+    const id = getRouterParam(e, 'id');
 
-        const body = await readBody(event);
+    /** Obtenemos contenido */
+    const body = await readBody(e);
 
-        editCategory(event, id, body);
+    /** Inicializamos cliente */
+    const supabase = await initClient(e);
 
+    await editCategory(supabase, id, body);
 
-        return true;
-
-    } catch (error) {
-        throw createError({ statusCode: 500, message: "No se ha podido crear la categoria" });
-    }
+    return { success: true, update: id }
 
 })
