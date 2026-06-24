@@ -1,5 +1,6 @@
 /** Funciones para crear y subir imagenes */
 import { SupabaseClient } from '@supabase/supabase-js';
+import { Images } from '~~/shared/types/definitons';
 
 
 
@@ -24,30 +25,71 @@ export const createImage = async (client: SupabaseClient, img: CreateImage, file
 
 }
 
-
-export const deleteImage = async (s: SupabaseClient, id: string, code: string) => {
-  const { data, error } = await s
+/** Eliminar todas las imagenes realcionadas */
+export const deleteImages = async (s: SupabaseClient, id: string, code: string) => {
+  const { data: metadata, error: fetchError } = await s
     .from('product_images')
     .select('path')
     .eq('product_id', id)
 
-  if (error) createError({ statusCode: 404, message: error.message });
-
-
-  if (data!.length > 1) {
-    const paths: string[] = data?.map(item => item.path) ?? []
-    await imageService.removes(s, code, paths)
-  } else {
-    const path: string = data![0]?.path ?? null;
-
-    await imageService.remove(s, code, path)
-  }
+  if (fetchError) throw createError({ statusCode: 404, message: fetchError.message });
 
 
 
+  const paths: string[] = metadata?.map(item => item.path) ?? []
+  await imageService.removes(s, code, paths)
+
+  const { error } = await s
+    .from('product_images')
+    .delete()
+    .eq('product_id', id)
+
+  if (error) throw createError({ statusCode: 404, message: error.message });
 
 
 }
+
+export const deleteImage = async (s: SupabaseClient, id: string | undefined) => {
+
+  const img  = await getImageRecord(s , id);
+  if(!img) return
+
+  const product = await fetchProduct(s , img?.product_id);
+
+
+  /*** Boramos imagenes de buckets */
+  await imageService.remove(s, product.code, img?.path);
+
+  /** Eliminamos Registro */
+  const { error } = await s
+    .from('product_images')
+    .delete()
+    .eq('id', id)
+
+  /** Saltara error en caso de que no haberse borradoc orectametne */
+  if (error) throw createError({ statusCode: 404, message: error.message })
+
+
+}
+
+export const getImageRecord = async (s: SupabaseClient, id: string | undefined): Promise<Images | null> => {
+  if (!id) return null;
+
+  /** Obtenemos metadatos */
+  const { data, error } = await s
+    .from('product_images')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) throw createError({ statusCode: 404, message: error.message });
+
+  return data;
+}
+
+
+
+
 
 
 /** Subir Imagenes */
@@ -90,6 +132,7 @@ export const imageService = {
 
   /** Borramos solo una */
   async remove(s: SupabaseClient, code: string, name: string) {
+    
 
     const { error } = await s.storage.from(code).remove([name])
 

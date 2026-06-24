@@ -17,16 +17,16 @@ const { FormProductState, product, isOpen, edit, showSection } = useProductEdit(
 const { rates, deleteRate, rateStatus, RateSchema, RateState, changeRate, actionRate } = useRateEdit(id);
 
 
-const { images, URL } = useImageEdit(id);
+const { images, URL, triggerInput, onDrop, onFileChange , inputRef , removeImage } = useImageEdit(id);
 
 
-  const closeSection = () => {
-    isOpen.value = false;
-    edit.value = '';
-    rateStatus.value = false;
-    
-    
-  }
+const closeSection = () => {
+  isOpen.value = false;
+  edit.value = '';
+  rateStatus.value = false;
+
+
+}
 
 
 </script>
@@ -154,10 +154,11 @@ const { images, URL } = useImageEdit(id);
         <ul class="flex flex-col gap-2">
 
           <!--- Itemos Iterados -->
-          <li class="flex items-center gap-3 rounded-lg border border-gray-200 p-2 dark:border-gray-800" v-for="img in images">
-           
-            <a href="#" target="_blank" class="shrink-0">
-             <NuxtImg :src="URL + img.path"   class="h-14 w-14 rounded-md object-cover"/>
+          <li class="flex items-center gap-3 rounded-lg border border-gray-200 p-2 dark:border-gray-800"
+            v-for="img in images">
+
+            <a :href="URL + img.path" target="_blank" class="shrink-0">
+              <NuxtImg :src="URL + img.path" class="h-14 w-14 rounded-md object-cover" />
             </a>
 
             <!-- Info en el centro -->
@@ -168,13 +169,15 @@ const { images, URL } = useImageEdit(id);
             </div>
 
             <!-- Botones a la derecha -->
-            <div class="flex shrink-0 items-center gap-1">
-              <UButton icon="lucide:replace" color="warning"  size="sm" class="cursor-pointer" />
-              <UButton icon="i-lucide-trash-2" color="error"  size="sm" class="cursor-pointer" />
+            <div class="flex shrink-0 items-center">
+              <UButton icon="i-lucide-trash-2" color="error" size="sm" class="cursor-pointer" @click="removeImage(img.id)" />
             </div>
           </li>
 
-          <UButton label="Añadir Imagen" class="flex flex-row items-center justify-center cursor-pointer" variant="ghost" size="xl"  />
+          <UButton label="Añadir Imagen" class="flex flex-row items-center justify-center cursor-pointer"
+            variant="ghost" size="xl" @click="triggerInput" @dragover.prevent @drop.prevent="onDrop" />
+          <input ref="inputRef" type="file" accept="image/png, image/jpeg, image/webp" class="hidden"
+            @change="onFileChange" />
 
         </ul>
       </div>
