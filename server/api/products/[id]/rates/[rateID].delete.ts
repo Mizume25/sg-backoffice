@@ -2,7 +2,7 @@
 export default eventHandler(async(e) => {
     try {
 
-        const id = getRouterParam(e , 'id');
+        const id = getRouterParam(e , 'rateID');
         
         const supabase = await initService(e);
 

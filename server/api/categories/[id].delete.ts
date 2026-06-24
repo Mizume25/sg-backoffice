@@ -1,17 +1,15 @@
-
-
-/** Endpoint para eliminar una categoria */
+// DELETE /products/:id/rates/:rateId
+// Elimina un categoria  
 export default eventHandler(async (e) => {
-    try {
-        /* Obtenemos Parametro */
-        const id = getRouterParam(e, 'id');
+    /* Obtenemos id */
+    const id = getRouterParam(e, 'id');
 
-    
-        /** Borramos categorias */
-        await deleteCategories(e , id)
+    /** Incializamos cliente  */
+    const supabase = await initClient(e);
+
+    /** Borramos categorias */
+    await deleteCategories(supabase, id)
 
 
-    } catch (error) {
-        throw createError({ statusCode:409 , message:'Ha habido un conflicto'});
-    }
+    return { success: true, delete: id }
 })

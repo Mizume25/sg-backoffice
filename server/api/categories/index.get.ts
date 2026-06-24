@@ -1,10 +1,15 @@
-/**
- * Lista de Categorias
- * @returns {Category[]} Lista de productos
+/** /api/categories/
+ * Lista de Categoria
+ * @returns categories 
  */
-export default eventHandler(async(event) => {
+export default eventHandler(async (e) => {
 
-    const categories = getCategories(event);
+    /** Incializalizar cliente */
+    const supabase = await initClient(e);
 
+    /** Obtengo categorias */
+    const categories = getCategories(supabase);
+
+    /** lista de categorias */
     return categories;
 })

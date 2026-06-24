@@ -1,14 +1,16 @@
-export const useImageEdit = (id: string) => {
+export const useImageEdit = (product_id: string) => {
 
 
    const { triggerInput, onFileChange, onDrop, image, inputRef, clearimage
    } = useImageLogic();
 
+   const { postImage } = useProductsApi();
+
    /*** Imagenes Inciales */
    const toast = useToast();
    const ProductRecord = useProductsStore();
-   const images = computed(() => ProductRecord.findProduct(id)).value?.product_images;
-   const code = computed(() => ProductRecord.findProduct(id)).value?.code;
+   const images = computed(() => ProductRecord.findProduct(product_id)).value?.product_images;
+   const code = computed(() => ProductRecord.findProduct(product_id)).value?.code;
    const URL = IMAGE_URL + code + '/';
 
 
@@ -26,10 +28,7 @@ export const useImageEdit = (id: string) => {
       try {
 
 
-         await $fetch('/api/images', {
-            method: 'POST',
-            body: fd
-         })
+         await postImage(fd , product_id);
 
 
          toast.add({ title: 'Imagen Subida correctamente', color: 'info', icon: 'lucide:info' })
@@ -48,7 +47,7 @@ export const useImageEdit = (id: string) => {
    const removeImage = async (id: string) => {
       try {
 
-         await $fetch(`/api/images/${id}`, { method: 'DELETE' });
+         await $fetch(`/api/products/${product_id}/images/${id}`, { method: 'DELETE' });
 
          toast.add({ title: 'Se ha borrado correctamente la imagen', color: 'success', icon: 'lucide:trash' })
 

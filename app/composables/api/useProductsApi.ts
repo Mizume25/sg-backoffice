@@ -1,3 +1,5 @@
+import type { StoreProductSchema } from "~~/shared/schemas/products/create"
+
 /** Composable  para gestionar Endpoints  */
 export const useProductsApi = () => {
   
@@ -20,13 +22,40 @@ export const useProductsApi = () => {
 
   const refreshGet = (id:string) => refreshNuxtData(`product-${id}`)
 
+
+  /** Crear Producto */
+  const postProduct = async(data: StoreProductSchema) => {
+    try {
+
+      const obj = await $fetch('/api/products', { method: 'POST', body:data});
+
+      return obj;
+      
+    } catch (error) {
+      
+    }
+  }
+
+  const postImage = async(data: FormData , id:string) => {
+      try {
+
+        await $fetch(`/api/products/${id}/images/`, {method:'POST' , body:data})
+
+
+        
+      } catch (error) {
+        
+      }
+  }
  
-  
+
   return {
     listProducts,
     getProduct,
     refreshList,
-    refreshGet
+    refreshGet,
+    postProduct,
+    postImage
   }
    
 }

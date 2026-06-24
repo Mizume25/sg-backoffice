@@ -1,11 +1,17 @@
-/** Endpoint para crear un Producto */
+/** /api/products/
+ * Endpoint para crear producto
+ */
 export default eventHandler(async (e) => {
 
+    /** Obtenemos los datos */
     const body = await readBody(e);
 
-    try {
-        await createEntities(e, body)
-    } catch (error: any) {
-        throw createError({ statusCode: 409, message: error.message })
-    }
+    /** Incializamos cliente */
+    const supabase = await initClient(e);
+
+    /*** Creamos entidades */
+    const obj = await createEntities(supabase, body);
+
+
+    return { success: true , product: obj}
 })

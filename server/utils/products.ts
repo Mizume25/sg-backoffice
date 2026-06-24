@@ -1,17 +1,16 @@
 /** Funciones para productos */
-import type { H3Event } from 'h3'
 import { type StoreProductSchema } from '~~/shared/schemas/products/create'
-import { CategoryIDS, CreateProduct, CreateRate, ProductRecord } from '~~/shared/types/definitons';
-import { createRates, deletRates } from './rates';
-import { initClient } from './service';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { error } from 'pdf-lib';
+import { ProductRecord } from '~~/shared/types/definitons';
 
 
+/** Crea Producto en conjunto a otras entidades
+ * @param SupabaseClient
+ * @param StoreProductSchema
+ * @return 
+ */
+export async function createEntities(s: SupabaseClient, data: StoreProductSchema) : Promise<ProductRecord> {
 
-/*** Crear Productos */
-export async function createEntities(e: H3Event, data: StoreProductSchema) {
-    const supabase = await initClient(e)
 
     const obj: CreateProduct = {
         name: data.name,
@@ -19,41 +18,48 @@ export async function createEntities(e: H3Event, data: StoreProductSchema) {
         description: data.description,
     }
 
-    // Secuencial obligatorio: crear → obtener id
-    await createProduct(supabase, obj)
-    const product = await findProduct(supabase, data.code)
-
+    /** Obtenemos producto resultante  */
+    const product = await createProduct(s, obj)
+    
+    /** Copiamos los valores de rates */
     const rates: CreateRate[] = data.rates.map(rate => ({
         ...rate,
         product_id: product.id,
     }))
 
-    // Estos dos SÍ son independientes → en paralelo
+    /** Creamos rates y unimos categorias */
     await Promise.all([
-        createRates(supabase, rates),
-        attachCategories(supabase, product.id, [data.category, data.subcategory]),
+        createRates(s, rates),
+        attachCategories(s, product.id, [data.category, data.subcategory]),
     ])
+
+    /** Obtenemos producto con valores creados */
+    const productRecord = await getProduct(s , product.id);
+
+    return productRecord
+
 }
 
-
-/** Funcion para borrar producto y relaciones de producto */
-export async function deleteEntitis(e: H3Event, id: string | undefined) {
+/**
+ * Borra Entidades Conjuntas
+ * @param SupabaseClient
+ * @param id
+ */
+export async function deleteEntitis(s: SupabaseClient, id: string | undefined) {
 
     if (!id) throw createError({ statusCode: 404, message: 'La id no existe' })
 
-    const supabase = await initClient(e);
-
-    const product = await getProduct(e, id);
+    const product = await getProduct(s, id);
 
     /** Eliminamos todaas sus relaciones */
     await Promise.all([
-        deleteImages(supabase, id, product.code),
-        deletRates(supabase, id),
-        breakCategories(supabase, id),
+        deleteImages(s, id, product.code),
+        deletRates(s, id),
+        breakCategories(s, id),
     ])
 
     /** Eliminamos finalmenete el producto */
-    const { error } = await supabase
+    const { error } = await s
         .from('product')
         .delete()
         .eq('id', id);
@@ -95,26 +101,27 @@ async function breakCategories(s: SupabaseClient, id: string) {
 
 
 /** Querie para crear producto */
-async function createProduct(s: SupabaseClient, data: CreateProduct) {
+async function createProduct(s: SupabaseClient, obj: CreateProduct) : Promise<Product> {
     /** Creamos el producto */
-    const product: CreateProduct = { ...data }
+    const product: CreateProduct = { ...obj }
 
     /** Insertamos el producto */
-    const { error } = await s
+    const { data , error } = await s
         .from('products')
-        .insert(product);
+        .insert(product)
+        .select()
+        .single();
 
     if (error) throw createError({ statusCode: 409, message: error.message })
 
+    return data
+
 }
 
-export async function getProducts(e: H3Event): Promise<ProductRecord[]> {
-
-    /** Peticioon al servidor */
-    const supabase = await initClient(e);
+export async function getProducts(s: SupabaseClient): Promise<ProductRecord[]> {
 
     /** Joineamos las relaciones de products */
-    const { data, error } = await supabase
+    const { data, error } = await s
         .from('products')
         .select(`*,
         categories_products(categories(*)),
@@ -130,14 +137,14 @@ export async function getProducts(e: H3Event): Promise<ProductRecord[]> {
 }
 
 
-export async function getProduct(e: H3Event, id: string | undefined): Promise<ProductRecord> {
+export async function getProduct(s: SupabaseClient, id: string | undefined): Promise<ProductRecord> {
 
     if (!id) throw createError({ statusCode: 409, message: 'El id no existe' });
 
 
-    const supabase = await initService(e);
 
-    const { data, error } = await supabase
+
+    const { data, error } = await s
         .from('products')
         .select(`*,
         categories_products(categories(*)),
@@ -182,11 +189,11 @@ export async function fetchProduct(s: SupabaseClient, id: string | undefined): P
 }
 
 /** Modificar categorias asociadas */
-export async function changeCategories(e: H3Event, categories: CategoryIDS, product_id: string) {
-    const supabase = await initClient(e);
+export async function changeCategories(s: SupabaseClient, categories: CategoryIDS, product_id: string) {
+
 
     // 1. Borramos todas las relaciones actuales del producto
-    const { error: delErr } = await supabase
+    const { error: delErr } = await s
         .from('categories_products')
         .delete()
         .eq('product_id', product_id);
@@ -206,11 +213,11 @@ export async function changeCategories(e: H3Event, categories: CategoryIDS, prod
         }))
     ];
 
-    console.log('rows a insertar:', rows)          // ← mira qué se va a insertar
-    console.log('body recibido:', categories)       // ← y qué llegó del cliente
+    console.log('rows a insertar:', rows)
+    console.log('body recibido:', categories)
 
     // 3. Insertamos todas de golpe
-    const { error: insErr } = await supabase
+    const { error: insErr } = await s
         .from('categories_products')
         .insert(rows);
 

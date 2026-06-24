@@ -7,7 +7,7 @@ export const useProductCreate = () => {
   /** Variables que necesitaremos */
   const store = useCategoriesStore();
   const { parents } = storeToRefs(store);
-
+  const { postProduct, postImage } = useProductsApi();
 
   /** Helper para obtener un codigo  */
   const makeCode = (name: string | undefined) => {
@@ -59,52 +59,48 @@ export const useProductCreate = () => {
   }
 
 
+  /** Funcion para ejecutar Fetch de la imagen */
+  const onImage = async (file: File, path: string, code: string, product_id: string) => {
+    try {
+      const fd = new FormData();
 
+      fd.append('file', file, file.name)
+      fd.append('path', path);
+
+      await postImage(fd, product_id);
+
+
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
 
 
   /** Funcion para subir datos */
   const onSubmit = async (e: FormSubmitEvent<StoreProductSchema>) => {
     loading.value = true;
 
-
-
     try {
-      await $fetch('/api/products', { method: 'POST', body: e.data });
-
+      const obj = await postProduct(e.data);
 
       toast.add({ title: 'Se ha añadido el producto correctamente', color: 'success' });
 
+      if (image.value.file && image.value.path && obj) {
+        await onImage(image.value.file, image.value.path, FormState.code, obj.product.id)
+        toast.add({ title: 'Se ha añadido la imagen correctamente', color: 'success' });
+      } else {
+        toast.add({ title: 'valores incorrectos', color: 'error' });
+      }
 
-      if (image.value.file && image.value.path) {
-
-        const fd = new FormData();
-
-        fd.append('file', image.value.file, image.value.file.name)
-        fd.append('path', `${FormState.code}/${image.value.path}`)
-
-        try {
-
-
-          await $fetch('/api/images', {
-            method: 'POST',
-            body: fd
-          })
-
-
-
-        } catch (error) {
-          console.log(error)
-        }
-
-      } 
       cleanForm();
       loading.value = false;
 
-    } catch (err) {
-      console.log('ERROR:', err);
+    } catch (error) {
       toast.add({ title: 'Ha habido un problema', color: 'error' });
-           loading.value = false;
+      loading.value = false;
     }
+
 
 
   }
