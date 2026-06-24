@@ -160,7 +160,7 @@ async function getChilds(e: H3Event, id: string): Promise<Category[]> {
         .select('*')
         .eq('parent_id', id);
 
-    if (error) createError({ statusCode: 404, message: 'No se ha encontrado entidades relacionadas' })
+    if (error) throw createError({ statusCode: 404, message: 'No se ha encontrado entidades relacionadas' })
 
     return data ?? [];
 

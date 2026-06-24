@@ -4,7 +4,7 @@ export const useImageLogic = () => {
 
   /** Imagenes reactivas  */
   const image = useState<StoreImageSchema>('product-image', () => ({ path: '', file: null }))
-  const preview = useState<string | null>('product-preview', () => null)
+  
 
 
   const inputRef = ref<HTMLInputElement | null>(null)
@@ -35,8 +35,7 @@ export const useImageLogic = () => {
   }
 
   const clearimage = () => {
-    preview.value = null
-
+   
     Object.assign(image, {
       path: '',
       file: null
@@ -58,7 +57,6 @@ export const useImageLogic = () => {
 
   return {
     inputRef,
-    preview,
     triggerInput,
     onFileChange,
     onDrop,

@@ -1,7 +1,3 @@
-import { findProduct } from "../../utils/products";
-
-
-
 // server/api/products/image.post.ts
 export default eventHandler(async (e) => {
   try {

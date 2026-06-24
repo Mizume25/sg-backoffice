@@ -33,7 +33,7 @@ export async function deleteRate(s: SupabaseClient , id:string | undefined) {
     .delete()
     .eq('id', id);
 
-    if(error) createError({ statusCode: 404 , message: error.message });
+    if(error) throw createError({ statusCode: 404 , message: error.message });
 
 }
 
