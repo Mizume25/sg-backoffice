@@ -59,5 +59,9 @@ export type CategoryRecord = Category & {
     categories: Category[]
 }
 
-
+/** Ids asociados */
+export type CategoryIDS = {
+    parent: string,
+    childs: string[]
+}
 

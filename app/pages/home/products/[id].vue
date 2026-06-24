@@ -12,19 +12,18 @@ definePageMeta({
 const route = useRoute()
 const id = route.params.id as string;
 
-const { FormProductState, product, isOpen, edit, showSection } = useProductEdit(id);
+const { FormProductState, product, isOpen, edit, showSection, parents, selectedParentId, merged , onCategories } = useProductEdit(id);
 
 const { rates, deleteRate, rateStatus, RateSchema, RateState, changeRate, actionRate } = useRateEdit(id);
 
 
-const { images, URL, triggerInput, onDrop, onFileChange , inputRef , removeImage } = useImageEdit(id);
+const { images, URL, triggerInput, onDrop, onFileChange, inputRef, removeImage } = useImageEdit(id);
 
 
 const closeSection = () => {
   isOpen.value = false;
   edit.value = '';
   rateStatus.value = false;
-
 
 }
 
@@ -170,7 +169,8 @@ const closeSection = () => {
 
             <!-- Botones a la derecha -->
             <div class="flex shrink-0 items-center">
-              <UButton icon="i-lucide-trash-2" color="error" size="sm" class="cursor-pointer" @click="removeImage(img.id)" />
+              <UButton icon="i-lucide-trash-2" color="error" size="sm" class="cursor-pointer"
+                @click="removeImage(img.id)" />
             </div>
           </li>
 
@@ -184,7 +184,23 @@ const closeSection = () => {
 
       <!-- Categorias -->
       <div v-else-if="edit == 'categories'">
-        <h2 class="shrink-0 mb-4 text-start text-2xl font-bold text-blue-200">Edit Categories </h2>
+        <h2 class="shrink-0 mb-4 text-start text-2xl font-bold text-blue-200">Edit Categories</h2>
+        <UForm class="flex flex-col gap-4">
+
+          <UFormField label="Categoria">
+            <USelect v-model="selectedParentId" :items="parents" label-key="name" value-key="id"
+              class="w-full h-10 cursor-pointer" />
+          </UFormField>
+
+          <UFormField label="Subcategoria">
+            <UCheckbox v-for="sub in merged" :key="sub.value" v-model="sub.checked" :label="sub.label" />
+          </UFormField>
+
+
+          <UButton  label="Guardar" leading-icon="lucide:download" color="warning" class="w-13 h-8 flex flex-col items-center justify-center cursor-pointer" @click="onCategories"    />
+
+
+        </UForm>
       </div>
 
       <!-- vacio -->

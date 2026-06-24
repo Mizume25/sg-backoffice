@@ -1,10 +1,11 @@
 /** Funciones para productos */
 import type { H3Event } from 'h3'
 import { type StoreProductSchema } from '~~/shared/schemas/products/create'
-import { CreateProduct, CreateRate, ProductRecord } from '~~/shared/types/definitons';
+import { CategoryIDS, CreateProduct, CreateRate, ProductRecord } from '~~/shared/types/definitons';
 import { createRates, deletRates } from './rates';
 import { initClient } from './service';
 import { SupabaseClient } from '@supabase/supabase-js';
+import { error } from 'pdf-lib';
 
 
 
@@ -178,4 +179,40 @@ export async function fetchProduct(s: SupabaseClient, id: string | undefined): P
     if (error) throw createError({ statusCode: 404, message: error.message });
 
     return data;
+}
+
+/** Modificar categorias asociadas */
+export async function changeCategories(e: H3Event, categories: CategoryIDS, product_id: string) {
+    const supabase = await initClient(e);
+
+    // 1. Borramos todas las relaciones actuales del producto
+    const { error: delErr } = await supabase
+        .from('categories_products')
+        .delete()
+        .eq('product_id', product_id);
+
+    if (delErr) throw createError({ status: 404, message: delErr.message });
+
+
+    // Re modificamos campos
+    const rows = [
+        {
+            product_id: product_id,
+            category_id: categories.parent
+        },
+        ...categories.childs.map(id => ({
+            product_id: product_id,
+            category_id: id
+        }))
+    ];
+
+    console.log('rows a insertar:', rows)          // ← mira qué se va a insertar
+    console.log('body recibido:', categories)       // ← y qué llegó del cliente
+
+    // 3. Insertamos todas de golpe
+    const { error: insErr } = await supabase
+        .from('categories_products')
+        .insert(rows);
+
+    if (insErr) throw createError({ status: 409, message: insErr.message });
 }
