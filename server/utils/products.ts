@@ -7,11 +7,9 @@ import { ProductRecord } from '~~/shared/types/definitons';
 /** Crea Producto en conjunto a otras entidades
  * @param SupabaseClient
  * @param StoreProductSchema
- * @return 
+ * @return ProductRecord
  */
-export async function createEntities(s: SupabaseClient, data: StoreProductSchema) : Promise<ProductRecord> {
-
-
+export async function createEntities(s: SupabaseClient, data: StoreProductSchema): Promise<ProductRecord> {
     const obj: CreateProduct = {
         name: data.name,
         code: data.code,
@@ -20,7 +18,7 @@ export async function createEntities(s: SupabaseClient, data: StoreProductSchema
 
     /** Obtenemos producto resultante  */
     const product = await createProduct(s, obj)
-    
+
     /** Copiamos los valores de rates */
     const rates: CreateRate[] = data.rates.map(rate => ({
         ...rate,
@@ -34,7 +32,7 @@ export async function createEntities(s: SupabaseClient, data: StoreProductSchema
     ])
 
     /** Obtenemos producto con valores creados */
-    const productRecord = await getProduct(s , product.id);
+    const productRecord = await getProduct(s, product.id);
 
     return productRecord
 
@@ -45,9 +43,7 @@ export async function createEntities(s: SupabaseClient, data: StoreProductSchema
  * @param SupabaseClient
  * @param id
  */
-export async function deleteEntitis(s: SupabaseClient, id: string | undefined) {
-
-    if (!id) throw createError({ statusCode: 404, message: 'La id no existe' })
+export async function deleteEntitis(s: SupabaseClient, id: string) {
 
     const product = await getProduct(s, id);
 
@@ -64,16 +60,19 @@ export async function deleteEntitis(s: SupabaseClient, id: string | undefined) {
         .delete()
         .eq('id', id);
 
-    if (error) throw createError({ statusCode: 404, message: error.message });
+    if (error) throw createError({ statusCode: 404, message: 'No se puedo eliminar producto', cause: error.message });
 
 
 }
 
 
-/** Queria para relacionar producto y categoria */
+/**
+ * Querie para unir categorias
+ * @param s SupabaseClient
+ * @param productID 
+ * @param categories 
+ */
 async function attachCategories(s: SupabaseClient, productID: string, categories: string[]) {
-
-
     const { error } = await s
         .from('categories_products')
         .insert(
@@ -82,42 +81,53 @@ async function attachCategories(s: SupabaseClient, productID: string, categories
                 category_id: id
             }))
         )
-
-    if (error) throw createError({ statusCode: 409, message: error.message })
+    if (error) throw createError({ statusCode: 409, message: 'No se pudo conectar ids', cause: error.message })
 }
 
 
-/** Querie para borrar relacion de producto con categories */
+/**
+ * Querie para romper categorias
+ * @param s SupabaseClient
+ * @param id string
+ */
 async function breakCategories(s: SupabaseClient, id: string) {
-
     const { error } = await s
         .from('categories_products')
         .delete()
         .eq('product_id', id)
 
-    if (error) throw createError({ statusCode: 404, message: error.message })
+    if (error) throw createError({ statusCode: 404, message: 'No se pudo borrar la relacion', cause: error.message })
 
 }
 
-
-/** Querie para crear producto */
-async function createProduct(s: SupabaseClient, obj: CreateProduct) : Promise<Product> {
+/**
+ * Funcion Crear Producto
+ * @param s SupabaseClient
+ * @param obj CreateProduct
+ * @returns Product
+ */
+async function createProduct(s: SupabaseClient, obj: CreateProduct): Promise<Product> {
     /** Creamos el producto */
     const product: CreateProduct = { ...obj }
 
     /** Insertamos el producto */
-    const { data , error } = await s
+    const { data, error } = await s
         .from('products')
         .insert(product)
         .select()
         .single();
 
-    if (error) throw createError({ statusCode: 409, message: error.message })
+    if (error) throw createError({ statusCode: 409, message: 'No se pudo crear el producto', cause: error.message })
 
     return data
 
 }
 
+/**
+ * Obtener Lista de productos
+ * @param s SupabaseClient
+ * @returns Product []
+ */
 export async function getProducts(s: SupabaseClient): Promise<ProductRecord[]> {
 
     /** Joineamos las relaciones de products */
@@ -130,20 +140,19 @@ export async function getProducts(s: SupabaseClient): Promise<ProductRecord[]> {
     `);
 
     /** Control de erores */
-    if (error) throw createError({ statusCode: 404, message: error.message })
+    if (error) throw createError({ statusCode: 404, message: 'No se pudo obtener el array de productos', cause:error.message  })
 
     /** Retornamos valor */
     return data;
 }
 
-
-export async function getProduct(s: SupabaseClient, id: string | undefined): Promise<ProductRecord> {
-
-    if (!id) throw createError({ statusCode: 409, message: 'El id no existe' });
-
-
-
-
+/**
+ * Obtener Producto individual
+ * @param s SupabaseClient
+ * @param id string
+ * @returns ProductRecord
+ */
+export async function getProduct(s: SupabaseClient, id: string): Promise<ProductRecord> {
     const { data, error } = await s
         .from('products')
         .select(`*,
@@ -154,7 +163,7 @@ export async function getProduct(s: SupabaseClient, id: string | undefined): Pro
         .eq('id', id)
         .single();
 
-    if (error) throw createError({ statusCode: 404, message: error.message });
+    if (error) throw createError({ statusCode: 404, message: 'No se pudo obtener producto', cause:error.message  });
 
 
     return data;
@@ -163,7 +172,7 @@ export async function getProduct(s: SupabaseClient, id: string | undefined): Pro
 }
 
 /** Obtenemos el codigo del producto */
-export async function findProduct(s: SupabaseClient, code: string | undefined): Promise<Product> {
+export async function findProduct(s: SupabaseClient, code: string): Promise<Product> {
     const { data, error } = await s
         .from('products')
         .select('*')
@@ -176,7 +185,7 @@ export async function findProduct(s: SupabaseClient, code: string | undefined): 
 }
 
 /** Obtenemos el codigo del producto */
-export async function fetchProduct(s: SupabaseClient, id: string | undefined): Promise<Product> {
+export async function fetchProduct(s: SupabaseClient, id: string): Promise<Product> {
     const { data, error } = await s
         .from('products')
         .select('*')

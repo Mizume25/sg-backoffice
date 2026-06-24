@@ -7,9 +7,7 @@ import { Images } from '~~/shared/types/definitons';
 /** Base de datos */
 
 /** Creamos registros y creamos imagen */
-export const createImage = async (client: SupabaseClient, img: CreateImage, file: Buffer, path: string | undefined, code: string | undefined) => {
-  if (!code || !path) return
-
+export const createImage = async (client: SupabaseClient, img: CreateImage, file: Buffer, path: string, code: string) => {
   const { error } = await client
     .from('product_images')
     .insert(img);
@@ -72,8 +70,7 @@ export const deleteImage = async (s: SupabaseClient, id: string | undefined) => 
 
 }
 
-export const getImageRecord = async (s: SupabaseClient, id: string | undefined): Promise<Images | null> => {
-  if (!id) return null;
+export const getImageRecord = async (s: SupabaseClient, id: string | undefined): Promise<Images> => {
 
   /** Obtenemos metadatos */
   const { data, error } = await s

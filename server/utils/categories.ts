@@ -1,77 +1,59 @@
-import { Category, CategoryRecord, CreateCategory, EditCategory } from "~~/shared/types/definitons";
-import type { H3Event } from 'h3'
-import { initClient } from "./service";
 import { SupabaseClient } from "@supabase/supabase-js";
 
-/** Query para crear Categoria 
- * @param category 
- * @param H3Event
- * 
- * */
+/**
+ * Querie para crear categoria
+ * @param cat CreateCategory
+ * @param s SupabaseClient
+ */
 export async function createCategory(cat: CreateCategory, s: SupabaseClient) {
     /** Realizamos el insert */
     const { error } = await s
         .from('categories')
         .insert(cat);
 
-    if (error) throw createError({ statusCode: 409, message: error.message });
+    if (error) throw createError({ statusCode: 409, message: 'Error al crear categorías', cause: error.message });
 }
 
-/** Query para recoger lista categories
- * @param H3Event
- * @return categories
+/**
+ * Metodo para obtener lista de categorias
+ * @param s SupabaseClient 
+ * @returns CategoryRecord []
  */
 export async function getCategories(s: SupabaseClient): Promise<CategoryRecord[]> {
-
-
     /** Query */
-    const { data, error } = await s
-        .from('categories')
-        .select(`*, categories(*)`);
+    const { data, error } = await s.from('categories').select(`*, categories(*)`);
 
     /** Controlamos Errores */
-    if (error) throw createError({ statusCode: 404, message: error.message })
-
+    if (error) throw createError({ statusCode: 500, message: 'No se ha encontrado las categorias', cause: error.message })
 
     return data;
 }
 
-/*** Obtener una Categoria Especifica 
- * 
- * @param SupabaseClient
- * @param category_id
- * @return Category
-  */
-export async function getCategory(s: SupabaseClient, id: string | undefined): Promise<CategoryRecord> {
-
-    if (!id) throw createError({ statusCode: 404, message: 'Id undefined' })
-
-
-
+/**
+ * Creo una funcion que obtenega una categoria
+ * @param s SupabaseClient
+ * @param id string
+ * @returns CategoryRecord
+ */
+export async function getCategory(s: SupabaseClient, id: string): Promise<CategoryRecord> {
     /** Obtenemos registros individual */
     const { data, error } = await s
         .from('categories')
         .select(`*, categories(*)`)
         .eq('id', id)
         .single();
-
-
-    if (error) throw createError({ statusCode: 404, message: error.message })
-
+    if (error) throw createError({ statusCode: 404, message: 'No se ha encontrado la categoria', cause: error.message })
     return data;
 }
 
 
 /**
- * Actualizar categoria
- * @param H3Event
- * @param categoria_id
- * @param EditCategory
+ * EditarCategory
+ * @param s SupabaseClient
+ * @param id string
+ * @param edit EdiCategory
  */
-export async function editCategory(s: SupabaseClient, id: string | undefined, edit: EditCategory | undefined) {
-
-    if (!id || !edit) return;
-
+export async function editCategory(s: SupabaseClient, id: string, edit: EditCategory) {
     /** Consulta */
     const { error } = await s
         .from('categories')
@@ -82,10 +64,7 @@ export async function editCategory(s: SupabaseClient, id: string | undefined, ed
             parent_id: edit.parent_id
         })
         .eq('id', id);
-
-
-
-    if (error) throw createError({ statusCode: 409, message: error.message });
+    if (error) throw createError({ statusCode: 409, message: error.message, cause: error.message });
 
 }
 
@@ -94,7 +73,7 @@ export async function editCategory(s: SupabaseClient, id: string | undefined, ed
  * @param s SupabaseClient 
  * @param id string | undefined
  */
-export async function deleteCategories(s: SupabaseClient, id: string | undefined) {
+export async function deleteCategories(s: SupabaseClient, id: string) {
 
     /** Obtenmos Categoria */
     const category = await getCategory(s, id);
@@ -116,64 +95,36 @@ export async function deleteCategories(s: SupabaseClient, id: string | undefined
     }
 
     /** Borramos finalmente la categoria */
-    deleteCategory(s, category.id);
-
-
-
+    await deleteCategory(s, category.id);
 }
 
-/*** Borrado especifico de un categoria */
-export async function deleteCategory(s: SupabaseClient, id: string | undefined) {
-
-    if (!id) throw createError({ statusCode: 404, message: 'El id no existe' });
-
-
-
+/**
+ * Querie para borrar categoria
+ * @param s SupabaseClient
+ * @param id string
+ */
+export async function deleteCategory(s: SupabaseClient, id: string) {
     const { error } = await s
         .from('categories')
         .delete()
         .eq('id', id);
-
-    if (error) throw createError({ statusCode: 500, message: 'Error al eliminar la categoría' });
-
-
+    if (error) throw createError({ statusCode: 500, message: 'Error al eliminar la categoría', cause: error.message });
 }
 
 
-/** Heleper Obtener categorias de padres especificos */
-async function getChilds(s: SupabaseClient, id: string): Promise<Category[]> {
-
-
-
-    const { data, error } = await s
-        .from('categories')
-        .select('*')
-        .eq('parent_id', id);
-
-    if (error) throw createError({ statusCode: 404, message: 'No se ha encontrado entidades relacionadas' })
-
-    return data ?? [];
-
-}
-
-/** Helper para saber si existe o no productos asociados  */
+/**
+ * Querie para comprobar si existe producto
+ * @param s SupabaseClient
+ * @param id string
+ */
 async function existsProducts(s: SupabaseClient, id: string) {
-
-
-
     const { data, error } = await s
-
         .from('categories_products')
         .select(`*`)
         .eq('category_id', id)
         .limit(1);
-
-
-
-
-    if (error) throw createError({ statusCode: 500, message: error.message })
+    if (error) throw createError({ statusCode: 500, message: 'No se ha encontrado el producto', cause: error.message })
 
     return data && data.length > 0
-
 }
 

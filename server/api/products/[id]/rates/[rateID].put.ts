@@ -1,23 +1,13 @@
-
-
 /** Endpoint para actualizar rate */
 export default eventHandler(async (e) => {
+    const id = getRouterParam(e, 'rateID');
+    if (!id) throw createError({ statusCode: 404, message: 'No se ha encontrado el ID' });
 
-    try {
-        const id = getRouterParam(e, 'rateID');
-
-        const body = await readBody<EditRate>(e);
-
-
-        const supabase = await initClient(e)
+    const body = await readBody<EditRate>(e);
 
 
-        await editRate(supabase, body, id);
-
-    } catch (error) {
-        throw error;
-    }
+    const supabase = await initClient(e)
 
 
-
+    await editRate(supabase, body, id);
 })
