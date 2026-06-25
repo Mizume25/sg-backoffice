@@ -1,5 +1,4 @@
-import type { NavigationMenuItem } from "@nuxt/ui";
-
+import type { NavigationMenuItem } from '#ui/types'
 
 /** Objetos para UX */
 

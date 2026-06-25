@@ -17,7 +17,7 @@ export { useLoginForm } from './auth/useLoginForm'
 export { useProducts } from './service/useProducts';
 export { useRateLogic } from'./service/useRateLogic';
 export { useImageLogic} from './service/useImageLogic'
-
+export { useOrderLogic } from './service/useOrderLogic';
 
 /** Formularios Store */
 export { useCategoryCreate } from './form/store/useCategoryCreate' 
