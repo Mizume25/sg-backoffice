@@ -1,10 +1,9 @@
 import { type UpdateProductSchema } from '~~/shared/schemas/products/edit';
-
+import type { FormSubmitEvent } from '@nuxt/ui'
 /*** Composable logica edit  */
 export const useProductEdit = (id: string) => {
 
   /** Items  */
-  const { confirm } = useConfirm();
   const toast = useToast();
 
   /** Objetos Necesarios */
@@ -99,8 +98,22 @@ export const useProductEdit = (id: string) => {
     } 
   }
 
+  const onProduct = async(e:FormSubmitEvent<UpdateProductSchema>) => {
+  try {
+
+    await $fetch<unknown>(`/api/products/${id}`, { method: 'PUT' } as any)
+
+    toast.add({ title:'Producto Modificado correctamente' , icon:'lucide:check'})
+    
+    
+  } catch (error) {
+     toast.add({ title:'No se pudo modificar el producto' , icon:'lucide:x'})
+  }
+}
 
 
 
-  return { FormProductState, product, isOpen, edit, showSection, parents, selectedParentId, merged , onCategories }
+
+
+  return { FormProductState, product, isOpen, edit, showSection, parents, selectedParentId, merged , onCategories , onProduct }
 }

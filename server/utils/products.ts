@@ -1,7 +1,7 @@
 /** Funciones para productos */
 import { type StoreProductSchema } from '~~/shared/schemas/products/create'
 import { SupabaseClient } from '@supabase/supabase-js';
-import { ProductRecord } from '~~/shared/types/definitons';
+import { EditProduct, ProductRecord } from '~~/shared/types/definitons';
 
 
 /** Crea Producto en conjunto a otras entidades
@@ -39,6 +39,23 @@ export async function createEntities(s: SupabaseClient, data: StoreProductSchema
 }
 
 /**
+ * Modificar Producto
+ * @param s SupabaseClient
+ * @param id string
+ * @param product EditProduct
+ */
+export async function editProduct(s : SupabaseClient , id: string , product: EditProduct) {
+    
+    const { error }  = await s
+    .from('products')
+    .update(product)
+    .eq('id' , id);
+
+    if(error) createError({ statusCode:404 , message: 'No se ha encontrado el producto' , cause:error.message})
+    
+}
+
+/**
  * Borra Entidades Conjuntas
  * @param SupabaseClient
  * @param id
@@ -56,7 +73,7 @@ export async function deleteEntitis(s: SupabaseClient, id: string) {
 
     /** Eliminamos finalmenete el producto */
     const { error } = await s
-        .from('product')
+        .from('products')
         .delete()
         .eq('id', id);
 

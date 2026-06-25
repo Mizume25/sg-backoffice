@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const toast = useToast();
+
 /** Props Componentes */
 const props = defineProps<{
   record: ProductRecord,
@@ -51,6 +53,21 @@ async function downloadPDF() {
   a.click()
 
   URL.revokeObjectURL(url);
+}
+
+/**
+ * Borrado de producto
+ * @param id string
+ */
+async function deleteProduct(id: string) {
+  try {
+     await $fetch<unknown>(`/api/products/${id}`, { method: 'DELETE' } as any)
+    toast.add({ title: 'Se elimino el producto perfectamente', icon: 'lucide:check' })
+  } catch (error) {
+
+    toast.add({ title: 'Se elimino el producto perfectamente', icon: 'lucide:x' })
+
+  }
 }
 
 
@@ -108,7 +125,7 @@ async function downloadPDF() {
 
     <!-- Borrar -->
     <UButton label="Eliminar" color="error" class="cursor-pointer flex-1 justify-center py-3 text-base font-semibold"
-      :to="`/home/products/${product.id}`" />
+      @click="deleteProduct(product.id)" />
 
     <!-- Descargar en PDF -->
     <UButton label="PDF" leading-icon="lucide:download" color="error"

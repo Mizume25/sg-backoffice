@@ -10,6 +10,7 @@ export const useRateEdit = (product_id: string) => {
   const rates = computed(() => ProductRecord.findProduct(product_id)).value?.rates;
   const rateStatus = ref(false);
   const { checkValues } = useRateLogic();
+  const { CreateRate } = toRefs(useRateLogic());
 
 
   /** Esuqmea de Fomrulario */
@@ -21,17 +22,10 @@ export const useRateEdit = (product_id: string) => {
     price: rates![0]!.price,
     start_date: rates![0]!.start_date!.split('T')[0],
     end_date: rates![0]!.end_date!.split('T')[0],
-    product_id: product_id
   });
 
- 
-  /** Estado de Creacion */
-  const CreateRate: Ref<StoreRateSchema | undefined> = ref({
-    price: 0,
-    start_date: '',
-    end_date: '',
-    product_id: product_id
-  });
+
+
 
   /** Actualizacion de estados */
   const RateState = computed(() => rateStatus.value ? EditRate.value : CreateRate.value)
@@ -121,7 +115,7 @@ export const useRateEdit = (product_id: string) => {
   }
 
 
- 
+
 
   return {
     rates, deleteRate, rateStatus, RateSchema, RateState, EditRate, CreateRate, changeRate, actionRate

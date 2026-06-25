@@ -14,7 +14,7 @@ const { inputRef, triggerInput, onFileChange, onDrop, image } = useImageLogic();
 
 
 /** Logica de Tarifas */
-const { rate, rates, addRate, removeRate } = useRateLogic();
+const { CreateRate, rates, addRate, removeRate } = useRateLogic();
 
 /** Logica de rates */
 const isOpen = ref(false);
@@ -96,11 +96,11 @@ const onError = (err: FormErrorEvent) => console.log(err)
                     <UFormField label="Precio" name="price">
                         <div class="flex flex-row items-center gap-3">
                             <UInput class="w-24" trailing-icon="lucide:euro" type="number" placeholder="0.00"
-                                v-model="rate.price" />
+                                v-model="CreateRate.price" />
 
                             <div class="flex flex-col gap-2">
-                                <UInput class="w-36" type="date" v-model="rate.start_date" />
-                                <UInput class="w-36" type="date" v-model="rate.end_date" />
+                                <UInput class="w-36" type="date" v-model="CreateRate.start_date" />
+                                <UInput class="w-36" type="date" v-model="CreateRate.end_date" />
                             </div>
                         </div>
                     </UFormField>

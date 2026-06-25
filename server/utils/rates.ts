@@ -12,8 +12,7 @@ export async function createRates(s: SupabaseClient , data:CreateRate[]) {
 
 
 /** Queries para crear rates */
-export async function editRate(s: SupabaseClient , data:EditRate , id:string | undefined) {
-    if(!id) return 
+export async function editRate(s: SupabaseClient , data:EditRate , id:string) {
 
     const { error } = await s
     .from('rates')

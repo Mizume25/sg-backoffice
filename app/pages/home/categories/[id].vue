@@ -16,12 +16,7 @@ const { category, FormState, parent, parents, allow, loading, onUpdate, onDelete
 
 
 /** Vigilamos el allow */
-watch(allow, (newVal) => {
-
-  FormState.parent_id = newVal ? undefined : parents.value?.[0]?.id
-  console.log(FormState.parent_id);
-}
-)
+watch(allow, (newVal) => FormState.parent_id = newVal ? undefined : parents.value?.[0]?.id)
 
 const isOpen = ref(false);
 
@@ -87,7 +82,7 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
             color="warning" :loading="loading" />
 
           <UButton class="w-30 h-10 flex items-center justify-center cursor-pointer" label="Eliminar" color="error"
-            @click="isOpen = !isOpen" />
+            @click="onDelete(category?.id)" />
         </div>
 
 
@@ -100,27 +95,9 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
 
 
     <!--Modal de confirmacion de eliminado-->
-    <UModal v-model:open="isOpen">
-      <template #title>
-        <h2>Eliminar Categoria</h2>
-      </template>
-      <template #body>
-        <p> ¿Estas seguro de querer eliminar la categoria <span class="italic">"{{ category?.name }}" ? </span></p>
-        <p v-if="category?.parent_id == null" class="text-sm">Se eliminaran todas las categorias hijas </p>
-        <div class="mt-2 w-full h-10 flex flex-row gap-4">
-          <UButton class="w-30 h-8 cursor-pointer mt-5 flex items-center justify-center " label="Confirmar"
-            @click="onDelete(category?.id); isOpen = false" />
-          <UButton class="w-30 h-8 cursor-pointer mt-5 flex items-center justify-center " label="Cancelar" color="error"
-            @click="isOpen = !isOpen" />
-        </div>
-
-      </template>
-    </UModal>
+    <ConfirmModal />
 
 
 
   </FormLayout>
 </template>
-
-
-<style lang="scss" scoped></style>
