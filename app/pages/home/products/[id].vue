@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ProductSchema } from '~~/shared/schemas/products/edit'
+import { ProductSchema , type UpdateProductSchema} from '~~/shared/schemas/products/edit'
+
 /** Titulo */
 definePageMeta({
   title: `Editar producto`
@@ -12,7 +13,7 @@ definePageMeta({
 const route = useRoute()
 const id = route.params.id as string;
 
-const { FormProductState, product, isOpen, edit, showSection, parents, selectedParentId, merged , onCategories } = useProductEdit(id);
+const { FormProductState, product, isOpen, edit, showSection, parents, selectedParentId, merged , onCategories, onProduct } = useProductEdit(id);
 
 const { rates, deleteRate, rateStatus, RateSchema, RateState, changeRate, actionRate } = useRateEdit(id);
 
@@ -35,12 +36,16 @@ const closeSection = () => {
   <FormLayout>
 
     <!--- Formulario -->
-    <FormCard :title="`Editar ${product?.name}`" v-if="FormProductState && product">
-      <UForm :schema="ProductSchema" :state="FormProductState" class="w-full">
+    <FormCard :title="`Editar ${product?.name}`"
+    
+    v-if="FormProductState && product"  >
+
+      <UForm :schema="ProductSchema" :state="FormProductState" class="w-full" @submit="onProduct">
         <!--- Name --->
         <UFormField label="Name" name="name">
           <UInput class="w-full mb-3" v-model="FormProductState.name" />
         </UFormField>
+        
         <!--- Code --->
         <UFormField label="Code" name="code">
           <UInput class="w-full mb-3" v-model="FormProductState.code" />
@@ -54,7 +59,7 @@ const closeSection = () => {
 
         <div class="p-4 flex flex-row items-center justify-start mb-1 gap-3">
           <UButton class="w-30 h-10 cursor-pointer" color="warning" label="Actualizar" leading-icon="lucide:pen"
-            :disabled="isOpen" />
+            :disabled="isOpen"  type="submit"/>
         </div>
 
 
@@ -124,7 +129,7 @@ const closeSection = () => {
 
 
         <!--- Tabla de Valores-->
-        <TableRate editable>
+        <TableRate deletable>
           <tr v-for="rate in rates" class="border-t border-blue-900/40 text-blue-100 transition-colors text-center "
             :class="rateStatus ? 'cursor-pointer hover:bg-blue-800  duration-100 ease-in-out hover:scale-105' : ''"
             @click="changeRate(rate.id, rateStatus)">

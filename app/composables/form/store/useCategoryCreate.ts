@@ -5,7 +5,9 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 export const useCategoryCreate = () => {
 
 
-
+  /** Obtenemos lista de categorias  */
+  const store = useCategoriesStore()
+  const { parents } = storeToRefs(store);
   const toast = useToast()
 
 
@@ -44,13 +46,13 @@ export const useCategoryCreate = () => {
 
       await useCategoriesApi().postCategory(category);
 
-      toast.add({ title: 'Categoria Creada Correctamente', color: 'success' })
+      toast.add({ title: 'Categoria Creada Correctamente', color: 'success', icon: 'lucide:check' })
       clean()
 
 
     } catch (e) {
       loading.value = false;
-      toast.add({ title: 'Hubo problemas en crear la categoria', color: 'error' })
+      toast.add({ title: 'Hubo problemas en crear la categoria', color: 'error', icon: 'lucide:x' })
     }
 
 
@@ -70,11 +72,17 @@ export const useCategoryCreate = () => {
   }
 
 
+  /** Estructura de control */
+  let allow = ref(true);
+
+
   return {
     FormState,
     loading,
     onSubmit,
-    makeCode
+    makeCode,
+    parents,
+    allow
   }
 
 }

@@ -6,12 +6,9 @@ definePageMeta({
   title: "Gestion de Categorias"
 })
 
-/** Logica General */
-const { parents, allow } = useCategories();
-
 
 /** Funciones Fromulario */
-const { FormState, loading, onSubmit, makeCode } = useCategoryCreate()
+const { FormState, loading, onSubmit, makeCode, parents, allow } = useCategoryCreate()
 
 
 /** Si activa el padre empeiza el primera valor si no es nulo */
@@ -76,7 +73,8 @@ const isOpen = ref(false);
     </FormCard>
     <!-- Lista de categorias para editar -->
     <SideBarRight :is-open="isOpen" content="w-[30%] max-md:w-[100%] h-full overflow-y-auto">
-      <UButton icon="lucide:x" color="error" class="w-10 lg:hidden flex flex-row justify-center items-center cursor-pointer" @click="isOpen = !isOpen"  />
+      <UButton icon="lucide:x" color="error"
+        class="w-10 lg:hidden flex flex-row justify-center items-center cursor-pointer" @click="isOpen = !isOpen" />
       <div class="p-4 flex flex-col gap-3">
         <h2 class="text-blue-300 font-bold text-xl sm:text-2xl mb-2">Editar Categoria</h2>
 

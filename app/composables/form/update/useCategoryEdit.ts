@@ -1,11 +1,11 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
-import type { Reactive } from 'vue';
 import { type UpdateCategorySchema } from '~~/shared/schemas/categories/edit';
 
 /** Composable para edit  */
 export const useCategoryEdit = (id: string) => {
 
   const toast = useToast();
+  const { confirm } = useConfirm();
 
   /** Categoria espcífica  */
   const CategoryStore = useCategoriesStore();
@@ -51,7 +51,7 @@ export const useCategoryEdit = (id: string) => {
     /** Peticiones al endpoint  */
     try {
 
-      useCategoriesApi().updateCategoy(category.value?.id , update);
+      useCategoriesApi().updateCategoy(category.value?.id, update);
 
       toast.add({ title: 'Categoria Editada Correctamente', color: 'success' })
       loading.value = false
@@ -69,19 +69,24 @@ export const useCategoryEdit = (id: string) => {
 
   /** Funcion para eliminar categoria */
   const onDelete = async (id: string | undefined) => {
+    const ok = await confirm({
+      title: 'Borrar Categoria',
+      description: `¿Deseas eliminar este tarifa? Esta acción no se puede deshacer.`
+    });
+
+    if (!ok) return
+
 
     try {
 
-
       useCategoriesApi().deleteCategory(id);
 
-      toast.add({ title: 'Categoria Eliminada Correctamente', color: 'success' })
+      toast.add({ title: 'Categoria Eliminada Correctamente', color: 'success', icon: 'lucide:check' })
 
       navigateTo('/home/categories/create');
 
     } catch (error) {
-      console.log(error)
-      toast.add({ title: 'Ha habido un problema', color: 'error' })
+      toast.add({ title: 'Ha habido un problema', color: 'error', icon: 'lucide:x' })
     }
 
 
