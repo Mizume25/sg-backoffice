@@ -1,21 +1,21 @@
+/*** Composable de edicion de imagenes de producto */
 export const useImageEdit = (product_id: string) => {
 
+   /** Reaprovehcmaos la logica de una imagen */
+   const { triggerInput, onFileChange, onDrop, image, inputRef, clearimage } = useImageLogic();
 
-   const { triggerInput, onFileChange, onDrop, image, inputRef, clearimage
-   } = useImageLogic();
 
-   const { postImage } = useProductsApi();
 
-   /*** Imagenes Inciales */
+   /*** Valores Inciales */
    const toast = useToast();
-   const ProductRecord = useProductsStore();
-   const images = computed(() => ProductRecord.findProduct(product_id)).value?.product_images;
-   const code = computed(() => ProductRecord.findProduct(product_id)).value?.code;
-   const URL = IMAGE_URL + code + '/';
+   const { data: product } = useProductsApi().products.useOne(product_id);
+   const images = computed(() => product.value?.product_images)
+   const code = computed(() => product.value?.code)
+   const URL = IMAGE_URL + code.value + '/';
 
 
 
-   /** Guardar Imagen */
+   /** Guardar Imagen en el momento en el que la sube*/
    watch(image.value, async (newImage) => {
 
       if (!newImage) return;
@@ -28,7 +28,7 @@ export const useImageEdit = (product_id: string) => {
       try {
 
 
-         await postImage(fd, product_id);
+         await useProductsApi().images.post(fd, product_id);
 
 
          toast.add({ title: 'Imagen Subida correctamente', color: 'info', icon: 'lucide:info' })
@@ -44,15 +44,20 @@ export const useImageEdit = (product_id: string) => {
 
    })
 
+   /*** Borrar imagen especifica  */
    const removeImage = async (id: string) => {
+
+      if (images.value!.length < 2) {
+         toast.add({ title: 'Debe existir al menos 1 imagen', color: 'info', icon: 'lucide:info' })
+         return;
+      }
       try {
 
-         await $fetch(`/api/products/${product_id}/images/${id}`, { method: 'DELETE' });
+         await useProductsApi().images.delete(product_id, id);
 
          toast.add({ title: 'Se ha borrado correctamente la imagen', color: 'success', icon: 'lucide:trash' })
 
       } catch (error) {
-         console.log(error)
          toast.add({ title: 'Ha habaido un problema', color: 'error', icon: 'lucide:trash' })
       }
    }

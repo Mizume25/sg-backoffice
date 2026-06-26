@@ -2,30 +2,11 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import { type UpdateCategorySchema } from '~~/shared/schemas/categories/edit';
 
 /** Composable para edit  */
-export const useCategoryEdit = (id: string) => {
+export const useCategoryEdit = (category_id: string) => {
 
   const toast = useToast();
   const { confirm } = useConfirm();
-
-  /** Categoria espcífica  */
-  const CategoryStore = useCategoriesStore();
-  const { findCategory, getParent } = useCategoriesStore();
-  const { parents } = storeToRefs(CategoryStore);
-  const category: Ref<CategoryRecord | undefined> = ref(findCategory(id));
-
-
-  /** Logica de Subcategorica  */
-  const parent: Ref<CategoryRecord | undefined> = ref(getParent(category.value?.parent_id));
-
-
-  /** Formulario de estado mediante la categoria  */
-  const FormState = reactive<EditCategory>({
-    name: category.value?.name,
-    code: category.value?.code,
-    description: category.value?.description,
-    parent_id: category.value?.parent_id
-  })
-
+  
 
 
   /** Estructura de control */
@@ -51,14 +32,10 @@ export const useCategoryEdit = (id: string) => {
     /** Peticiones al endpoint  */
     try {
 
-      useCategoriesApi().updateCategoy(category.value?.id, update);
+      useCategoriesApi().categories.put(category_id, update);
 
       toast.add({ title: 'Categoria Editada Correctamente', color: 'success' })
       loading.value = false
-
-
-
-
 
     } catch (e) {
       toast.add({ title: 'Algo ha fallado', color: 'error' })
@@ -79,7 +56,7 @@ export const useCategoryEdit = (id: string) => {
 
     try {
 
-      useCategoriesApi().deleteCategory(id);
+      await useCategoriesApi().categories.delete(id);
 
       toast.add({ title: 'Categoria Eliminada Correctamente', color: 'success', icon: 'lucide:check' })
 
@@ -96,10 +73,6 @@ export const useCategoryEdit = (id: string) => {
 
 
   return {
-    category,
-    FormState,
-    parent,
-    parents,
     allow,
     loading,
     onUpdate,

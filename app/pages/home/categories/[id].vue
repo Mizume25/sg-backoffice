@@ -2,7 +2,8 @@
 
 import { Schema } from '~~/shared/schemas/categories/edit'
 import { type FormErrorEvent } from '@nuxt/ui'
-/** Titulo */
+
+/** Titlo de la página */
 definePageMeta({
   title: `Editar categoria`
 })
@@ -11,19 +12,39 @@ definePageMeta({
 const route = useRoute()
 const id = route.params.id as string;
 
+/** Lista de acategorias y categoria especifica */
+const { data: category } = await useCategoriesApi().categories.get(id);
+const { data: categories } = await useCategoriesApi().categories.list();
+
+
 /** Logica General  */
-const { category, FormState, parent, parents, allow, loading, onUpdate, onDelete } = useCategoryEdit(id);
+const { allow, loading, onUpdate, onDelete } = useCategoryEdit(id);
+
+/** Categorias padre generales y especifica */
+const parents = computed(() => categories.value?.filter((p) => p.parent_id == null));
+const parent: Ref<CategoryRecord | undefined> = ref(categories.value?.find((p) => p.id == category.value?.parent_id));
 
 
-/** Vigilamos el allow */
+/** Estado de Formulario */
+const FormState = reactive<EditCategory>({
+  name: category.value?.name,
+  code: category.value?.code,
+  description: category.value?.description,
+  parent_id: category.value?.parent_id
+})
+
+
+
 watch(allow, (newVal) => FormState.parent_id = newVal ? undefined : parents.value?.[0]?.id)
 
-const isOpen = ref(false);
+
 
 
 function onError(event: FormErrorEvent) {
   console.log('errores de validación:', event.errors)
 }
+
+
 
 
 const back = category.value?.parent_id == null ? '/home/categories/create' : `/home/categories/${category.value.parent_id}`;
@@ -61,7 +82,7 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
 
         </UFormField>
 
-        <!-- Campos de categoria padre -->
+        <!-- Campos de subcategorias -->
         <UFormField v-else-if="parents && parent" label="Categoria Padre" class="mb-2">
           <USelect :items="parents" label-key="name" value-key="id" v-model="FormState.parent_id!" class="w-full mb-2"
             leading-icon="lucide:tag" :disabled="allow" />

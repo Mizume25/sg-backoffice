@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Schema } from '~~/shared/schemas/categories/create';
-
+  
 /** Titulo */
 definePageMeta({
   title: "Gestion de Categorias"
@@ -8,8 +8,14 @@ definePageMeta({
 
 
 /** Funciones Fromulario */
-const { FormState, loading, onSubmit, makeCode, parents, allow } = useCategoryCreate()
+const { FormState, loading, onSubmit, makeCode, allow } = useCategoryCreate();
 
+/** Refrescado de variables */
+const { data: categories } = await useCategoriesApi().categories.list();
+
+
+
+const parents = computed(() => categories.value?.filter((p) => p.parent_id == null))
 
 /** Si activa el padre empeiza el primera valor si no es nulo */
 watch(allow, (newVal) => FormState.parent_id = newVal ? undefined : parents.value[0]?.id);
@@ -23,10 +29,6 @@ watch(() => FormState.name, (newVal) => FormState.code = makeCode(newVal))
 
 /** Toggle Sidebar de edits */
 const isOpen = ref(false);
-
-
-
-
 
 
 </script>

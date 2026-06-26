@@ -61,15 +61,12 @@ async function downloadPDF() {
  */
 async function deleteProduct(id: string) {
   try {
-     await $fetch<unknown>(`/api/products/${id}`, { method: 'DELETE' } as any)
+    await useProductsApi().products.delete(id);
     toast.add({ title: 'Se elimino el producto perfectamente', icon: 'lucide:check' })
   } catch (error) {
-
     toast.add({ title: 'Se elimino el producto perfectamente', icon: 'lucide:x' })
-
   }
 }
-
 
 </script>
 

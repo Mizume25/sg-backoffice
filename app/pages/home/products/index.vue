@@ -80,7 +80,7 @@ const openSide = () => isOpen.value = isOpen.value == false ? true : true;
               <h2 class="text-xl text-blue-300 italic font-semibold">Selecciona un producto</h2>
             </div>
 
-            <Record v-else :record="record" style-title="text-white font-bold text-2xl mb-2"
+            <Product v-else :record="record" style-title="text-white font-bold text-2xl mb-2"
               subtitles="mt-3 italic mb-3" image="relative h-[280px] w-full shrink-0 rounded-2xl bg-white overflow-hidden shadow-2xl"
               content-tarifas="flex flex-col gap-2 w-full"
               description="text-white text-sm font-light leading-relaxed break-all"

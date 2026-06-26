@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProductSchema , type UpdateProductSchema} from '~~/shared/schemas/products/edit'
+import { ProductSchema, type UpdateProductSchema } from '~~/shared/schemas/products/edit'
 
 /** Titulo */
 definePageMeta({
@@ -12,8 +12,9 @@ definePageMeta({
 /** uuids de categoria */
 const route = useRoute()
 const id = route.params.id as string;
+const { data: product } = await useProductsApi().products.get(id);
 
-const { FormProductState, product, isOpen, edit, showSection, parents, selectedParentId, merged , onCategories, onProduct } = useProductEdit(id);
+const { FormProductState, isOpen, edit, showSection, parents, selectedParentId, merged, onCategories, onProduct } = useProductEdit(id);
 
 const { rates, deleteRate, rateStatus, RateSchema, RateState, changeRate, actionRate } = useRateEdit(id);
 
@@ -36,16 +37,14 @@ const closeSection = () => {
   <FormLayout>
 
     <!--- Formulario -->
-    <FormCard :title="`Editar ${product?.name}`"
-    
-    v-if="FormProductState && product"  >
+    <FormCard :title="`Editar ${product?.name}`">
 
       <UForm :schema="ProductSchema" :state="FormProductState" class="w-full" @submit="onProduct">
         <!--- Name --->
         <UFormField label="Name" name="name">
           <UInput class="w-full mb-3" v-model="FormProductState.name" />
         </UFormField>
-        
+
         <!--- Code --->
         <UFormField label="Code" name="code">
           <UInput class="w-full mb-3" v-model="FormProductState.code" />
@@ -59,7 +58,7 @@ const closeSection = () => {
 
         <div class="p-4 flex flex-row items-center justify-start mb-1 gap-3">
           <UButton class="w-30 h-10 cursor-pointer" color="warning" label="Actualizar" leading-icon="lucide:pen"
-            :disabled="isOpen"  type="submit"/>
+            :disabled="isOpen" type="submit" />
         </div>
 
 
@@ -81,9 +80,7 @@ const closeSection = () => {
 
     </FormCard>
 
-    <div v-else class="flex justify-center p-4">
-      <UIcon name="i-heroicons-arrow-path" class="animate-spin h-20 w-20 text-primary" size="lg" />
-    </div>
+
 
 
 
@@ -200,7 +197,8 @@ const closeSection = () => {
           </UFormField>
 
 
-          <UButton  label="Guardar" leading-icon="lucide:download" color="warning" class="w-13 h-8 flex flex-col items-center justify-center cursor-pointer" @click="onCategories"    />
+          <UButton label="Guardar" leading-icon="lucide:download" color="warning"
+            class="w-13 h-8 flex flex-col items-center justify-center cursor-pointer" @click="onCategories" />
 
 
         </UForm>
