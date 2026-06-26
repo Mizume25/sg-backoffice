@@ -23,8 +23,8 @@ export const Schema = z.object({
     name: z.string().min(1, 'Necesitas un nombre').max(25, 'Maximo de caracteres'),
     code: z.string().min(1, 'Necesitas un codigo'),
     description: z.string().min(10, 'Necesitas una descripcion mas larga').max(200, 'Maximo de caracteres'),
-    category:z.uuid(),
-    subcategory:z.uuid(),
+    category: z.uuid({ message: 'Necesitas una categoria padre inicial' }),
+    subcategory: z.uuid({ message: 'Necesitas una subcategoria inicial' }),
     rates:z.array(ratesSchemaCreate),
     
 })

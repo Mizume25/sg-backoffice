@@ -36,8 +36,10 @@ export const useProductEdit = (product_id: string) => {
 
 
   const categories = computed(() => product.value?.categories_products);
-  
-  const { allcategories, parents } = useCategoriesStore();
+
+
+  const { data: allcategories } = useCategoriesApi().categories.list();
+  const parents = computed(() => allcategories.value?.filter((p) => p.parent_id == null));
 
   // padre inicial del producto
   const ownParent = computed(() => categories.value?.find(p => p.categories?.parent_id == null));
@@ -54,7 +56,7 @@ export const useProductEdit = (product_id: string) => {
 
   // subcategorías del padre seleccionado — reactivo
   const subcategories = computed(() =>
-    allcategories.filter(p => p.parent_id === selectedParentId.value)
+    allcategories.value?.filter(p => p.parent_id === selectedParentId.value)
   );
 
   // merged reactivo: depende del padre seleccionado
@@ -69,6 +71,7 @@ export const useProductEdit = (product_id: string) => {
 
   // recalcula los checkboxes cada vez que cambia el padre (y por tanto subcategories)
   watch(subcategories, (subs) => {
+    if (!subs) return;
     merged.value = subs.map(sub => ({
       label: sub.name,
       value: sub.id,
@@ -79,41 +82,43 @@ export const useProductEdit = (product_id: string) => {
 
 
   const onCategories = async () => {
-
+    if (!selectedParentId.value) {
+      toast.add({ title: 'Selecciona una categoría padre', color: 'error' , icon:'lucide:x' })
+      return
+    }
     try {
 
-      await $fetch(`/api/products/${product_id}/categories`, {
-        method: 'PUT', body: {
-          parent: selectedParentId.value,
-          childs: merged.value.filter(m => m.checked).map(m => m.value)
-        }
+      const categories: CategoryIDS = {
+        parent: selectedParentId.value,  
+        childs: merged.value.filter(m => m.checked).map(m => m.value),
+      }
 
-      })
+      useProductsApi().products.putCategories(product_id , categories);
+      
 
-
-      toast.add({ title:'Se ha modificado las categorias relacionadas correctamente' , color:'primary'})
+      toast.add({ title: 'Se ha modificado las categorias relacionadas correctamente', color: 'primary' })
 
     } catch (error) {
-       toast.add({ title:'Ha habido un problema en modficiar las categorias del producto' , color:'error'})
-    } 
+      toast.add({ title: 'Ha habido un problema en modficiar las categorias del producto', color: 'error' })
+    }
   }
 
-  const onProduct = async(e:FormSubmitEvent<UpdateProductSchema>) => {
-  try {
+  const onProduct = async (e: FormSubmitEvent<UpdateProductSchema>) => {
+    try {
 
-    await useProductsApi().products.put(e.data , product_id);
-    
-    toast.add({ title:'Producto Modificado correctamente' , icon:'lucide:check'})
-    
-    
-  } catch (error) {
-     toast.add({ title:'No se pudo modificar el producto' , icon:'lucide:x'})
+      await useProductsApi().products.put(e.data, product_id);
+
+      toast.add({ title: 'Producto Modificado correctamente', icon: 'lucide:check' })
+
+
+    } catch (error) {
+      toast.add({ title: 'No se pudo modificar el producto', icon: 'lucide:x' })
+    }
   }
-}
 
 
 
 
 
-  return { FormProductState, isOpen, edit, showSection, parents, selectedParentId, merged , onCategories , onProduct }
+  return { FormProductState, isOpen, edit, showSection, parents, selectedParentId, merged, onCategories, onProduct }
 }

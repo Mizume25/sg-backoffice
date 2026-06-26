@@ -4,9 +4,7 @@ import type { StoreOrderSchema } from '~~/shared/schemas/orders/create';
 export const useOrderLogic = () => {
 
 
-  const ProductStore = useProductsStore();
-  const { allproducts } = storeToRefs(ProductStore);
-  const { findProduct } = useProductsStore();
+  const { data: products } = useProductsApi().products.useList();
   const toast = useToast();
 
   /** Estado incial */
@@ -19,7 +17,7 @@ export const useOrderLogic = () => {
 
   /** Calculamos segun unidades */
   watch(() => OrderState.units, (NewUnit) => {
-    const producto = findProduct(OrderState.product_id);
+    const producto = products.value!.find((p) => p.id == OrderState.product_id );
 
     let amount = producto!.rates[0]!.price * OrderState.units
     OrderState.amount = Number(amount.toFixed(2))
@@ -44,7 +42,7 @@ export const useOrderLogic = () => {
 
   return {
     OrderState,
-    allproducts,
+    products,
     onSubmit
   }
 

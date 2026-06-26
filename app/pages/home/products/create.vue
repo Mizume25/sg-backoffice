@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { Schema } from '~~/shared/schemas/products/create'
 import { type FormErrorEvent } from '@nuxt/ui'
+
 /** Titulo */
 definePageMeta({
     title: "Añadir Productos"
 })
 
+
+const toast = useToast();
 /** Logica de fomrulario general */
 const { parents, FormState, subcategories, loading, onSubmit, code } = useProductCreate();
 
@@ -56,7 +59,11 @@ watch(rates, (newRates) => {
 
 
 
-const onError = (err: FormErrorEvent) => console.log(err)
+const onError = (err: FormErrorEvent) => {
+    err.errors.forEach((e) => {
+        toast.add({ title: e.name, icon: 'lucide:info' , color:'info' })
+    })
+}
 
 
 </script>

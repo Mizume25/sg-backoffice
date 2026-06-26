@@ -6,7 +6,7 @@ definePageMeta({
 })
 
 
-const { OrderState , allproducts , onSubmit} = useOrderLogic();
+const { OrderState , products , onSubmit} = useOrderLogic();
 </script>
 
 <template>
@@ -54,7 +54,7 @@ const { OrderState , allproducts , onSubmit} = useOrderLogic();
           name="product_id"
           :ui="{ label: 'font-medium text-highlighted' }"
         >
-          <USelect placeholder="Selecciona un producto" class="w-full cursor-pointer" :items="allproducts" value-key="id" label-key="name" v-model="OrderState.product_id"  />
+          <USelect placeholder="Selecciona un producto" class="w-full cursor-pointer" :items="products" value-key="id" label-key="name" v-model="OrderState.product_id"  />
         </UFormField>
 
         <UFormField 
