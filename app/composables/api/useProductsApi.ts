@@ -39,6 +39,12 @@ export const useProductsApi = () => {
     delete: async (id: string) => {
       await $fetch<unknown>(`/api/products/${id}`, { method: 'DELETE' } as any)
       await refreshNuxtData(PROD_KEY.list);
+    },
+
+    putCategories: async (product_id: string, categories: CategoryIDS) => {
+      await $fetch(`/api/products/${product_id}/categories`, {method: 'PUT', body: categories})
+      await refreshNuxtData(PROD_KEY.list);
+      await refreshNuxtData(PROD_KEY.obj(product_id));
     }
   }
 
@@ -49,53 +55,53 @@ export const useProductsApi = () => {
 
 
   const rates = {
-    post: async (product_id: string, data: StoreRateSchema) => {
-      await $fetch(`/api/products/${product_id}/rates/`, { method: 'POST', body: data })
-      await Promise.all([
-        refreshNuxtData(PROD_KEY.list),
-        refreshNuxtData(PROD_KEY.obj(product_id)),
-      ])
-    },
+      post: async (product_id: string, data: StoreRateSchema) => {
+        await $fetch(`/api/products/${product_id}/rates/`, { method: 'POST', body: data })
+        await Promise.all([
+          refreshNuxtData(PROD_KEY.list),
+          refreshNuxtData(PROD_KEY.obj(product_id)),
+        ])
+      },
 
 
-    put: async (product_id: string, id: string | undefined, data: EditRateSchema) => {
+      put: async (product_id: string, id: string | undefined, data: EditRateSchema) => {
 
-      await $fetch(`/api/products/${product_id}/rates/${id}`, { method: 'PUT', body: data })
-      await Promise.all([
-        refreshNuxtData(PROD_KEY.list),
-        refreshNuxtData(PROD_KEY.obj(product_id)),
-      ])
+        await $fetch(`/api/products/${product_id}/rates/${id}`, { method: 'PUT', body: data })
+        await Promise.all([
+          refreshNuxtData(PROD_KEY.list),
+          refreshNuxtData(PROD_KEY.obj(product_id)),
+        ])
 
 
-    },
+      },
 
-    delete: async (product_id: string, id: string) => {
-      await $fetch(`/api/products/${product_id}/rates/${id}`, { method: 'DELETE' })
-      await Promise.all([
-        refreshNuxtData(PROD_KEY.list),
-        refreshNuxtData(PROD_KEY.obj(product_id)),
-      ])
+      delete: async (product_id: string, id: string) => {
+        await $fetch(`/api/products/${product_id}/rates/${id}`, { method: 'DELETE' })
+        await Promise.all([
+          refreshNuxtData(PROD_KEY.list),
+          refreshNuxtData(PROD_KEY.obj(product_id)),
+        ])
+      }
+
     }
 
-  }
-
   const images = {
-    post: async (data: FormData, product_id: string) => {
-      await $fetch(`/api/products/${product_id}/images/`, { method: 'POST', body: data })
-      await Promise.all([
-        refreshNuxtData(PROD_KEY.list),
-        refreshNuxtData(PROD_KEY.obj(product_id)),
-      ])
-    },
-    delete: async (product_id: string, id: string) => {
-      await $fetch(`/api/products/${product_id}/images/${id}`, { method: 'DELETE' })
-       await Promise.all([
-        refreshNuxtData(PROD_KEY.list),
-        refreshNuxtData(PROD_KEY.obj(product_id)),
-      ])
-    },
+      post: async (data: FormData, product_id: string) => {
+        await $fetch(`/api/products/${product_id}/images/`, { method: 'POST', body: data })
+        await Promise.all([
+          refreshNuxtData(PROD_KEY.list),
+          refreshNuxtData(PROD_KEY.obj(product_id)),
+        ])
+      },
+      delete: async (product_id: string, id: string) => {
+        await $fetch(`/api/products/${product_id}/images/${id}`, { method: 'DELETE' })
+        await Promise.all([
+          refreshNuxtData(PROD_KEY.list),
+          refreshNuxtData(PROD_KEY.obj(product_id)),
+        ])
+      },
 
-  }
+    }
 
 
 
@@ -106,9 +112,9 @@ export const useProductsApi = () => {
 
 
   return {
-    products,
-    rates,
-    images,
-  }
+      products,
+      rates,
+      images,
+    }
 
-}
+  }

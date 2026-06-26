@@ -1,13 +1,10 @@
-
-
 /**
  * Variables reactivas de products.index
  * @returns filter, order , orderBY , productID
  */
 export const useProducts = () => {
 
-  /** Obtenemos lista de productos */
-  const ProductStore = useProductsStore();
+ 
 
   const { data: allproducts } = useProductsApi().products.list();
 
@@ -19,7 +16,7 @@ export const useProducts = () => {
 
   /** Listas reactivas | Tipos de Filtro & Tipos de Orden */
   const order =  ['Defecto', 'Nombre A-Z']
-  const parents = computed(() => ProductStore.allCategoryParents(allproducts.value));
+  const parents = computed(() => allCategoryParents(allproducts.value));
   const items = ['Todos', ...parents.value] // "Todos" como filtro de categoria
 
 

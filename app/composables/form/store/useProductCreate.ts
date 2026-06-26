@@ -5,8 +5,8 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 export const useProductCreate = () => {
 
   /** Variables que necesitaremos */
-  const store = useCategoriesStore();
-  const { parents } = storeToRefs(store);
+  const { data: allcategories } = useCategoriesApi().categories.list();
+  const parents = computed(() => allcategories.value?.filter((p) => p.parent_id == null));
 
 
   /** Helper para obtener un codigo  */
@@ -31,15 +31,15 @@ export const useProductCreate = () => {
     name: '',
     code: '',
     description: '',
-    category: parents?.value?.[0]?.id ?? '',
-    subcategory: parents?.value?.[0]?.categories[0]?.id ?? '',
+    category: '',
+    subcategory: '',
     rates: [],
   }
 
   /** Estado reactivo */
   const FormState = reactive<StoreProductSchema>({ ...INIT_STATE });
 
-  const parent = computed(() => store.findCategory(FormState.category))
+  const parent = computed(() => parents.value?.find((p) => p.id === FormState.category))
 
   const subcategories = computed(() => parent.value?.categories);
 
