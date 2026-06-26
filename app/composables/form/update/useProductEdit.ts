@@ -1,14 +1,14 @@
 import { type UpdateProductSchema } from '~~/shared/schemas/products/edit';
 import type { FormSubmitEvent } from '@nuxt/ui'
 /*** Composable logica edit  */
-export const useProductEdit = (id: string) => {
+export const useProductEdit = (product_id: string) => {
 
   /** Items  */
   const toast = useToast();
 
   /** Objetos Necesarios */
-  const ProductRecord = useProductsStore();
-  const product = computed(() => ProductRecord.findProduct(id))
+
+  const { data: product } = useProductsApi().products.useOne(product_id);
 
 
   /*** Estado de Fomrulario */
@@ -82,7 +82,7 @@ export const useProductEdit = (id: string) => {
 
     try {
 
-      await $fetch(`/api/products/${id}/categories`, {
+      await $fetch(`/api/products/${product_id}/categories`, {
         method: 'PUT', body: {
           parent: selectedParentId.value,
           childs: merged.value.filter(m => m.checked).map(m => m.value)
@@ -101,8 +101,8 @@ export const useProductEdit = (id: string) => {
   const onProduct = async(e:FormSubmitEvent<UpdateProductSchema>) => {
   try {
 
-    await $fetch<unknown>(`/api/products/${id}`, { method: 'PUT' } as any)
-
+    await useProductsApi().products.put(e.data , product_id);
+    
     toast.add({ title:'Producto Modificado correctamente' , icon:'lucide:check'})
     
     
@@ -115,5 +115,5 @@ export const useProductEdit = (id: string) => {
 
 
 
-  return { FormProductState, product, isOpen, edit, showSection, parents, selectedParentId, merged , onCategories , onProduct }
+  return { FormProductState, isOpen, edit, showSection, parents, selectedParentId, merged , onCategories , onProduct }
 }

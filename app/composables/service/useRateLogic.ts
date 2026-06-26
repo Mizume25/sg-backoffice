@@ -1,11 +1,13 @@
 import type { StoreRateSchema } from "~~/shared/schemas/products/create";
 
-/*** Tarifa Reactiva */
-const CreateRate = reactive<StoreRateSchema>({
+const INIT_STATE = {
   price: 0,
   start_date: '',
   end_date: ''
-})
+}
+
+/*** Tarifa Reactiva */
+const CreateRate = reactive<StoreRateSchema>({...INIT_STATE})
 
 /*** Array de rates creados */
 const rates = reactive<StoreRateSchema[]>([])
@@ -51,13 +53,7 @@ export const useRateLogic = () => {
   }
 
   /***Limpiamos rate */
-  const cleanRate = () => {
-    Object.assign(CreateRate, {
-      price: 0,
-      start_date: '',
-      end_date: ''
-    })
-  }
+  const cleanRate = () => Object.assign(CreateRate, {...INIT_STATE})
 
   const removeRate = (id: number) => {
     rates.splice(id, 1);
@@ -101,7 +97,8 @@ export const useRateLogic = () => {
     removeRate,
     clearRates,
     checkValues,
-    isValidDate
+    isValidDate,
+    cleanRate
 
   }
 

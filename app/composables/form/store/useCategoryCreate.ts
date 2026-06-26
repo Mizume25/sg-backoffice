@@ -4,10 +4,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 /*** Composable Lógica de Fomrulario */
 export const useCategoryCreate = () => {
 
-
-  /** Obtenemos lista de categorias  */
-  const store = useCategoriesStore()
-  const { parents } = storeToRefs(store);
+  /** Variable de refresco */
   const toast = useToast()
 
 
@@ -44,11 +41,10 @@ export const useCategoryCreate = () => {
     /** Peticiones al endpoint  */
     try {
 
-      await useCategoriesApi().postCategory(category);
+      await useCategoriesApi().categories.post(category);
 
       toast.add({ title: 'Categoria Creada Correctamente', color: 'success', icon: 'lucide:check' })
       clean()
-
 
     } catch (e) {
       loading.value = false;
@@ -81,7 +77,6 @@ export const useCategoryCreate = () => {
     loading,
     onSubmit,
     makeCode,
-    parents,
     allow
   }
 

@@ -9,11 +9,7 @@ export const useProducts = () => {
   /** Obtenemos lista de productos */
   const ProductStore = useProductsStore();
 
-  const { allproducts } = storeToRefs(ProductStore);
-
-
-  
-
+  const { data: allproducts } = useProductsApi().products.list();
 
 
   /** Variable reactivas | Filtro & Orden Actual */
@@ -22,7 +18,7 @@ export const useProducts = () => {
 
 
   /** Listas reactivas | Tipos de Filtro & Tipos de Orden */
-  const order = computed(() => ['Defecto', 'Nombre A-Z'])
+  const order =  ['Defecto', 'Nombre A-Z']
   const parents = computed(() => ProductStore.allCategoryParents(allproducts.value));
   const items = ['Todos', ...parents.value] // "Todos" como filtro de categoria
 
@@ -32,7 +28,7 @@ export const useProducts = () => {
     const list = [...(allproducts.value ?? [])]
 
     switch (orderBy.value) {
-      case order.value[1]:
+      case order[1]:
         return list.sort((a, b) => a.name.localeCompare(b.name))
       default:
         return list
@@ -40,20 +36,21 @@ export const useProducts = () => {
   })
 
   /** Objeto Reactivo Especifico  */
-  const record: Ref<ProductRecord | undefined> = ref(undefined)
+  const selectedId = ref<string>('')
+
+  const record = computed(() => listOrders.value.find(p => p.id === selectedId.value))
 
   const isOpen = ref<boolean>(false);
   /** Funcion que modifica el record actual */
   const reciveProduct = (product: string | undefined): void => {
 
-    if (product == null) return
-
-    record.value = listOrders.value.find((p) => p.id === product);
-
-    console.log(product)
+    let record = listOrders.value.find((p) => p.id === product);
     
-  
+    if(!record) return;
 
+    selectedId.value = record?.id
+
+  
   }
 
 

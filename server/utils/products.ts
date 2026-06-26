@@ -224,7 +224,7 @@ export async function changeCategories(s: SupabaseClient, categories: CategoryID
         .delete()
         .eq('product_id', product_id);
 
-    if (delErr) throw createError({ status: 404, message: delErr.message });
+    if (delErr) throw createError({ status: 404, message: 'No se pudo eliminar los datos' , cause:delErr.message});
 
 
     // Re modificamos campos
@@ -239,13 +239,12 @@ export async function changeCategories(s: SupabaseClient, categories: CategoryID
         }))
     ];
 
-    console.log('rows a insertar:', rows)
-    console.log('body recibido:', categories)
+   
 
     // 3. Insertamos todas de golpe
     const { error: insErr } = await s
         .from('categories_products')
         .insert(rows);
 
-    if (insErr) throw createError({ status: 409, message: insErr.message });
+    if (insErr) throw createError({ status: 409, message: 'No se pudo insertar los datos' , cause: insErr});
 }

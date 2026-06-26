@@ -7,7 +7,7 @@ export const useProductCreate = () => {
   /** Variables que necesitaremos */
   const store = useCategoriesStore();
   const { parents } = storeToRefs(store);
-  const { postProduct, postImage } = useProductsApi();
+
 
   /** Helper para obtener un codigo  */
   const makeCode = (name: string | undefined) => {
@@ -67,7 +67,7 @@ export const useProductCreate = () => {
       fd.append('file', file, file.name)
       fd.append('path', path);
 
-      await postImage(fd, product_id);
+      await useProductsApi().images.post(fd, product_id);
 
 
     } catch (error) {
@@ -82,7 +82,7 @@ export const useProductCreate = () => {
     loading.value = true;
 
     try {
-      const obj = await postProduct(e.data);
+      const obj = await useProductsApi().products.post(e.data);
 
       toast.add({ title: 'Se ha añadido el producto correctamente', color: 'success' });
 

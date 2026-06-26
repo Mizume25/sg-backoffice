@@ -4,47 +4,42 @@ import { type UpdateCategorySchema } from '~~/shared/schemas/categories/edit';
 export const useCategoriesApi = () => {
 
 
-  /** Get lista de categorias */
-  const listCategories = () => useAsyncData<CategoryRecord[]>(
-    'categories',
-    () => $fetch('/api/categories', {method:'GET'}),
-    { default: () => [] }
-  )
+  const categories = {
 
-  /** Refrescar Categorias */
-  const refreshCategories = () => refreshNuxtData('categories');
+    list: () => useAsyncData<CategoryRecord[]>('categories', () => $fetch('/api/categories', { method: 'GET' }), { default: () => [] }),
+    get: (id: string) => useAsyncData<CategoryRecord | null>(`category-${id}`, () => $fetch(`/api/categories/${id}`, { method: 'GET' }), { default: () => null }),
+
+    useList: () => useNuxtData<CategoryRecord[]>('categories'),
+    useOne: (id: string) => useNuxtData<CategoryRecord | null>(`category-${id}`),
+
+    post: async (data: CreateCategory) => {
+      await $fetch('/api/categories', { method: 'POST', body: data })
+      await refreshNuxtData('categories');
+    },
+
+    put: async (id: string | undefined, update: UpdateCategorySchema) => {
+      if (!id) throw createError({ statusCode: 400, message: 'ID requerido' })
+      await $fetch(`/api/categories/${id}`, { method: 'PUT', body: update })
+
+      await refreshNuxtData('categories')
+      await refreshNuxtData(`category-${id}`)
+    },
+
+    delete: async (id: string | undefined) => {
+      if (!id) throw createError({ statusCode: 400, message: 'ID requerido' })
+      await $fetch(`/api/categories/${id}`, { method: 'DELETE' })
+      await refreshNuxtData('categories');
+
+    }
 
 
-  /** Crear una categoria */
-  const postCategory = async (data: CreateCategory) => {
-    await $fetch('/api/categories', {
-      method: 'POST',
-      body: data
-    })
   }
 
-  /** Editar una categoria */
-  const updateCategoy = async (id: string | undefined, update: UpdateCategorySchema) => {
-    await $fetch(`/api/categories/${id}`, {
-      method: 'PUT',
-      body: update
-    })
-  }
 
 
-  /** Editar una categoria */
-  const deleteCategory = async (id: string | undefined) => {
-    await $fetch(`/api/categories/${id}`, { method: 'DELETE'})
-  }
-
-  /** Eliminar */
 
   return {
-    listCategories,
-    refreshCategories,
-    postCategory,
-    updateCategoy,
-    deleteCategory
+    categories
   }
 
 
