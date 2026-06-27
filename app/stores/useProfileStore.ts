@@ -1,9 +1,10 @@
+import type { ProfileRecord } from "~~/shared/types/definitons"
 
 /** Variable perfil */
 export const useProfileStore = defineStore('profile', () => {
-  const profile = ref<User | null>(null)
+  const profile = ref<ProfileRecord | null>(null)
 
-  const setProfile = (data: User) => {
+  const setProfile = (data: ProfileRecord) => {
     profile.value = data
   }
 

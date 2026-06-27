@@ -67,7 +67,7 @@ export const useProductCreate = () => {
       fd.append('file', file, file.name)
       fd.append('path', path);
 
-      await useProductsApi().images.post(fd, product_id);
+      await useProductsApi().images.post(product_id ,fd);
 
 
     } catch (error) {

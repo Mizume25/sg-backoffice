@@ -106,7 +106,7 @@ export const useProductEdit = (product_id: string) => {
   const onProduct = async (e: FormSubmitEvent<UpdateProductSchema>) => {
     try {
 
-      await useProductsApi().products.put(e.data, product_id);
+      await useProductsApi().products.put(product_id , e.data);
 
       toast.add({ title: 'Producto Modificado correctamente', icon: 'lucide:check' })
 
