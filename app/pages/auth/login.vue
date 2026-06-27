@@ -5,8 +5,7 @@
 
 /** Composables Utilziados */
 const { form, loading } = useLoginForm();
-const toast = useToast();
- const ProfileStore = useProfileStore();
+const ProfileStore = useProfileStore();
 
 /** Titulo de la página*/
 definePageMeta({
@@ -27,8 +26,8 @@ const handleLogin = async () => {
     ProfileStore.setProfile(profile);
     await navigateTo('/home/products/')
   } catch (error) {
-    console.error(error)
-    toast.add({ title: 'Credenciales incorrectas', color: 'error', icon: 'lucide:x' })
+
+    useNotify().error('Credenciales incorrectas')
   } finally {
     loading.value = false
   }

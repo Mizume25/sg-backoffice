@@ -23,7 +23,6 @@ export const useProductCreate = () => {
 
   /** Decorado */
   const loading = ref(false);
-  const toast = useToast()
 
 
   /*** Estado Inicial */
@@ -67,7 +66,7 @@ export const useProductCreate = () => {
       fd.append('file', file, file.name)
       fd.append('path', path);
 
-      await useProductsApi().images.post(product_id ,fd);
+      await useProductsApi().images.post(product_id, fd);
 
 
     } catch (error) {
@@ -84,20 +83,21 @@ export const useProductCreate = () => {
     try {
       const obj = await useProductsApi().products.post(e.data);
 
-      toast.add({ title: 'Se ha añadido el producto correctamente', color: 'success' });
+
+      useNotify().success('Se ha añadido el producto correctamente')
 
       if (image.value.file && image.value.path && obj) {
         await onImage(image.value.file, image.value.path, FormState.code, obj.id)
-        toast.add({ title: 'Se ha añadido la imagen correctamente', color: 'success' });
+        useNotify().success('Se ha añadido la imagen correctamente')
       } else {
-        toast.add({ title: 'valores incorrectos', color: 'error' });
+        useNotify().success('Valores de imagenes incorrectos')
       }
 
       cleanForm();
       loading.value = false;
 
     } catch (error) {
-      toast.add({ title: 'Ha habido un problema', color: 'error' });
+      useNotify().error('Ha habido un problema')
       loading.value = false;
     }
 

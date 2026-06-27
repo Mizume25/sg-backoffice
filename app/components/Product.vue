@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const toast = useToast();
 
 /** Props Componentes */
 const props = defineProps<{
@@ -62,9 +61,11 @@ async function downloadPDF() {
 async function deleteProduct(id: string) {
   try {
     await useProductsApi().products.delete(id);
-    toast.add({ title: 'Se elimino el producto perfectamente', icon: 'lucide:check' })
+
+    useNotify().success('Se elimino el producto perfectamente')
+    
   } catch (error) {
-    toast.add({ title: 'Se elimino el producto perfectamente', icon: 'lucide:x' })
+    useNotify().error('No se pudo eliminar el producto')
   }
 }
 

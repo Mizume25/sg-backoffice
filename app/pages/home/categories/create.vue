@@ -9,7 +9,6 @@ definePageMeta({
 
 /** Funciones Fromulario */
 const { FormState, loading, onSubmit, makeCode, allow } = useCategoryCreate();
-const toast = useToast();
 /** Refrescado de variables */
 const { data: categories } = await useCategoriesApi().categories.list();
 
@@ -26,9 +25,12 @@ watch(allow, (newVal) => FormState.parent_id = newVal ? undefined : parents.valu
 watch(() => FormState.name, (newVal) => FormState.code = makeCode(newVal))
 
 const onError = (err: FormErrorEvent) => {
+    let desk : string = '';
     err.errors.forEach((e) => {
-        toast.add({ title: e.message, icon: 'lucide:info' , color:'info' })
+        desk += e.message + '\n';
     })
+
+    useNotify().warning(desk);
 }
 
 

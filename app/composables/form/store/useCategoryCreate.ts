@@ -3,11 +3,6 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 
 /*** Composable Lógica de Fomrulario */
 export const useCategoryCreate = () => {
-
-  /** Variable de refresco */
-  const toast = useToast()
-
-
   /** Estado incial del formulario */
   const INIT_STATE = {
     name: '',
@@ -43,12 +38,13 @@ export const useCategoryCreate = () => {
 
       await useCategoriesApi().categories.post(category);
 
-      toast.add({ title: 'Categoria Creada Correctamente', color: 'success', icon: 'lucide:check' })
+
+      useNotify().success('Categoria Creada Correctamente')
       clean()
 
     } catch (e) {
       loading.value = false;
-      toast.add({ title: 'Hubo problemas en crear la categoria', color: 'error', icon: 'lucide:x' })
+      useNotify().success('Hubo problemas en crear la categoria')
     }
 
 

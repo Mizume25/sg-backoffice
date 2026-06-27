@@ -31,3 +31,4 @@ export { useImageEdit } from './form/update/useImageEdit';
 
 /** Items reutilizables */
 export { useConfirm } from './service/useConfirm';
+export { useNotify } from './service/useNotify'
