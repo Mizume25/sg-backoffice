@@ -10,8 +10,8 @@ export const useImageEdit = (product_id: string) => {
    const toast = useToast();
    const { data: product } = useProductsApi().products.useOne(product_id);
    const images = computed(() => product.value?.product_images)
-   const code = computed(() => product.value?.code)
-   const URL = IMAGE_URL + code.value + '/';
+   const code = computed(() => product.value?.code);
+   const URL = makeURL(code.value)
 
 
 

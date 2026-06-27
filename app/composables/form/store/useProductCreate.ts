@@ -87,7 +87,7 @@ export const useProductCreate = () => {
       toast.add({ title: 'Se ha añadido el producto correctamente', color: 'success' });
 
       if (image.value.file && image.value.path && obj) {
-        await onImage(image.value.file, image.value.path, FormState.code, obj.product.id)
+        await onImage(image.value.file, image.value.path, FormState.code, obj.id)
         toast.add({ title: 'Se ha añadido la imagen correctamente', color: 'success' });
       } else {
         toast.add({ title: 'valores incorrectos', color: 'error' });

@@ -52,7 +52,7 @@ export const deleteImage = async (s: SupabaseClient, id: string | undefined) => 
   const img  = await getImageRecord(s , id);
   if(!img) return
 
-  const product = await fetchProduct(s , img?.product_id);
+  const product = await getProduct(s , img?.product_id);
 
 
   /*** Boramos imagenes de buckets */

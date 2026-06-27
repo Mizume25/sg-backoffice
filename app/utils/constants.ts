@@ -22,7 +22,7 @@ export const SideBarItems: NavigationMenuItem[] = [
     {
         label: "Pedir Encargo",
         icon: "lucide:package",
-        to: "/home/orders/create"
+        to: "/home/orders/"
     }
 ]
 
@@ -108,3 +108,8 @@ export const allCategoryParents = (records: ProductRecord[]): string[] => {
 
 
 export const IMAGE_URL = "https://mjufkujxxuakhdmyxgou.supabase.co/storage/v1/object/public/"
+
+export const makeURL = (code:string | undefined) => {
+    if(!code) return;
+    return IMAGE_URL + code + '/';
+}

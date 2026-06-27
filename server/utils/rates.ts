@@ -1,17 +1,27 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { EditRate } from '~~/shared/types/definitons';
-/** Queries para crear rates */
+
+/**
+ * Insertar un array de Tarifas Asociadas
+ * @param s SupabaseClient
+ * @param data CreateRate []
+ */
 export async function createRates(s: SupabaseClient , data:CreateRate[]) {
     const { error } = await s
     .from('rates')
     .insert(data);
 
-    if(error) throw createError({ statusCode: 409 , message:error.message})
+    if(error) throw createError({ statusCode: 409 , message:'No se pudo insertar los ratess' , cause:error.message})
+    
 }
 
 
 
-/** Queries para crear rates */
+/**
+ * Editar una Tarifa especifica
+ * @param s SupabaseClient
+ * @param data EditRate
+ * @param id string
+ */
 export async function editRate(s: SupabaseClient , data:EditRate , id:string) {
 
     const { error } = await s
@@ -19,25 +29,30 @@ export async function editRate(s: SupabaseClient , data:EditRate , id:string) {
     .update(data)
     .eq('id', id);
 
-    if(error) throw createError({ statusCode: 409 , message:error.message})
+    if(error) throw createError({ statusCode: 409 , message:'No se pudo editar el rate' , cause:error.message})
 }
 
-/** queri pare eliminar rate especifico */
-export async function deleteRate(s: SupabaseClient , id:string | undefined) {
-
-    if(!id) return;
-    
+/**
+ * Borrar Rate Especifica
+ * @param s SupabaseClient
+ * @param id string
+ */
+export async function deleteRate(s: SupabaseClient , id:string) {
     const { error } = await s
     .from('rates')
     .delete()
     .eq('id', id);
 
-    if(error) throw createError({ statusCode: 404 , message: error.message });
+    if(error) throw createError({ statusCode: 404 , message: 'No se pudo encontrar la rate' , cause:error.message });
 
 }
 
 
-/** Borrar rates relacionados */
+/**
+ * Borrar Todas las tarifas asociadas de un producto
+ * @param s Supabase
+ * @param id string
+ */
 export async function deletRates(s : SupabaseClient , id: string) {
 
     const { error }  = await s
@@ -45,5 +60,5 @@ export async function deletRates(s : SupabaseClient , id: string) {
     .delete()
     .eq('product_id' , id)
 
-    if(error) throw createError({ statusCode: 404 , message: error.message })
+    if(error) throw createError({ statusCode: 404 , message: 'No se pudo encontrar la rate' , cause:error.message })
 }

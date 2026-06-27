@@ -188,36 +188,13 @@ export async function getProduct(s: SupabaseClient, id: string): Promise<Product
 
 }
 
-/** Obtenemos el codigo del producto */
-export async function findProduct(s: SupabaseClient, code: string): Promise<Product> {
-    const { data, error } = await s
-        .from('products')
-        .select('*')
-        .eq('code', code)
-        .single();
-
-    if (error) throw createError({ statusCode: 404, message: error.message });
-
-    return data;
-}
-
-/** Obtenemos el codigo del producto */
-export async function fetchProduct(s: SupabaseClient, id: string): Promise<Product> {
-    const { data, error } = await s
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-    if (error) throw createError({ statusCode: 404, message: error.message });
-
-    return data;
-}
-
-/** Modificar categorias asociadas */
+/**
+ * Modificar Categorias Asociadas
+ * @param s Supabase Client
+ * @param categories Categorias a modificar
+ * @param product_id Producto asociado
+ */
 export async function changeCategories(s: SupabaseClient, categories: CategoryIDS, product_id: string) {
-
-
     // 1. Borramos todas las relaciones actuales del producto
     const { error: delErr } = await s
         .from('categories_products')
@@ -246,5 +223,5 @@ export async function changeCategories(s: SupabaseClient, categories: CategoryID
         .from('categories_products')
         .insert(rows);
 
-    if (insErr) throw createError({ status: 409, message: 'No se pudo insertar los datos' , cause: insErr});
+    if (insErr) throw createError({ status: 409, message: 'No se pudo insertar los datos' , cause: insErr.message});
 }

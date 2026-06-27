@@ -33,11 +33,6 @@ export type Images = Database['public']['Tables']['product_images']['Row'];
 export type Profile = Database['public']['Tables']['profiles']['Row'];
 
 
-
-
-/** Storage */
-
-
 /** 
  * @type Perfil
  */
@@ -52,6 +47,17 @@ export type ProductRecord  = Product & {
    categories_products: { categories: Category | null }[]
   rates: Rate[]
   product_images: Images[]
+}
+
+export type ProductsImages = Product & {
+    product_images:Images[]
+}
+
+/**
+ * Order Relacionado
+ */
+export type OrderRecord = Order & {
+    products: ProductsImages
 }
 
 

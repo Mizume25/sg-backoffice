@@ -6,8 +6,8 @@ export const useCategoriesApi = () => {
 
   const categories = {
 
-    list: () => useAsyncData<CategoryRecord[]>('categories', () => $fetch('/api/categories', { method: 'GET' }), { default: () => [] }),
-    get: (id: string) => useAsyncData<CategoryRecord | null>(`category-${id}`, () => $fetch(`/api/categories/${id}`, { method: 'GET' }), { default: () => null }),
+    list: () => useAsyncData<CategoryRecord[]>('categories', () => $fetch<CategoryRecord[]>('/api/categories', { method: 'GET' }), { default: () => [] }),
+    get: (id: string) => useAsyncData<CategoryRecord | null>(`category-${id}`, () => $fetch<CategoryRecord | null>(`/api/categories/${id}`, { method: 'GET' }), { default: () => null }),
 
     useList: () => useNuxtData<CategoryRecord[]>('categories'),
     useOne: (id: string) => useNuxtData<CategoryRecord | null>(`category-${id}`),

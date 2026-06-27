@@ -1,50 +1,92 @@
+import type { StoreOrderSchema } from "~~/shared/schemas/orders/create"
+import type { UpdateOrderSchema } from "~~/shared/schemas/orders/edit"
 import type { StoreProductSchema, StoreRateSchema } from "~~/shared/schemas/products/create"
 import type { EditRateSchema, UpdateProductSchema } from "~~/shared/schemas/products/edit"
-/** Composable  para gestionar Endpoints  */
+
+/**
+ * Composable que maneja lógica de peticiones
+ * @returns products , rates , images , orders
+ */
 export const useProductsApi = () => {
 
-  /** KEYS de Productos */
-  const PROD_KEY = {
+  /**
+   * Clave para refrescar datos api
+   */
+  const KEY = {
     list: 'products',
     obj: (id: string): string => `product-${id}`,
   }
 
 
+
+  /**
+   * Objeto de funciones para CRUD de Productos
+   */
   const products = {
 
-    /** GET */
-    list: () => useAsyncData<ProductRecord[]>(PROD_KEY.list, () => $fetch('/api/products', { method: 'GET' }), { default: () => [] }),
-    get: (id: string) => useAsyncData<ProductRecord | null>(PROD_KEY.obj(id), () => $fetch<ProductRecord>(`/api/products/${id}`, { method: 'GET' }), { default: () => null }),
+    /**
+     * Devuelve Lista de productos
+     * @returns ProductRecord[]
+     */
+    list: () => useAsyncData<ProductRecord[]>(KEY.list, () => $fetch<ProductRecord[]>('/api/products', { method: 'GET' }), { default: () => [] }),
 
-    /** Refresh Data */
-    useList: () => useNuxtData<ProductRecord[]>(PROD_KEY.list),
-    useOne: (id: string) => useNuxtData<ProductRecord | null>(PROD_KEY.obj(id)),
+    /**
+     * Devuelve una Producto Especifico
+     * @param id uuid
+     * @returns ProductRecord
+     */
+    get: (id: string) => useAsyncData<ProductRecord | null>(KEY.obj(id), () => $fetch<ProductRecord>(`/api/products/${id}`, { method: 'GET' }), { default: () => null }),
+
+    /** Refresca Datos de la lista */
+    useList: () => useNuxtData<ProductRecord[]>(KEY.list),
+
+    /**
+     * Refresca Datos del objeto
+     * @param id uuid
+     * @returns ProductRecord
+     */
+    useOne: (id: string) => useNuxtData<ProductRecord | null>(KEY.obj(id)),
 
 
-    /** POST PUT DELETE */
+    /**
+     * Objeto que crea un producto
+     * @param data StoreProductSchema
+     * @returns Product
+     */
     post: async (data: StoreProductSchema) => {
-      const obj = await $fetch('/api/products', { method: 'POST', body: data });
-      await refreshNuxtData(PROD_KEY.list);
+      const obj = await $fetch<ProductRecord>('/api/products', { method: 'POST', body: data });
+      await refreshNuxtData(KEY.list);
       return obj;
     },
 
-    /** Actualizar producto */
+    /**
+     * Actualizar Producto
+     * @param data UpdateProductSchema
+     * @param id uuid
+     */
     put: async (data: UpdateProductSchema, id: string) => {
-      await $fetch<Product>(`/api/products/${id}`, { method: 'PUT', body: data })
-      await refreshNuxtData(PROD_KEY.list);
-      await refreshNuxtData(PROD_KEY.obj(id));
+      await $fetch<void>(`/api/products/${id}`, { method: 'PUT', body: data })
+      await refreshNuxtData(KEY.list);
+      await refreshNuxtData(KEY.obj(id));
     },
 
-    /*** Borrar Producto */
+    /** Eliminar Producto
+     * @param id UUID
+    */
     delete: async (id: string) => {
-      await $fetch<unknown>(`/api/products/${id}`, { method: 'DELETE' } as any)
-      await refreshNuxtData(PROD_KEY.list);
+      await $fetch<void>(`/api/products/${id}`, { method: 'DELETE' })
+      await refreshNuxtData(KEY.list);
     },
 
+    /**
+     * Actualizar Categorias Asociadas
+     * @param product_id UUID
+     * @param categories UUID
+     */
     putCategories: async (product_id: string, categories: CategoryIDS) => {
-      await $fetch(`/api/products/${product_id}/categories`, {method: 'PUT', body: categories})
-      await refreshNuxtData(PROD_KEY.list);
-      await refreshNuxtData(PROD_KEY.obj(product_id));
+      await $fetch<void>(`/api/products/${product_id}/categories`, { method: 'PUT', body: categories })
+      await refreshNuxtData(KEY.list);
+      await refreshNuxtData(KEY.obj(product_id));
     }
   }
 
@@ -54,54 +96,73 @@ export const useProductsApi = () => {
   ////////////////////////
 
 
+  /*** Rates  */
   const rates = {
-      post: async (product_id: string, data: StoreRateSchema) => {
-        await $fetch(`/api/products/${product_id}/rates/`, { method: 'POST', body: data })
-        await Promise.all([
-          refreshNuxtData(PROD_KEY.list),
-          refreshNuxtData(PROD_KEY.obj(product_id)),
-        ])
-      },
+    post: async (product_id: string, data: StoreRateSchema) => {
+      await $fetch(`/api/products/${product_id}/rates/`, { method: 'POST', body: data })
+      await Promise.all([
+        refreshNuxtData(KEY.list),
+        refreshNuxtData(KEY.obj(product_id)),
+      ])
+    },
 
 
-      put: async (product_id: string, id: string | undefined, data: EditRateSchema) => {
+    put: async (product_id: string, id: string | undefined, data: EditRateSchema) => {
 
-        await $fetch(`/api/products/${product_id}/rates/${id}`, { method: 'PUT', body: data })
-        await Promise.all([
-          refreshNuxtData(PROD_KEY.list),
-          refreshNuxtData(PROD_KEY.obj(product_id)),
-        ])
+      await $fetch(`/api/products/${product_id}/rates/${id}`, { method: 'PUT', body: data })
+      await Promise.all([
+        refreshNuxtData(KEY.list),
+        refreshNuxtData(KEY.obj(product_id)),
+      ])
 
 
-      },
+    },
 
-      delete: async (product_id: string, id: string) => {
-        await $fetch(`/api/products/${product_id}/rates/${id}`, { method: 'DELETE' })
-        await Promise.all([
-          refreshNuxtData(PROD_KEY.list),
-          refreshNuxtData(PROD_KEY.obj(product_id)),
-        ])
-      }
-
+    delete: async (product_id: string, id: string) => {
+      await $fetch(`/api/products/${product_id}/rates/${id}`, { method: 'DELETE' })
+      await Promise.all([
+        refreshNuxtData(KEY.list),
+        refreshNuxtData(KEY.obj(product_id)),
+      ])
     }
 
+  }
+
+  /*** Imagenes */
   const images = {
-      post: async (data: FormData, product_id: string) => {
-        await $fetch(`/api/products/${product_id}/images/`, { method: 'POST', body: data })
-        await Promise.all([
-          refreshNuxtData(PROD_KEY.list),
-          refreshNuxtData(PROD_KEY.obj(product_id)),
-        ])
-      },
-      delete: async (product_id: string, id: string) => {
-        await $fetch(`/api/products/${product_id}/images/${id}`, { method: 'DELETE' })
-        await Promise.all([
-          refreshNuxtData(PROD_KEY.list),
-          refreshNuxtData(PROD_KEY.obj(product_id)),
-        ])
-      },
+    post: async (data: FormData, product_id: string) => {
+      await $fetch(`/api/products/${product_id}/images/`, { method: 'POST', body: data })
+      await Promise.all([
+        refreshNuxtData(KEY.list),
+        refreshNuxtData(KEY.obj(product_id)),
+      ])
+    },
+    delete: async (product_id: string, id: string) => {
+      await $fetch(`/api/products/${product_id}/images/${id}`, { method: 'DELETE' })
+      await Promise.all([
+        refreshNuxtData(KEY.list),
+        refreshNuxtData(KEY.obj(product_id)),
+      ])
+    },
 
-    }
+  }
+  /** Orders */
+  const orders = {
+    list: () => useAsyncData<OrderRecord[]>('orders', () => $fetch<OrderRecord[]>(`/api/orders`, { method: 'GET' }), { default: () => [] }),
+    useList: () => useNuxtData<OrderRecord[]>('orders'),
+    post: async (order: StoreOrderSchema) => {
+      await $fetch(`/api/orders`, { method: 'POST', body: order })
+      await refreshNuxtData('orders');
+    },
+    put: async (id: string, order: UpdateOrderSchema) => {
+      await $fetch(`/api/orders/${id}`, { method: 'PUT', body: order })
+      await refreshNuxtData('orders');
+    },
+    delete: async (id: string) => {
+      await $fetch(`/api/orders/${id}`, { method: 'DELETE' })
+      await refreshNuxtData('orders');
+    },
+  }
 
 
 
@@ -112,9 +173,10 @@ export const useProductsApi = () => {
 
 
   return {
-      products,
-      rates,
-      images,
-    }
-
+    products,
+    rates,
+    images,
+    orders
   }
+
+}

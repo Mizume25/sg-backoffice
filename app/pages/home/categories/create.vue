@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Schema } from '~~/shared/schemas/categories/create';
-  
+  import { type FormErrorEvent } from '@nuxt/ui'
 /** Titulo */
 definePageMeta({
   title: "Gestion de Categorias"
@@ -9,7 +9,7 @@ definePageMeta({
 
 /** Funciones Fromulario */
 const { FormState, loading, onSubmit, makeCode, allow } = useCategoryCreate();
-
+const toast = useToast();
 /** Refrescado de variables */
 const { data: categories } = await useCategoriesApi().categories.list();
 
@@ -25,6 +25,11 @@ watch(allow, (newVal) => FormState.parent_id = newVal ? undefined : parents.valu
 /** Si cambia el nombre, cambia el codigo */
 watch(() => FormState.name, (newVal) => FormState.code = makeCode(newVal))
 
+const onError = (err: FormErrorEvent) => {
+    err.errors.forEach((e) => {
+        toast.add({ title: e.message, icon: 'lucide:info' , color:'info' })
+    })
+}
 
 
 /** Toggle Sidebar de edits */
@@ -39,7 +44,7 @@ const isOpen = ref(false);
     <FormCard :title="allow ? 'Crear Categoria' : 'Crear Subcategoria'">
 
       <!--- Formulario -->
-      <UForm :schema="Schema" :state="FormState" :validate-on="['input']" @submit="onSubmit" class="w-full">
+      <UForm :schema="Schema" :state="FormState" :validate-on="['input']" @submit="onSubmit" class="w-full" @error="onError">
 
         <!-- Nombre -->
         <UFormField label="Categoria" name="name">

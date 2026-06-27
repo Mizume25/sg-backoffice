@@ -14,6 +14,7 @@ const route = useRoute()
 const id = route.params.id as string;
 const { data: product } = await useProductsApi().products.get(id);
 
+
 const { FormProductState, isOpen, edit, showSection, parents, selectedParentId, merged, onCategories, onProduct } = useProductEdit(id);
 
 const { rates, deleteRate, rateStatus, RateSchema, RateState, changeRate, actionRate } = useRateEdit(id);
@@ -30,6 +31,7 @@ const closeSection = () => {
 }
 
 
+
 </script>
 
 <template>
@@ -39,7 +41,7 @@ const closeSection = () => {
     <!--- Formulario -->
     <FormCard :title="`Editar ${product?.name}`">
 
-      <UForm :schema="ProductSchema" :state="FormProductState" class="w-full" @submit="onProduct">
+      <UForm :schema="ProductSchema" :state="FormProductState" class="w-full" @submit="onProduct" >
         <!--- Name --->
         <UFormField label="Name" name="name">
           <UInput class="w-full mb-3" v-model="FormProductState.name" />
