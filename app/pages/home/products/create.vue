@@ -61,7 +61,7 @@ watch(rates, (newRates) => {
 
 const onError = (err: FormErrorEvent) => {
     err.errors.forEach((e) => {
-        toast.add({ title: e.name, icon: 'lucide:info' , color:'info' })
+        toast.add({ title: e.message, icon: 'lucide:info' , color:'info' })
     })
 }
 
@@ -76,8 +76,7 @@ const onError = (err: FormErrorEvent) => {
 
             <div
                 class="w-full flex-1 overflow-y-auto overflow-x-hidden pr-2 flex flex-col items-start gap-6 scrollbar-thin scrollbar-thumb-white/50 scrollbar-track-transparent scrollbar-thumb-rounded-full">
-                <UForm :schema="Schema" :state="FormState" class="w-full flex flex-col gap-6" @submit="onSubmit"
-                    @error="onError">
+                <UForm :schema="Schema" :state="FormState" class="w-full flex flex-col gap-6" @submit="onSubmit" @error="onError">
 
                     <!-- Nombre -->
                     <UFormField label="Nombre" name="name" class="mb-3">

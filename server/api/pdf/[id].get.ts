@@ -4,6 +4,7 @@ export default eventHandler(async (e) => {
 
     /** Obtenemos id */
     const id = getRouterParam(e, 'id');
+    if(!id) throw createError({ statusCode:404 , message:'No se encontro id'});
 
     const supabase = await initClient(e);
     const producto = await getProduct(supabase, id)

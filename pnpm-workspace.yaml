@@ -5,3 +5,5 @@ allowBuilds:
   sharp: true
   unrs-resolver: false
   vue-demi: false
+overrides:
+  '@internationalized/date': 3.12.2
