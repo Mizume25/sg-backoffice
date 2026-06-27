@@ -11,7 +11,7 @@ export const useOrderLogic = () => {
 
 
   /** Items */
-  const toast = useToast();
+
   const selectDay = ref<string>('')
   const selected = shallowRef<DateValue>();
 
@@ -79,11 +79,13 @@ export const useOrderLogic = () => {
 
       await useProductsApi().orders.post(e.data);
 
-      toast.add({ title: 'Se ha creado la orden correctamente', icon: 'lucide:check' });
+     
+      useNotify().success('Se ha creado la orden correctamente')
       cleanUp();
 
     } catch (error) {
-      toast.add({ title: 'Ha habido un error al crear la orden', icon: 'lucide:x' })
+      
+      useNotify().error('Ha habido un error al crear la orden')
     }
   }
 
@@ -94,11 +96,13 @@ export const useOrderLogic = () => {
 
       await useProductsApi().orders.put(id, e.data);
 
-      toast.add({ title: 'Se ha actualizado la orden correctamente', icon: 'lucide:check' });
+    
+      useNotify().success('Se ha actualizado la orden correctamente')
       cleanUp();
 
     } catch (error) {
-      toast.add({ title: 'Ha habido un error al editar la orden', icon: 'lucide:x' })
+   
+      useNotify().error('Ha habido un error al editar la orden')
     }
   }
 
@@ -112,9 +116,10 @@ export const useOrderLogic = () => {
       await useProductsApi().orders.delete(id);
       isOpen.value = false;
 
-      toast.add({ title: 'La orden se elimino correctamente', icon: 'lucide:check' })
+    
+      useNotify().success('La orden se elimino correctamente')
     } catch (error) {
-      toast.add({ title: 'No se puedo eliminar la orden', color: 'error', icon: 'lucide:x' })
+      useNotify().error('No se puedo eliminar la orden')
     }
   }
 
@@ -171,7 +176,8 @@ export const useOrderLogic = () => {
 
     cleanUp();
 
-    toast.add({ title: 'Ya existe un producto para la fecha indicada', color: 'info', icon: 'lucide:info' });
+   
+    useNotify().info('Ya existe un producto para la fecha indicada')
 
     edit.value = true;
 

@@ -4,7 +4,7 @@ import { type UpdateCategorySchema } from '~~/shared/schemas/categories/edit';
 /** Composable para edit  */
 export const useCategoryEdit = (category_id: string) => {
 
-  const toast = useToast();
+
   const { confirm } = useConfirm();
   
 
@@ -34,11 +34,11 @@ export const useCategoryEdit = (category_id: string) => {
 
       useCategoriesApi().categories.put(category_id, update);
 
-      toast.add({ title: 'Categoria Editada Correctamente', color: 'success' })
+      useNotify().success('Categoria Editada Correctamente');
       loading.value = false
 
     } catch (e) {
-      toast.add({ title: 'Algo ha fallado', color: 'error' })
+        useNotify().error('No se ha podido actualizar la categoria');
       loading.value = false;
 
     }
@@ -58,12 +58,12 @@ export const useCategoryEdit = (category_id: string) => {
 
       await useCategoriesApi().categories.delete(id);
 
-      toast.add({ title: 'Categoria Eliminada Correctamente', color: 'success', icon: 'lucide:check' })
+      useNotify().success('Categoria Eliminada Correctamente');
 
       navigateTo('/home/categories/create');
 
     } catch (error) {
-      toast.add({ title: 'Ha habido un problema', color: 'error', icon: 'lucide:x' })
+        useNotify().error('No se pudo eliminar la categoria');
     }
 
 

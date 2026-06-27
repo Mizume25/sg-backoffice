@@ -8,7 +8,7 @@ definePageMeta({
 })
 
 
-const toast = useToast();
+
 /** Logica de fomrulario general */
 const { parents, FormState, subcategories, loading, onSubmit, code } = useProductCreate();
 
@@ -60,9 +60,12 @@ watch(rates, (newRates) => {
 
 
 const onError = (err: FormErrorEvent) => {
+    let desk : string = '';
     err.errors.forEach((e) => {
-        toast.add({ title: e.message, icon: 'lucide:info' , color:'info' })
+        desk += e.message + '\n';
     })
+
+        useNotify().warning(desk);
 }
 
 

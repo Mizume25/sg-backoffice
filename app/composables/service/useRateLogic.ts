@@ -14,7 +14,6 @@ const rates = reactive<StoreRateSchema[]>([])
 
 export const useRateLogic = () => {
 
-  const toast = useToast();
 
   const isValidDate = (startDate: string, endDate: string): boolean => {
     const start = new Date(startDate).getTime()
@@ -38,15 +37,15 @@ export const useRateLogic = () => {
 
 
 
-    if (price < 0) toast.add({ title: 'El precio es incoherente', color: 'info', icon: 'lucide:info' }), check = false;
+    if (price < 0) useNotify().error( 'El precio es incoherente'), check = false;
 
-    else if (start_date.length == 0 || end_date.length == 0) toast.add({ title: 'Debes añadir una fecha de inicio y final', color: 'info', icon: 'lucide:info' }), check = false;
+    else if (start_date.length == 0 || end_date.length == 0) useNotify().error( 'Debes añadir una fecha de inicio y final'), check = false;
 
-    else if (new Date(start_date) < new Date()) toast.add({ title: 'La fecha de inicio no puede ser anterior o igual a la fecha actual', color: 'info', icon: 'lucide:info' }), check = false;
+    else if (new Date(start_date) < new Date()) useNotify().error( 'La fecha de inicio no puede ser anterior o igual a la fecha actual'), check = false;
 
-    else if (new Date(start_date) >= new Date(end_date)) toast.add({ title: 'La fecha de inicio no puede ser mayor o igual a la fecha final', color: 'info', icon: 'lucide:info' }), check = false;
+    else if (new Date(start_date) >= new Date(end_date)) useNotify().error('La fecha de inicio no puede ser mayor o igual a la fecha final'), check = false;
 
-    else if (isValidDate(start_date, end_date)) toast.add({ title: 'El periodo mínimo es de 2 meses', color: 'info', icon: 'lucide:info' }), check = false;
+    else if (isValidDate(start_date, end_date)) useNotify().error('El periodo mínimo es de 2 meses'), check = false;
 
 
     return check;
@@ -72,7 +71,8 @@ export const useRateLogic = () => {
     /** Agregamos card */
     rates.push(card);
 
-    toast.add({ title: 'Tarifa Agregada Correctamente !', icon: 'lucide:check' });
+  
+    useNotify().success('Tarifa Agregada Correctamente !')
 
     /** Limpiamos rate */
     cleanRate();

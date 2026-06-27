@@ -7,7 +7,7 @@ export const useImageEdit = (product_id: string) => {
 
 
    /*** Valores Inciales */
-   const toast = useToast();
+
    const { data: product } = useProductsApi().products.useOne(product_id);
    const images = computed(() => product.value?.product_images)
    const code = computed(() => product.value?.code);
@@ -28,14 +28,16 @@ export const useImageEdit = (product_id: string) => {
       try {
 
 
-         await useProductsApi().images.post(fd, product_id);
+         await useProductsApi().images.post(product_id , fd);
 
 
-         toast.add({ title: 'Imagen Subida correctamente', color: 'info', icon: 'lucide:info' })
+      
+         useNotify().success('Imagen Subida correctamente');
          clearimage();
 
       } catch (error) {
-         toast.add({ title: 'Ha habido un problema al subir la imagen', color: 'error', icon: 'lucide:x' })
+
+         useNotify().error('Ha habido un problema al subir la imagen');
          clearimage();
       }
 
@@ -48,17 +50,18 @@ export const useImageEdit = (product_id: string) => {
    const removeImage = async (id: string) => {
 
       if (images.value!.length < 2) {
-         toast.add({ title: 'Debe existir al menos 1 imagen', color: 'info', icon: 'lucide:info' })
+         useNotify().warning('Debe existir al menos 1 imagen');
          return;
       }
       try {
 
          await useProductsApi().images.delete(product_id, id);
 
-         toast.add({ title: 'Se ha borrado correctamente la imagen', color: 'success', icon: 'lucide:trash' })
+        
+         useNotify().success('Se ha borrado correctamente la imagen');
 
       } catch (error) {
-         toast.add({ title: 'Ha habaido un problema', color: 'error', icon: 'lucide:trash' })
+         useNotify().error('Ha habaido un problema');
       }
    }
 

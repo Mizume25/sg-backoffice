@@ -6,12 +6,11 @@ export const useRateEdit = (product_id: string) => {
   /** Items  */
   const { data: product } = useProductsApi().products.useOne(product_id);
   const { confirm } = useConfirm();
-  const toast = useToast();
 
   const rates = computed(() => product.value?.rates)
   const rateStatus = ref(false);
   const { checkValues } = useRateLogic();
-  const { CreateRate , cleanRate } = useRateLogic();  
+  const { CreateRate, cleanRate } = useRateLogic();
 
 
   /** Esuqmea de Fomrulario */
@@ -39,7 +38,7 @@ export const useRateEdit = (product_id: string) => {
    */
   async function deleteRate(id: string) {
 
-    if (rates.value?.length == 1) return toast.add({ title: 'Debe existir por lo menos 1 tarifa', color: 'error' });
+    if (rates.value?.length == 1) return useNotify().success('Debe existir por lo menos 1 tarifa');
 
     const ok = await confirm({
       title: 'Borrar Tarifa',
@@ -52,10 +51,10 @@ export const useRateEdit = (product_id: string) => {
 
       await useProductsApi().rates.delete(product_id, id);
 
-      toast.add({ title: 'Tarifa Borrada correctamente', color: 'primary' })
+      useNotify().success('Tarifa Borrada correctamente')
 
     } catch (error) {
-      toast.add({ title: 'Ha habido un problema', color: 'error' });
+      useNotify().error('Ha habido un problema')
     }
 
   }
@@ -77,7 +76,7 @@ export const useRateEdit = (product_id: string) => {
   const actionRate = async (e: FormSubmitEvent<EditRateSchema | StoreRateSchema>) => {
 
     if (e.data.price == undefined || e.data.start_date == undefined || e.data.end_date == undefined) {
-      toast.add({ title: 'Valores incoherentes', color: 'error' })
+      useNotify().error('Valores incoherentes');
       return;
     }
 
@@ -92,10 +91,12 @@ export const useRateEdit = (product_id: string) => {
 
         await useProductsApi().rates.put(product_id, e.data.id, e.data)
 
-        toast.add({ title: 'Tarifa Actualizada Correctamente', color: 'primary' });
+
+        useNotify().success('Tarifa Actualizada Correctamente');
 
       } catch (e) {
-        toast.add({ title: 'Ha habido problemas en actualizar la tarifa', color: 'error' });
+
+        useNotify().error('Ha habido problemas en actualizar la tarifa');
       }
 
     } else {
@@ -111,12 +112,12 @@ export const useRateEdit = (product_id: string) => {
 
         await useProductsApi().rates.post(product_id, rate)
 
-        toast.add({ title: 'Tarifa Creada Correctamente', color: 'primary' });
+        useNotify().success('Tarifa Creada Correctamente');
 
         cleanRate();
 
       } catch (error) {
-        toast.add({ title: 'Ha habido problemas en crear la tarifa', color: 'error' });
+        useNotify().error('Ha habido problemas en crear la tarifa');
       }
     }
   }

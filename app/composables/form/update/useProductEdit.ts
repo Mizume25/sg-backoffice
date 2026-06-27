@@ -3,8 +3,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 /*** Composable logica edit  */
 export const useProductEdit = (product_id: string) => {
 
-  /** Items  */
-  const toast = useToast();
+  
 
   /** Objetos Necesarios */
 
@@ -83,7 +82,7 @@ export const useProductEdit = (product_id: string) => {
 
   const onCategories = async () => {
     if (!selectedParentId.value) {
-      toast.add({ title: 'Selecciona una categoría padre', color: 'error' , icon:'lucide:x' })
+      useNotify().error('Selecciona una categoría padre');
       return
     }
     try {
@@ -96,10 +95,11 @@ export const useProductEdit = (product_id: string) => {
       useProductsApi().products.putCategories(product_id , categories);
       
 
-      toast.add({ title: 'Se ha modificado las categorias relacionadas correctamente', color: 'primary' })
+
+      useNotify().success('Se ha modificado las categorias relacionadas correctamente');
 
     } catch (error) {
-      toast.add({ title: 'Ha habido un problema en modficiar las categorias del producto', color: 'error' })
+       useNotify().error('Ha habido un problema en modficiar las categorias del producto');
     }
   }
 
@@ -108,11 +108,12 @@ export const useProductEdit = (product_id: string) => {
 
       await useProductsApi().products.put(product_id , e.data);
 
-      toast.add({ title: 'Producto Modificado correctamente', icon: 'lucide:check' })
+      
+       useNotify().success('Producto Modificado correctamente');
 
 
     } catch (error) {
-      toast.add({ title: 'No se pudo modificar el producto', icon: 'lucide:x' })
+       useNotify().error('No se pudo modificar el producto');
     }
   }
 
