@@ -1,27 +1,37 @@
 <script setup lang="ts">
 
 
+
+
 /** Composables Utilziados */
 const { form, loading } = useLoginForm();
-const { login } = useAuth();
-
+const toast = useToast();
+ const ProfileStore = useProfileStore();
 
 /** Titulo de la página*/
 definePageMeta({
   title: 'Iniciar Session'
 })
 
-/** Validacion de login */
 const handleLogin = async () => {
-  loading.value = true;
-  const { error } = await login(form.email, form.password)
+  loading.value = true
+  const supabase = useSupabaseClient()
+  try {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: form.email,
+      password: form.password,
+    })
+    if (error) throw error
 
-  if (error) {
-    console.log(error.message)
-    return
+    const profile = await useAuth().user.get()
+    ProfileStore.setProfile(profile);
+    await navigateTo('/home/products/')
+  } catch (error) {
+    console.error(error)
+    toast.add({ title: 'Credenciales incorrectas', color: 'error', icon: 'lucide:x' })
+  } finally {
+    loading.value = false
   }
-
-  navigateTo('/home/products/')
 }
 
 
@@ -46,8 +56,9 @@ const handleLogin = async () => {
         <UInput type="password" leading-icon="lucide:lock" v-model="form.password" />
       </UFormField>
 
-         <!--- Boton -->
-      <UButton class="w-40 cursor-pointer" @click="handleLogin" :loading="loading">
+      <!--- Boton -->
+      <UButton class="w-40 cursor-pointer flex flex-row justify-center items-center" @click="handleLogin"
+        :loading="loading">
         Iniciar Session
       </UButton>
     </UForm>

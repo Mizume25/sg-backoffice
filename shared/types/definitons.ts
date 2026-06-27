@@ -33,10 +33,12 @@ export type Images = Database['public']['Tables']['product_images']['Row'];
 export type Profile = Database['public']['Tables']['profiles']['Row'];
 
 
+
+
 /** 
  * @type Perfil
  */
-export type User = Profile & {
+export type ProfileRecord = Profile & {
     email: string | undefined
 }
 
@@ -69,5 +71,10 @@ export type CategoryRecord = Category & {
 export type CategoryIDS = {
     parent: string,
     childs: string[]
+}
+
+export type LoginCredentials  = {
+    email:string ,
+    password: string
 }
 

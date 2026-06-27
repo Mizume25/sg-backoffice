@@ -3,11 +3,16 @@
 /** Titlo dínamico  */
 const route = useRoute();
 
-/** Cerrar Session  */
-const { logout } = useAuth();
-
 /** Perfil Actual  */
 const { profile } = storeToRefs(useProfileStore())
+
+
+
+const logout = async () => {
+  await useSupabaseClient().auth.signOut()
+  useProfileStore().clearProfile()
+  await navigateTo('/auth/login')
+}
 
 </script>
 
@@ -25,7 +30,7 @@ const { profile } = storeToRefs(useProfileStore())
     <div class="flex flex-row  gap-5 items-center">
 
         <!-- Avatar -->
-      <UAvatar :alt="profile?.name" size="md" class="lg:block sm:hidden" />
+      <UAvatar :alt="profile?.name" size="md" class="max-lg:block sm:hidden flex flex-row items-center justify-center" />
 
         <!-- Menu  -->
       <UDropdownMenu class="w-25 cursor-pointer" :items="[{ label: 'Log-out', onSelect: logout, icon: 'lucide:log-out' }]">
