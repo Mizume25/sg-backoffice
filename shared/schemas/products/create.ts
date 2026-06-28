@@ -10,9 +10,9 @@ export type StoreImageSchema = z.output<typeof imagesSchema>;
 
 /** Esquema para tarifas */
 export const ratesSchemaCreate = z.object({
-    price:z.number().min(1, 'Debe tener un valor incial'),
-    start_date:z.string().min(1,'Debe tener Fecha final'),
-    end_date:z.string().min(1,'Debe tener Fecha de final'),
+    price:z.number().min(1, 'Añade Valor'),
+    start_date:z.string().min(1,'Añade Fecha Incial'),
+    end_date:z.string().min(1,'Añade Fecha Final'),
     product_id:z.string().optional()
 })
 
@@ -25,7 +25,7 @@ export const Schema = z.object({
     description: z.string().min(10, 'Necesitas una descripcion mas larga').max(200, 'Maximo de caracteres'),
     category: z.uuid({ message: 'Necesitas una categoria padre inicial' }),
     subcategory: z.uuid({ message: 'Necesitas una subcategoria inicial' }),
-    rates:z.array(ratesSchemaCreate),
+    rates:z.array(ratesSchemaCreate).min(1, 'Debe agregar 1 tarifa minima'),
     
 })
 

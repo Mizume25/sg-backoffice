@@ -3,27 +3,37 @@ import { ratesSchemaEdit, type EditRateSchema } from "~~/shared/schemas/products
 import type { FormSubmitEvent } from '@nuxt/ui'
 export const useRateEdit = (product_id: string) => {
 
-  /** Items  */
+  /** Composables Helpers  */
   const { data: product } = useProductsApi().products.useOne(product_id);
   const { confirm } = useConfirm();
-
-  const rates = computed(() => product.value?.rates)
-  const rateStatus = ref(false);
   const { checkValues } = useRateLogic();
-  const { CreateRate, cleanRate } = useRateLogic();
+  const { CreateRate, Rate } = useRateLogic();
+
+  /**
+   * Variables Principales
+   */
+  const rates = computed(() => product.value?.rates);
+  const rateStatus = ref(false);
+
 
 
   /** Esuqmea de Fomrulario */
   const RateSchema = computed(() => rateStatus.value ? ratesSchemaEdit : ratesSchemaCreate);
 
   /** Estado de edicion */
-  const EditRate: Ref<EditRateSchema | undefined> = ref({
-    id: rates.value![0]?.id,
-    price: rates.value![0]?.price,
-    start_date: rates.value![0]?.start_date.split('T')[0],
-    end_date: rates.value![0]?.end_date.split('T')[0],
-  });
+  const EditRate: Ref<EditRateSchema | undefined> = ref(undefined);
 
+
+  const changeRate = (id: string | undefined, status: boolean) => {
+     if (!status) return;
+    let rate = rates.value?.find((p) => p.id == id)
+    if (!rate) return
+    EditRate.value = {
+      ...rate,
+      start_date: rate.start_date!.split('T')[0],
+      end_date: rate?.end_date!.split('T')[0],
+    }
+  }
 
 
 
@@ -52,6 +62,8 @@ export const useRateEdit = (product_id: string) => {
       await useProductsApi().rates.delete(product_id, id);
 
       useNotify().success('Tarifa Borrada correctamente')
+      
+      EditRate.value = undefined;
 
     } catch (error) {
       useNotify().error('Ha habido un problema')
@@ -59,17 +71,7 @@ export const useRateEdit = (product_id: string) => {
 
   }
 
-  /** Funcion para cambiar rates */
-  const changeRate = (id: string | undefined, stauts: boolean) => {
-    if (!stauts) return;
-    let rate = rates.value?.find((p) => p.id == id)
-    if (!rate) return
-    EditRate.value = {
-      ...rate,
-      start_date: rate.start_date!.split('T')[0],
-      end_date: rate?.end_date!.split('T')[0],
-    }
-  }
+ 
 
 
   /** Funcion para editar o crear tarifas */
@@ -114,7 +116,7 @@ export const useRateEdit = (product_id: string) => {
 
         useNotify().success('Tarifa Creada Correctamente');
 
-        cleanRate();
+        Rate.cleanForm();
 
       } catch (error) {
         useNotify().error('Ha habido problemas en crear la tarifa');

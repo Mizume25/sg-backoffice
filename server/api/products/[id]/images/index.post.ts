@@ -18,6 +18,8 @@ export default eventHandler(async (e) => {
   const supabase = await initService(e);
   const product = await getProduct(supabase, id);
 
+  if(!product) throw createError({ statusCode: 404 , message:'No se encuentra el producto'});
+
 
 
   const img: CreateImage = {

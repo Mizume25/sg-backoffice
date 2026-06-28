@@ -13,38 +13,35 @@ definePageMeta({
 const { parents, FormState, subcategories, loading, onSubmit, code } = useProductCreate();
 
 /** Logica de Imagenes */
-const { inputRef, triggerInput, onFileChange, onDrop, image } = useImageLogic();
+const { inputRef, triggerInput, onFileChange, onDrop, image, clearimage } = useImageLogic();
 
 
 /** Logica de Tarifas */
-const { CreateRate, rates, addRate, removeRate } = useRateLogic();
+const { CreateRate, rates, Rate } = useRateLogic();
 
-/** Logica de rates */
+/** Abrir SideBarRight*/
 const isOpen = ref(false);
 
+/** Saber si tiene o no subcategorias hijas el padre actual */
 const hasChildren = computed(() => (subcategories.value?.length ?? 0) > 0)
 
+/** Subcategorias acorde al padre actual  */
 watch(subcategories, (newSubcats) => {
     const list = newSubcats ?? []
 
     if (list.length === 0) {
-        // categoría sin hijos: limpia la selección
         FormState.subcategory = ''
-        return
+        return;
     }
-
-    // hay hijos: si la selección actual no es válida, selecciona el primero
     const stillValid = list.some((c) => c.id === FormState.subcategory)
-    if (!stillValid) {
-        FormState.subcategory = list[0]!.id
-    }
+
+    if (!stillValid) FormState.subcategory = list[0]!.id
+
 }, { immediate: true })
 
 
 /** Obtener codigo dinamico */
-watch(code, (newCode) => {
-    FormState.code = newCode ?? ''
-}, { immediate: true })
+watch(code, (newCode) => FormState.code = newCode ?? '', { immediate: true })
 
 
 /** Copiar rates actuales */
@@ -54,32 +51,22 @@ watch(rates, (newRates) => {
 
 
 
-
-
-
-
-
-const onError = (err: FormErrorEvent) => {
-    let desk : string = '';
-    err.errors.forEach((e) => {
-        desk += e.message + '\n';
-    })
-
-        useNotify().warning(desk);
-}
+onUnmounted(() => clearimage());
 
 
 </script>
 
 <template>
+    <!--- Main -->
     <FormLayout>
-
+        <!-- Contenido -->
         <FormCard title="Añadir Producto">
 
 
             <div
                 class="w-full flex-1 overflow-y-auto overflow-x-hidden pr-2 flex flex-col items-start gap-6 scrollbar-thin scrollbar-thumb-white/50 scrollbar-track-transparent scrollbar-thumb-rounded-full">
-                <UForm :schema="Schema" :state="FormState" class="w-full flex flex-col gap-6" @submit="onSubmit" @error="onError">
+                <!-- Formulario -->
+                <UForm :schema="Schema" :state="FormState" class="w-full flex flex-col gap-6" @submit="onSubmit">
 
                     <!-- Nombre -->
                     <UFormField label="Nombre" name="name" class="mb-3">
@@ -88,7 +75,7 @@ const onError = (err: FormErrorEvent) => {
 
                     <!-- Categoria Padre -->
                     <UFormField label="Categoria" name="category" class="mb-3">
-                        <USelect :items="parents" class="w-full" label-key="name" value-key="id"
+                        <USelectMenu :items="parents" class="w-full" label-key="name" value-key="id"
                             v-model="FormState.category" />
                     </UFormField>
 
@@ -98,27 +85,36 @@ const onError = (err: FormErrorEvent) => {
                             class="w-full" :disabled="!hasChildren" />
                         <span v-if="!hasChildren" class="text-sm text-red-500 font-bold">No tiene subcategorias
                             disponibles</span>
-
+                        
                     </UFormField>
 
-                    <!-- Precio y fechas -->
-                    <UFormField label="Precio" name="price">
-                        <div class="flex flex-row items-center gap-3">
-                            <UInput class="w-24" trailing-icon="lucide:euro" type="number" placeholder="0.00"
-                                v-model="CreateRate.price" />
 
-                            <div class="flex flex-col gap-2">
+                    <div class="flex flex-row items-center gap-3">
+                        <!-- Precio y fechas -->
+                        <UFormField label="Precio" name="price">
+                            <UInputNumber class="w-24 flex flex-row items-center justify-center"
+                                trailing-icon="lucide:euro" placeholder="0.00" v-model="CreateRate.price" />
+                        </UFormField>
+
+                        <div class="flex flex-col gap-2">
+                        <!-- Fecha de Incio -->
+                            <UFormField  label="Inicio" name="start_date">
                                 <UInput class="w-36" type="date" v-model="CreateRate.start_date" />
+                            </UFormField>
+
+                         <!-- Fecha Final -->    
+                            <UFormField  label="Final" name="end_date">
                                 <UInput class="w-36" type="date" v-model="CreateRate.end_date" />
-                            </div>
+                            </UFormField>
                         </div>
-                    </UFormField>
+                    </div>
+
 
                     <!--Acciones -->
                     <div class="w-full flex flex-row justify-end items-center gap-2">
 
                         <UButton class="w-10 h-10 cursor-pointer flex flex-row items-center justify-center "
-                            icon="lucide:upload" color="primary" @click="addRate" />
+                            icon="lucide:upload" color="primary" @click="Rate.add" />
 
                         <UButton @click="isOpen = !isOpen"
                             class="w-10 h-10 cursor-pointer flex flex-row items-center justify-center "
@@ -171,8 +167,21 @@ const onError = (err: FormErrorEvent) => {
                 @click="isOpen = !isOpen" />
             <div class="p-4 flex flex-col gap-3 ">
                 <h2 class="text-blue-300 font-bold text-xl sm:text-2xl mb-2">Tarifas</h2>
-                <ItemRate v-for="(r, i) in rates" :rate="r" :id="i" :key="i" @id="removeRate(i)" />
-               
+                <!--- Items  -->
+                <TableRate deletable>
+                    <tr v-for="(rate, index) in rates"
+                        class="border-t border-blue-900/40 text-blue-100 transition-colors text-center">
+
+                        <td class="px-4 py-3">{{ rate.price }}</td>
+                        <td class="px-4 py-3">{{ formatDate(rate.start_date) }}</td>
+                        <td class="px-4 py-3">{{ formatDate(rate.end_date) }}</td>
+                        <td class="px-4 py-3">
+                            <UButton color="error" icon="lucide:x" class="cursor-pointer" size="sm"
+                                @click="Rate.remove(index)" />
+                        </td>
+                    </tr>
+                </TableRate>
+
             </div>
 
         </SideBarRight>

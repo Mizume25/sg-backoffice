@@ -113,3 +113,7 @@ export const makeURL = (code:string | undefined) => {
     if(!code) return;
     return IMAGE_URL + code + '/';
 }
+
+
+/*** Secciones */
+export type EditSection = '' | 'rates' | 'images' | 'categories';

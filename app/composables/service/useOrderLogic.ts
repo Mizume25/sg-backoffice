@@ -1,4 +1,4 @@
-import type { CalendarDate, DateValue } from '@internationalized/date';
+import type { DateValue } from '@internationalized/date';
 import type { FormSubmitEvent } from '@nuxt/ui'
 import type { StoreOrderSchema } from '~~/shared/schemas/orders/create';
 import type { UpdateOrderSchema } from '~~/shared/schemas/orders/edit';
@@ -11,10 +11,9 @@ export const useOrderLogic = () => {
 
 
   /** Items */
-
   const selectDay = ref<string>('')
   const selected = shallowRef<DateValue>();
-
+  const { confirm } = useConfirm();
 
 
   const isOpen = ref(false);
@@ -111,6 +110,12 @@ export const useOrderLogic = () => {
    * Borrar Pedido
    */
   const onDelete = async (id: string) => {
+     const ok = await confirm({
+      title: 'Borrar Pedido',
+      description: `¿Deseas eliminar este pedido? Esta acción no se puede deshacer.`
+    });
+
+    if (!ok) return
     try {
 
       await useProductsApi().orders.delete(id);

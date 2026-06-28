@@ -1,12 +1,12 @@
 import { type UpdateProductSchema } from '~~/shared/schemas/products/edit';
 import type { FormSubmitEvent } from '@nuxt/ui'
+
 /*** Composable logica edit  */
 export const useProductEdit = (product_id: string) => {
 
-  
+
 
   /** Objetos Necesarios */
-
   const { data: product } = useProductsApi().products.useOne(product_id);
 
 
@@ -17,58 +17,62 @@ export const useProductEdit = (product_id: string) => {
     description: product.value?.description
   });
 
-  /*** Secciones */
-  type Section = '' | 'rates' | 'images' | 'categories';
-
+  /** Guard para el boton de actualizar producto */
+  const original = ref({...FormProductState});
+  const isDirty = computed(() =>JSON.stringify(FormProductState) !== JSON.stringify(original.value))
 
   /** Boolean para abrir sidebar */
   const isOpen = ref(false);
+  const { confirm } = useConfirm();
 
   /** Secciones abiertas */
-  const edit = ref<Section>('');
+  const edit = ref<EditSection>('');
 
-  /** Mostrando seccion */
-  const showSection = (section: Section) => {
-    edit.value = section;
-    isOpen.value = true
-  }
-
-
+  /** Categorias Inciales */
   const categories = computed(() => product.value?.categories_products);
-
 
   const { data: allcategories } = useCategoriesApi().categories.list();
   const parents = computed(() => allcategories.value?.filter((p) => p.parent_id == null));
 
-  // padre inicial del producto
+  /** Padre actual en relacion a lcategoria de producto */
   const ownParent = computed(() => categories.value?.find(p => p.categories?.parent_id == null));
 
-  // ref editable para el select (este es el v-model)
+  /** Selecion reactiva */
   const selectedParentId = ref<string | undefined>(undefined);
 
-  // subcategorías que el producto YA tiene (para preselección)
+  /**
+   * Subcategorias relativas al producto
+   */
   const ownSubIds = computed(() =>
     categories.value
       ?.filter(p => p.categories?.parent_id != null)
       .map(p => p.categories?.id) ?? []
   );
 
-  // subcategorías del padre seleccionado — reactivo
+  /**
+   * Subcategorias del padre
+   */
   const subcategories = computed(() =>
     allcategories.value?.filter(p => p.parent_id === selectedParentId.value)
   );
 
-  // merged reactivo: depende del padre seleccionado
+  /**
+   * Fusion de valores reactivos
+   */
   const merged = ref<{ label: string; value: string; checked: boolean }[]>([]);
 
-  // inicializa el padre cuando carga el producto
+  /**
+   * Incializa el padre cunado carga producto
+   */
   watchEffect(() => {
     if (ownParent.value?.categories?.id != null) {
       selectedParentId.value = ownParent.value.categories.id;
     }
   });
 
-  // recalcula los checkboxes cada vez que cambia el padre (y por tanto subcategories)
+  /**
+   * Recalculo de checbox a medida que cambia
+   */
   watch(subcategories, (subs) => {
     if (!subs) return;
     merged.value = subs.map(sub => ({
@@ -79,41 +83,46 @@ export const useProductEdit = (product_id: string) => {
   }, { immediate: true });
 
 
-
+  /**
+   * Modificar Categoria
+   */
   const onCategories = async () => {
     if (!selectedParentId.value) {
       useNotify().error('Selecciona una categoría padre');
       return
     }
+
+    const ok = await confirm({
+      title: 'Actualizar Categoria',
+      description: `¿Quiere modificar las categorias de ${product.value?.name}?`,
+      confirm:'Modificar'
+    })
+
+    if (!ok) return
+
+
     try {
 
       const categories: CategoryIDS = {
-        parent: selectedParentId.value,  
+        parent: selectedParentId.value,
         childs: merged.value.filter(m => m.checked).map(m => m.value),
       }
 
-      useProductsApi().products.putCategories(product_id , categories);
-      
+      useProductsApi().products.putCategories(product_id, categories);
 
-
-      useNotify().success('Se ha modificado las categorias relacionadas correctamente');
+      useNotify().success('Categorias asociadas modificadas correctamente');
 
     } catch (error) {
-       useNotify().error('Ha habido un problema en modficiar las categorias del producto');
+      useNotify().error('Ha habido un problema en modificar las categorias');
     }
   }
 
   const onProduct = async (e: FormSubmitEvent<UpdateProductSchema>) => {
     try {
-
-      await useProductsApi().products.put(product_id , e.data);
-
-      
-       useNotify().success('Producto Modificado correctamente');
-
-
+      await useProductsApi().products.put(product_id, e.data);
+      useNotify().success('Producto modificado correctamente');
     } catch (error) {
-       useNotify().error('No se pudo modificar el producto');
+      useNotify().error('No se pudo modificar el producto');
     }
   }
 
@@ -121,5 +130,5 @@ export const useProductEdit = (product_id: string) => {
 
 
 
-  return { FormProductState, isOpen, edit, showSection, parents, selectedParentId, merged, onCategories, onProduct }
+  return { FormProductState, isOpen, edit, parents, selectedParentId, merged, onCategories, onProduct , isDirty }
 }

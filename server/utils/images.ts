@@ -4,22 +4,22 @@ import { Images } from '~~/shared/types/definitons';
 
 
 
-/** Base de datos */
 
 /** Creamos registros y creamos imagen */
 export const createImage = async (client: SupabaseClient, img: CreateImage, file: Buffer, path: string, code: string) => {
+
+  /** Creamos Bucket */
+  await imageService.create(client, code);
+  await imageService.upload(client, file, path, code, 'application/octet-stream');
+
   const { error } = await client
     .from('product_images')
     .insert(img);
 
-  if (error) throw createError({ statusCode: 409, message: error.message });
+  if (error) throw createError({ statusCode: 409, message: 'No se pudo insertar imagen', cause: error.message });
 
 
-  /** Creamos Bucket */
-  await Promise.all([
-    imageService.create(client, code),
-    imageService.upload(client, file, path, code, 'application/octet-stream'),
-  ])
+
 
 }
 
@@ -30,29 +30,30 @@ export const deleteImages = async (s: SupabaseClient, id: string, code: string) 
     .select('path')
     .eq('product_id', id)
 
-  if (fetchError) throw createError({ statusCode: 404, message: fetchError.message });
+  if (fetchError) throw createError({ statusCode: 404, message: 'No se pudo recuperar el registro de imagen', cause: fetchError.message });
 
 
 
   const paths: string[] = metadata?.map(item => item.path) ?? []
-  await imageService.removes(s, code, paths)
-
+  if (paths.length > 0) {
+    await imageService.removes(s, code, paths)
+  }
   const { error } = await s
     .from('product_images')
     .delete()
     .eq('product_id', id)
 
-  if (error) throw createError({ statusCode: 404, message: error.message });
+  if (error) throw createError({ statusCode: 409, message: 'No se pudo eliminar los registros', cause: error.message });
 
 
 }
 
 export const deleteImage = async (s: SupabaseClient, id: string | undefined) => {
 
-  const img  = await getImageRecord(s , id);
-  if(!img) return
+  const img = await getImageRecord(s, id);
+  if (!img) return
 
-  const product = await getProduct(s , img?.product_id);
+  const product = await getProduct(s, img?.product_id);
 
 
   /*** Boramos imagenes de buckets */
@@ -94,8 +95,11 @@ export const imageService = {
 
   /** Creamos Bucket */
   async create(s: SupabaseClient, code: string) {
-    await s.storage.createBucket(code, { public: true });
+    const { data } = await s.storage.getBucket(code);
+    if (data) return;
 
+    const { error } = await s.storage.createBucket(code, { public: true });
+    if (error) throw createError({ statusCode: 409, message: 'No se pudo crear el bucket', cause: error.message });
   },
 
   /** Subimos imagen */
@@ -129,10 +133,12 @@ export const imageService = {
 
   /** Borramos solo una */
   async remove(s: SupabaseClient, code: string, name: string) {
-    
+
 
     const { error } = await s.storage.from(code).remove([name])
 
     if (error) throw createError({ statusCode: 409, message: error.message })
-  }
+  },
+
+
 };

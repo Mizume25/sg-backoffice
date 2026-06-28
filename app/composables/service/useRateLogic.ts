@@ -1,5 +1,6 @@
 import type { StoreRateSchema } from "~~/shared/schemas/products/create";
 
+/** Valores Estaticos */
 const INIT_STATE = {
   price: 0,
   start_date: '',
@@ -7,14 +8,24 @@ const INIT_STATE = {
 }
 
 /*** Tarifa Reactiva */
-const CreateRate = reactive<StoreRateSchema>({...INIT_STATE})
+const CreateRate = reactive<StoreRateSchema>({ ...INIT_STATE })
 
 /*** Array de rates creados */
-const rates = reactive<StoreRateSchema[]>([])
+const rates = reactive<StoreRateSchema[]>([]);
+
+
+
 
 export const useRateLogic = () => {
 
+  const notify = useNotify();
 
+  /**
+   * Validacion de perido de fecha
+   * @param startDate string
+   * @param endDate string
+   * @returns 
+   */
   const isValidDate = (startDate: string, endDate: string): boolean => {
     const start = new Date(startDate).getTime()
     const end = new Date(endDate).getTime()
@@ -30,75 +41,78 @@ export const useRateLogic = () => {
   }
 
 
-  /*** Comprobacion de valores dates */
+  /**
+   * Comprobacion de requisitos
+   * @param price number
+   * @param start_date string
+   * @param end_date string
+   * @returns boolean
+   */
   const checkValues = (price: number, start_date: string, end_date: string): boolean => {
-
-    let check = true;
-
-
-
-    if (price < 0) useNotify().error( 'El precio es incoherente'), check = false;
-
-    else if (start_date.length == 0 || end_date.length == 0) useNotify().error( 'Debes añadir una fecha de inicio y final'), check = false;
-
-    else if (new Date(start_date) < new Date()) useNotify().error( 'La fecha de inicio no puede ser anterior o igual a la fecha actual'), check = false;
-
-    else if (new Date(start_date) >= new Date(end_date)) useNotify().error('La fecha de inicio no puede ser mayor o igual a la fecha final'), check = false;
-
-    else if (isValidDate(start_date, end_date)) useNotify().error('El periodo mínimo es de 2 meses'), check = false;
-
-
-    return check;
+    if (price <= 0) {
+      notify.error('El precio debe establecer un valor mínimo')
+      return false
+    }
+    if (start_date.length === 0 || end_date.length === 0) {
+      notify.error('Debes añadir una fecha de inicio y final')
+      return false
+    }
+    if (new Date(start_date) < new Date()) {
+      notify.warning('La fecha de inicio no puede ser anterior o igual a la fecha actual')
+      return false
+    }
+    if (new Date(start_date) >= new Date(end_date)) {
+      notify.warning('La fecha de inicio no puede ser mayor o igual a la fecha final')
+      return false
+    }
+    if (isValidDate(start_date, end_date)) {
+      notify.warning('El periodo mínimo es de 2 meses')
+      return false
+    }
+    return true
   }
 
-  /***Limpiamos rate */
-  const cleanRate = () => Object.assign(CreateRate, {...INIT_STATE})
 
-  const removeRate = (id: number) => {
-    rates.splice(id, 1);
-  }
+
+  /** Borramos 1 Rate */
+  const removeRate = (id: number) => rates.splice(id, 1);
+
 
   /** Agregar Tarifa */
   const addRate = () => {
 
+
+    /** Comprobamos */
     if (!checkValues(CreateRate.price, CreateRate.start_date, CreateRate.end_date)) return;
 
-    const card = {
+
+    /** Agregamos card */
+    rates.push({
       price: CreateRate.price,
       start_date: CreateRate.start_date,
-      end_date: CreateRate.end_date
-    }
-    /** Agregamos card */
-    rates.push(card);
+      end_date: CreateRate.end_date,
+    });
 
-  
-    useNotify().success('Tarifa Agregada Correctamente !')
+    /** Notificamos */
+    notify.success('Tarifa Agregada Correctamente !');
 
-    /** Limpiamos rate */
-    cleanRate();
-
-
+    Rate.cleanForm();
 
   }
 
-
-
-  const clearRates = () => rates.splice(0, rates.length);
-
-
-
-
-
+  const Rate = {
+    add: addRate,
+    cleanForm: () => Object.assign(CreateRate, { ...INIT_STATE }),
+    cleanAll: () => rates.splice(0, rates.length),
+    remove: removeRate,
+  }
 
   return {
     CreateRate,
     rates,
-    addRate,
-    removeRate,
-    clearRates,
-    checkValues,
-    isValidDate,
-    cleanRate
+    Rate,
+    checkValues
+
 
   }
 
