@@ -7,13 +7,14 @@ export const useImageEdit = (product_id: string) => {
 
 
    /*** Valores Inciales */
-
    const { data: product } = useProductsApi().products.useOne(product_id);
+   
    const images = computed(() => product.value?.product_images)
    const code = computed(() => product.value?.code);
    const URL = makeURL(code.value)
 
-
+   const { confirm } = useConfirm();
+   const notify = useNotify();
 
    /** Guardar Imagen en el momento en el que la sube*/
    watch(image.value, async (newImage) => {
@@ -28,16 +29,16 @@ export const useImageEdit = (product_id: string) => {
       try {
 
 
-         await useProductsApi().images.post(product_id , fd);
+         await useProductsApi().images.post(product_id, fd);
 
 
-      
-         useNotify().success('Imagen Subida correctamente');
+
+         notify.success('Imagen Subida correctamente');
          clearimage();
 
       } catch (error) {
 
-         useNotify().error('Ha habido un problema al subir la imagen');
+         notify.error('Ha habido un problema al subir la imagen');
          clearimage();
       }
 
@@ -50,18 +51,26 @@ export const useImageEdit = (product_id: string) => {
    const removeImage = async (id: string) => {
 
       if (images.value!.length < 2) {
-         useNotify().warning('Debe existir al menos 1 imagen');
+         notify.warning('Debe existir al menos 1 imagen');
          return;
       }
+
+      const ok = await confirm({
+         title: 'Borrar Imagen',
+         description: `¿Deseas eliminar este imagen? Esta acción no se puede deshacer.`
+      });
+
+      if(!ok) return;
+
       try {
 
          await useProductsApi().images.delete(product_id, id);
 
-        
-         useNotify().success('Se ha borrado correctamente la imagen');
+
+         notify.success('Se ha borrado correctamente la imagen');
 
       } catch (error) {
-         useNotify().error('Ha habaido un problema');
+         notify.error('Ha habaido un problema');
       }
    }
 

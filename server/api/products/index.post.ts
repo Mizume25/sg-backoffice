@@ -13,5 +13,5 @@ export default eventHandler(async (e) => {
     const obj = await createEntities(supabase, body);
 
 
-    return { success: true , product: obj}
+    return obj
 })

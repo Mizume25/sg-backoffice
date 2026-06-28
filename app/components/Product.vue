@@ -11,6 +11,9 @@ const props = defineProps<{
   categories: string
 }>()
 
+/**
+ * Valor de Prouct
+ */
 const product = computed(() => props.record)
 
 /** Array de imagenes */
@@ -24,7 +27,7 @@ const parent = computed(() => getParent(product.value))
 
 /** INterval  */
 let intervalId: ReturnType<typeof setInterval> | null = null
-
+const { confirm } = useConfirm();
 
 /** Iniciar intervalo de imagenes */
 onMounted(() => {
@@ -59,11 +62,17 @@ async function downloadPDF() {
  * @param id string
  */
 async function deleteProduct(id: string) {
+  const ok = await confirm({
+    title: 'Borrar Producto',
+    description: `¿Deseas eliminar este producto? Esta acción no se puede deshacer.`
+  });
+
+  if (!ok) return
   try {
     await useProductsApi().products.delete(id);
 
     useNotify().success('Se elimino el producto perfectamente')
-    
+
   } catch (error) {
     useNotify().error('No se pudo eliminar el producto')
   }
@@ -130,6 +139,6 @@ async function deleteProduct(id: string) {
       class="cursor-pointer flex-1 justify-center py-3 text-base font-semibold" @click="downloadPDF" download />
   </div>
 
-
+  <ConfirmModal />
 
 </template>

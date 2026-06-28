@@ -15,20 +15,30 @@ const id = route.params.id as string;
 const { data: product } = await useProductsApi().products.get(id);
 
 
-const { FormProductState, isOpen, edit, showSection, parents, selectedParentId, merged, onCategories, onProduct } = useProductEdit(id);
+const { FormProductState, isOpen, edit, parents, selectedParentId, merged, onCategories, onProduct , isDirty } = useProductEdit(id);
 
 const { rates, deleteRate, rateStatus, RateSchema, RateState, changeRate, actionRate } = useRateEdit(id);
 
 
 const { images, URL, triggerInput, onDrop, onFileChange, inputRef, removeImage } = useImageEdit(id);
 
-
+/**
+ * Cerrar Seccion
+ */
 const closeSection = () => {
   isOpen.value = false;
   edit.value = '';
   rateStatus.value = false;
 
 }
+
+ /** Mostrando seccion */
+  const showSection = (section: EditSection) => {
+    edit.value = section;
+
+    if(section == 'rates') rateStatus.value = false;
+    isOpen.value = true
+  }
 
 
 
@@ -60,7 +70,7 @@ const closeSection = () => {
 
         <div class="p-4 flex flex-row items-center justify-start mb-1 gap-3">
           <UButton class="w-30 h-10 cursor-pointer" color="warning" label="Actualizar" leading-icon="lucide:pen"
-            :disabled="isOpen" type="submit" />
+            :disabled="!isDirty" type="submit" />
         </div>
 
 
@@ -102,34 +112,33 @@ const closeSection = () => {
             Rates</h2>
         </div>
 
-        <UForm :schema="RateSchema" :state="RateState" class="flex flex-row items-center gap-3 mb-4" v-if="RateState"
-          @submit="actionRate">
+        <UForm :schema="RateSchema" :state="RateState" class="flex flex-row items-center gap-3 mb-4" v-if="RateState" @submit="actionRate">
 
-          <UFormField>
-            <UInput class=" w-24" trailing-icon="lucide:euro" type="number" placeholder="0.00"
-              v-model="RateState.price" />
+          <!-- Price -->
+          <UFormField label="Precio" name="price">
+            <UInputNumber class=" w-30" trailing-icon="lucide:euro"  placeholder="0.00" v-model="RateState.price" />
           </UFormField>
 
-
-          <UFormField>
+          <!-- Fecha Inicio-->
+          <UFormField label="Inicio" name="start_date">
             <UInput class="w-36" type="date" v-model="RateState.start_date" />
           </UFormField>
 
-          <UFormField>
+          <!-- Fecha Final-->
+          <UFormField label="Final" name="end_date">
             <UInput class="w-36" type="date" v-model="RateState.end_date" />
           </UFormField>
 
-
-
-          <UButton :icon="rateStatus ? 'lucide:download' : 'lucide:upload'" class="cursor-pointer"
-            :color="rateStatus ? 'warning' : 'primary'" type="submit" />
+          <UButton :icon="rateStatus ? 'lucide:download' : 'lucide:upload'" class="cursor-pointer" :color="rateStatus ? 'warning' : 'primary'" type="submit" />
 
         </UForm>
+
+        <span v-else class="text-md italic mb-3">Seleccione una tarifa</span>
 
 
         <!--- Tabla de Valores-->
         <TableRate deletable>
-          <tr v-for="rate in rates" class="border-t border-blue-900/40 text-blue-100 transition-colors text-center "
+          <tr v-for="rate in rates" class="border-t border-blue-900/40 text-blue-100 mt-2 transition-colors text-center "
             :class="rateStatus ? 'cursor-pointer hover:bg-blue-800  duration-100 ease-in-out hover:scale-105' : ''"
             @click="changeRate(rate.id, rateStatus)">
 
@@ -189,12 +198,12 @@ const closeSection = () => {
         <h2 class="shrink-0 mb-4 text-start text-2xl font-bold text-blue-200">Edit Categories</h2>
         <UForm class="flex flex-col gap-4">
 
-          <UFormField label="Categoria">
-            <USelect v-model="selectedParentId" :items="parents" label-key="name" value-key="id"
+          <UFormField label="Categoria" name="category">
+            <USelectMenu v-model="selectedParentId" :items="parents" label-key="name" value-key="id"
               class="w-full h-10 cursor-pointer" />
           </UFormField>
 
-          <UFormField label="Subcategoria">
+          <UFormField label="Subcategoria" name="subcategory">
             <UCheckbox v-for="sub in merged" :key="sub.value" v-model="sub.checked" :label="sub.label" />
           </UFormField>
 

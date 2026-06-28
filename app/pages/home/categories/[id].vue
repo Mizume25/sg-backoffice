@@ -1,7 +1,5 @@
 <script setup lang="ts">
-
 import { Schema } from '~~/shared/schemas/categories/edit'
-import { type FormErrorEvent } from '@nuxt/ui'
 
 /** Titlo de la página */
 definePageMeta({
@@ -40,10 +38,6 @@ watch(allow, (newVal) => FormState.parent_id = newVal ? undefined : parents.valu
 
 
 
-function onError(event: FormErrorEvent) {
-  console.log('errores de validación:', event.errors)
-}
-
 
 
 
@@ -54,7 +48,7 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
 <template>
   <FormLayout>
     <FormCard :title="`Editar categoria ${category?.name}`" :back="back" v-if="FormState">
-      <UForm :schema="Schema" :state="FormState" @submit="onUpdate" @error="onError" class="w-full">
+      <UForm :schema="Schema" :state="FormState" @submit="onUpdate"  class="w-full">
 
         <!-- Nombre -->
         <UFormField label="Categoria" name="name">

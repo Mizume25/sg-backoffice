@@ -24,14 +24,7 @@ watch(allow, (newVal) => FormState.parent_id = newVal ? undefined : parents.valu
 /** Si cambia el nombre, cambia el codigo */
 watch(() => FormState.name, (newVal) => FormState.code = makeCode(newVal))
 
-const onError = (err: FormErrorEvent) => {
-    let desk : string = '';
-    err.errors.forEach((e) => {
-        desk += e.message + '\n';
-    })
 
-    useNotify().warning(desk);
-}
 
 
 /** Toggle Sidebar de edits */
@@ -46,7 +39,7 @@ const isOpen = ref(false);
     <FormCard :title="allow ? 'Crear Categoria' : 'Crear Subcategoria'">
 
       <!--- Formulario -->
-      <UForm :schema="Schema" :state="FormState" :validate-on="['input']" @submit="onSubmit" class="w-full" @error="onError">
+      <UForm :schema="Schema" :state="FormState" :validate-on="['input']" @submit="onSubmit" class="w-full" >
 
         <!-- Nombre -->
         <UFormField label="Categoria" name="name">

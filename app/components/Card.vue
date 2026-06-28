@@ -4,7 +4,6 @@ import { type ProductRecord } from '../../shared/types/definitons'
 /** Propos del componente */
 const props = defineProps<({
   product: ProductRecord,
-  filter: string | undefined
 })>()
 
 /** Categoria padre */
@@ -31,7 +30,7 @@ const handleProduct = () => {
   <!--- Card -->
   <div
     class="w-75 min-h-50 bg-blue-900 rounded-2xl border-4 shadow-2xl transition-transform duration-150 hover:scale-105 active:scale-95 cursor-pointer hover:z-20"
-    :class="border" @click="handleProduct" v-show="filter === 'Todos' || filter === parent">
+    :class="border" @click="handleProduct">
     <!--- Head -->
     <header class="w-full min-h-[25%] p-3 flex flex-col gap-y-1 ">
       <!--- Title -->
