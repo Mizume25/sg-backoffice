@@ -18,8 +18,12 @@ const handleLogin = async () => {
     })
     if (error) throw error
 
-    const profile = await useAuth().user.get()
-    ProfileStore.setProfile(profile);
+    const profile =  await useAuth().user.get();
+
+
+    useAuth().setProfile(profile);
+
+       
     await navigateTo('/home/products/')
   } catch (error) {
 

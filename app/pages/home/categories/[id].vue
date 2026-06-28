@@ -40,7 +40,7 @@ watch(allow, (newVal) => FormState.parent_id = newVal ? undefined : parents.valu
 
 
 
-
+/** Link de regreso */
 const back = category.value?.parent_id == null ? '/home/categories/create' : `/home/categories/${category.value.parent_id}`;
 
 </script>

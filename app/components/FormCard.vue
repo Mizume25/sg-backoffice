@@ -1,3 +1,4 @@
+<!--- Contenedor de Formularios -->
 <script setup lang="ts">
 const props = defineProps<{
   title?: string
@@ -7,12 +8,11 @@ const props = defineProps<{
 
 <template>
 
-  <div
-    class="w-full flex-1 lg:flex-none lg:w-100 lg:max-w-md shrink-0 flex flex-col bg-blue-300 p-4 rounded-2xl border border-black">
-
-    <div
-      class="w-full flex-1 lg:flex-none lg:max-h-[80vh] flex flex-col items-center bg-blue-900 rounded-2xl p-4 sm:p-6 shadow-2xl">
+  <div class="w-full flex-1 lg:flex-none lg:w-100 lg:max-w-md shrink-0 flex flex-col bg-blue-300 p-4 rounded-2xl border border-black">
+    <div class="w-full flex-1 lg:flex-none lg:max-h-[80vh] flex flex-col items-center bg-blue-900 rounded-2xl p-4 sm:p-6 shadow-2xl">
     <div class="w-full h-10 mt-2">
+      
+      <!--- Boton para Regresar -->
         <NuxtLink
           :to="props.back"
           :class="back == undefined ? 'hidden' : ''"
@@ -21,7 +21,7 @@ const props = defineProps<{
           <span>Volver</span>
         </NuxtLink>
       </div>
-
+      <!--- Titulo -->
       <h2 v-if="title" class="shrink-0 mb-4 text-center text-2xl font-bold text-blue-200">
         {{ title }}
       </h2>

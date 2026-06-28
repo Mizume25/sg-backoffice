@@ -9,8 +9,11 @@ const { profile } = storeToRefs(useProfileStore())
 
 
 const logout = async () => {
-  await useSupabaseClient().auth.signOut()
-  useProfileStore().clearProfile()
+  const { clearProfile } = useAuth();
+
+  /** Cerramos sesion , limpieamos perfil y redireccionamos */
+  await useSupabaseClient().auth.signOut();
+  clearProfile();
   await navigateTo('/auth/login')
 }
 
