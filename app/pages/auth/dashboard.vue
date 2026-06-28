@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 /** Perfil Actual */
-const { profile } = storeToRefs(useProfileStore())
+const profile = useAuth().profile
 
 /** Titulo */
 definePageMeta({
