@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Schema } from '~~/shared/schemas/categories/create';
-  import { type FormErrorEvent } from '@nuxt/ui'
+import { type FormErrorEvent } from '@nuxt/ui'
 /** Titulo */
 definePageMeta({
   title: "Gestion de Categorias"
@@ -39,17 +39,17 @@ const isOpen = ref(false);
     <FormCard :title="allow ? 'Crear Categoria' : 'Crear Subcategoria'">
 
       <!--- Formulario -->
-      <UForm :schema="Schema" :state="FormState" :validate-on="['input']" @submit="onSubmit" class="w-full" >
+      <UForm :schema="Schema" :state="FormState" @submit="onSubmit" class="w-full">
 
         <!-- Nombre -->
         <UFormField label="Categoria" name="name">
-          <UInput class="mb-4 w-full" :leading-icon="allow ? 'lucide:tag' : 'lucide:tags'" v-model="FormState.name" />
+          <UInput class="w-full" :leading-icon="allow ? 'lucide:tag' : 'lucide:tags'" v-model="FormState.name" />
         </UFormField>
 
         <!-- Categoria Padre -->
         <UFormField label="Categoria Padre" name="parent_id" class="flex flex-col gap-1" v-if="parents">
 
-          <USelect class="w-full mb-2" :leading-icon="allow ? '' : 'lucide:tag'" :items="parents" label-key="name"
+          <USelect class="w-full" :leading-icon="allow ? '' : 'lucide:tag'" :items="parents" label-key="name"
             value-key="id" v-model="FormState.parent_id" :disabled="allow" />
           <UButton class="block mb-3 cursor-pointer" :label="allow ? 'Activar' : 'Desactivar'"
             :color="allow ? 'primary' : 'error'" @click="allow = !allow" />
@@ -58,7 +58,7 @@ const isOpen = ref(false);
 
         <!-- Descripcion -->
         <UFormField label="Descripcion" name="description">
-          <UTextarea class="mb-4 w-full" v-model="FormState.description" />
+          <UTextarea class="w-full" v-model="FormState.description" />
         </UFormField>
 
         <div class="p-4 flex flex-row gap-4">

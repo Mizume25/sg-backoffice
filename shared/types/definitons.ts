@@ -46,7 +46,7 @@ export type ProfileRecord = Profile & {
  * Producto Completo
  */
 export type ProductRecord  = Product & {
-   categories_products: { categories: Category | null }[]
+  categories_products: { categories: Category | null }[]
   rates: Rate[]
   product_images: Images[]
 }

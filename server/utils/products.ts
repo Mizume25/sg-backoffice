@@ -51,7 +51,7 @@ export async function editProduct(s : SupabaseClient , id: string , product: Edi
     .update(product)
     .eq('id' , id);
 
-    if(error) createError({ statusCode:404 , message: 'No se ha encontrado el producto' , cause:error.message})
+    if(error) throw createError({ statusCode:404 , message: 'No se ha encontrado el producto' , cause:error.message})
     
 }
 
@@ -195,13 +195,8 @@ export async function getProduct(s: SupabaseClient, id: string): Promise<Product
  * @param product_id Producto asociado
  */
 export async function changeCategories(s: SupabaseClient, categories: CategoryIDS, product_id: string) {
-    // 1. Borramos todas las relaciones actuales del producto
-    const { error: delErr } = await s
-        .from('categories_products')
-        .delete()
-        .eq('product_id', product_id);
-
-    if (delErr) throw createError({ status: 404, message: 'No se pudo eliminar los datos' , cause:delErr.message});
+    
+    await breakCategories(s , product_id);
 
 
     // Re modificamos campos

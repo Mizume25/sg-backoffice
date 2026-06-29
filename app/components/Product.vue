@@ -6,7 +6,6 @@ const props = defineProps<{
   styleTitle: string,
   image: string,
   subtitles: string,
-  contentTarifas: string,
   description: string
   categories: string
 }>()

@@ -3,6 +3,15 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import type { StoreOrderSchema } from '~~/shared/schemas/orders/create';
 import type { UpdateOrderSchema } from '~~/shared/schemas/orders/edit';
 
+
+const INIT_STATE = {
+  amount: 0,
+  units: 0,
+  order_date: '',
+  product_id: ''
+}
+
+
 export const useOrderLogic = () => {
 
   /** Datos */
@@ -14,43 +23,37 @@ export const useOrderLogic = () => {
   const selectDay = ref<string>('')
   const selected = shallowRef<DateValue>();
   const { confirm } = useConfirm();
-
-
   const isOpen = ref(false);
   const edit = ref(false);
-  const INIT_STATE = {
-    amount: 0,
-    units: 0,
-    order_date: '',
-    product_id: ''
-  }
+
+
 
   const cleanUp = () => Object.assign(OrderState, { ...INIT_STATE });
 
 
-  /** Estado incial */
+  /** Estado incial de Formulario*/
   const OrderState = reactive({ ...INIT_STATE });
   const EditOrderState = reactive({ ...INIT_STATE, id: '', });
 
-  const currentRate = (rates: Rate[], date: string): number | undefined => {
-    const order = new Date(date).getTime()
+  /** Rates de la fecha selecionada */
+  const currentRate = (rates: Rate[], date: string): number => {
+    const order = new Date(date).getTime();
+
+    const vigente = rates
+      .filter(r => {
+        const start = new Date(r.start_date).getTime();
+        const end = new Date(r.end_date).getTime();
+        return start <= order && order <= end;
+      })
+      .sort((a, b) =>
+        new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+      )[0];
+
+    return vigente?.price ?? 0;
+  };
 
 
-    const pasadas = rates
-      .map(r => ({
-        diff: new Date(r.end_date).getTime() - order,
-        price: r.price
-      }))
-      .filter(r => r.diff <= 0)
-
-    if (pasadas.length === 0) return undefined
-
-
-    const max = Math.max(...pasadas.map(p => p.diff))
-    return pasadas.find(p => p.diff === max)?.price
-  }
-
-
+  /** Cunado obtenga valor esos 3, comenzara a calcularse el amount */
   watch(
     () => ({
       product_id: OrderState.product_id,
@@ -62,9 +65,16 @@ export const useOrderLogic = () => {
       if (!producto || !orderDate || !units) return
 
       const price = currentRate(producto.rates, orderDate)
-      if (price == null) return
+      if (price == 0) {
+        useNotify().error('No existe tarifa vigente para la fecha solicitada')
 
-      OrderState.amount = Number((price * units).toFixed(2))
+        cleanUp();
+
+      } else {
+        OrderState.amount = Number((price * units).toFixed(2))
+      }
+
+
 
     }
   )
@@ -78,12 +88,12 @@ export const useOrderLogic = () => {
 
       await useProductsApi().orders.post(e.data);
 
-     
+
       useNotify().success('Se ha creado la orden correctamente')
       cleanUp();
 
     } catch (error) {
-      
+
       useNotify().error('Ha habido un error al crear la orden')
     }
   }
@@ -95,12 +105,12 @@ export const useOrderLogic = () => {
 
       await useProductsApi().orders.put(id, e.data);
 
-    
+
       useNotify().success('Se ha actualizado la orden correctamente')
       cleanUp();
 
     } catch (error) {
-   
+
       useNotify().error('Ha habido un error al editar la orden')
     }
   }
@@ -110,7 +120,7 @@ export const useOrderLogic = () => {
    * Borrar Pedido
    */
   const onDelete = async (id: string) => {
-     const ok = await confirm({
+    const ok = await confirm({
       title: 'Borrar Pedido',
       description: `¿Deseas eliminar este pedido? Esta acción no se puede deshacer.`
     });
@@ -121,7 +131,7 @@ export const useOrderLogic = () => {
       await useProductsApi().orders.delete(id);
       isOpen.value = false;
 
-    
+
       useNotify().success('La orden se elimino correctamente')
     } catch (error) {
       useNotify().error('No se puedo eliminar la orden')
@@ -180,12 +190,8 @@ export const useOrderLogic = () => {
 
 
     cleanUp();
-
-   
-    useNotify().info('Ya existe un producto para la fecha indicada')
-
+    useNotify().info('Ya existe un producto para la fecha indicada');
     edit.value = true;
-
     return true;
 
   }

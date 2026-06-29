@@ -27,10 +27,8 @@ export const useCategoryCreate = () => {
 
     /** Construir objeto */
     const category: CreateCategory = {
+      ...e.data,
       name: e.data.name.toLocaleLowerCase(),
-      code: e.data.code,
-      description: e.data.description,
-      parent_id: e.data.parent_id
     }
 
     /** Peticiones al endpoint  */
