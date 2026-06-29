@@ -3,10 +3,7 @@
 /** Titlo dínamico  */
 const route = useRoute();
 
-/** Perfil Actual  */
-const { profile } = storeToRefs(useProfileStore())
-
-
+const { profile } = useAuth();
 
 const logout = async () => {
   const { clearProfile } = useAuth();

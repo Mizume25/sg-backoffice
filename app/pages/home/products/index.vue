@@ -75,7 +75,6 @@ const filtersOpen = ref(false)
             <Product v-else :record="record" style-title="text-white font-bold text-2xl mb-2"
               subtitles="mt-3 italic mb-3"
               image="relative h-[280px] w-full shrink-0 rounded-2xl bg-white overflow-hidden shadow-2xl"
-              content-tarifas="flex flex-col gap-2 w-full"
               description="text-white text-sm font-light leading-relaxed break-all"
               categories="flex flex-wrap gap-3 w-full" />
           </div>

@@ -56,7 +56,7 @@ const { OrderState, onSubmit, orderDates, isOpen, selected , currentDates , onDe
             </UFormField>
 
             <UFormField label="Producto a comprar" name="product_id" :ui="{ label: 'font-medium text-highlighted' }">
-              <USelect placeholder="Selecciona un producto" class="w-full cursor-pointer" :items="products"
+              <USelectMenu placeholder="Selecciona un producto" class="w-full cursor-pointer" :items="products"
                 value-key="id" label-key="name" v-model="OrderState.product_id" />
             </UFormField>
 

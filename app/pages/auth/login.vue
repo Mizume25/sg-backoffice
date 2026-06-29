@@ -1,7 +1,6 @@
 <script setup lang="ts">
 /** Composables Utilziados */
 const { form, loading } = useLoginForm();
-const ProfileStore = useProfileStore();
 
 /** Titulo de la página*/
 definePageMeta({

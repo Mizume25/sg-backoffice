@@ -12,7 +12,7 @@ const isOpen = ref(false)
   <aside :class="[
     'fixed left-0 top-18 min-h-screen bg-[#0f172a] p-3 pt-10 z-50',
     'transition-transform duration-300',
-    'w-[75%] sm:w-[50%] lg:w-[20%]',
+    'w-[75%] sm:w-[50%] lg:w-70',
     'lg:translate-x-0',
     isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
   ]">

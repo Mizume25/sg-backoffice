@@ -23,9 +23,7 @@ export const useCategoryEdit = (category_id: string) => {
     loading.value = true;
 
     const update: UpdateCategorySchema = {
-      name: e.data.name,
-      code: e.data.code,
-      description: e.data.description,
+      ...e.data,
       parent_id: e.data.parent_id === undefined ? null : e.data.parent_id
     }
 

@@ -37,7 +37,7 @@ watch(allow, (newVal) => FormState.parent_id = newVal ? undefined : parents.valu
 
 
 
-
+const title = computed(() => category?.value?.parent_id == null ? 'categoria' : 'subcategoria')
 
 
 /** Link de regreso */
@@ -47,7 +47,7 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
 
 <template>
   <FormLayout>
-    <FormCard :title="`Editar categoria ${category?.name}`" :back="back" v-if="FormState">
+    <FormCard :title="`Editar ${title} ${category?.name}`" :back="back" v-if="FormState">
       <UForm :schema="Schema" :state="FormState" @submit="onUpdate"  class="w-full">
 
         <!-- Nombre -->

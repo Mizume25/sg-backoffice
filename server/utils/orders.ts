@@ -32,7 +32,7 @@ export async function createOrder(s:SupabaseClient , order:StoreOrderSchema) {
     const { error } = await s
     .from('orders')
     .insert(order);
-    if(error) createError({ statusCode:409 , message:'No se pudo crear el pedido' , cause:error.message })
+    if(error) throw createError({ statusCode:409 , message:'No se pudo crear el pedido' , cause:error.message })
 
 }
 
@@ -45,7 +45,7 @@ export async function deleteOrder(s:SupabaseClient , id:string) {
 
     const { error } = await s.from('orders').delete().eq('id' , id);
     
-    if(error) createError({ statusCode: 404 , message:'No se ha encontrado la orden' , cause:error.message })
+    if(error) throw createError({ statusCode: 404 , message:'No se ha encontrado la orden' , cause:error.message })
 
 }
 
@@ -59,6 +59,6 @@ export async function editOrder(s:SupabaseClient ,id:string, body: UpdateOrderSc
 
     const { error } = await s.from('orders').update(body).eq('id' , id);
     
-    if(error) createError({ statusCode: 404 , message:'No se ha encontrado la orden' , cause:error.message })
+    if(error) throw createError({ statusCode: 404 , message:'No se ha encontrado la orden' , cause:error.message })
 
 }
