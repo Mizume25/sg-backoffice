@@ -5,7 +5,14 @@ import { Images } from '~~/shared/types/definitons';
 
 
 
-/** Creamos registros y creamos imagen */
+/**
+ * Crea y sube imagen
+ * @param client SupabaseClietn
+ * @param img CreateImage
+ * @param file Buffer
+ * @param path string
+ * @param code string
+ */
 export const createImage = async (client: SupabaseClient, img: CreateImage, file: Buffer, path: string, code: string) => {
 
   /** Creamos Bucket */
@@ -23,7 +30,13 @@ export const createImage = async (client: SupabaseClient, img: CreateImage, file
 
 }
 
-/** Eliminar todas las imagenes realcionadas */
+
+/**
+ * Eliminar imagenes asociadas
+ * @param s SupabaseClietn
+ * @param id UUID Product
+ * @param code string
+ */
 export const deleteImages = async (s: SupabaseClient, id: string, code: string) => {
   const { data: metadata, error: fetchError } = await s
     .from('product_images')
@@ -48,6 +61,11 @@ export const deleteImages = async (s: SupabaseClient, id: string, code: string) 
 
 }
 
+/**
+ * Elimina imagen especifca
+ * @param s Supabaseclient
+ * @param id UUID de imagen
+ */
 export const deleteImage = async (s: SupabaseClient, id: string | undefined) => {
 
   const img = await getImageRecord(s, id);
@@ -66,11 +84,17 @@ export const deleteImage = async (s: SupabaseClient, id: string | undefined) => 
     .eq('id', id)
 
   /** Saltara error en caso de que no haberse borradoc orectametne */
-  if (error) throw createError({ statusCode: 404, message: error.message })
+  if (error) throw createError({ statusCode: 404, message: 'No se encontro registro de imagen' , cause:error.message })
 
 
 }
 
+/**
+ * Obtiene registro de imagen
+ * @param s SupabaseClient
+ * @param id UUID image
+ * @returns Image product
+ */
 export const getImageRecord = async (s: SupabaseClient, id: string | undefined): Promise<Images> => {
 
   /** Obtenemos metadatos */
@@ -80,7 +104,7 @@ export const getImageRecord = async (s: SupabaseClient, id: string | undefined):
     .eq('id', id)
     .single();
 
-  if (error) throw createError({ statusCode: 404, message: error.message });
+  if (error) throw createError({ statusCode: 404, message: 'No se encontro registro de imagen' , cause:error.message });
 
   return data;
 }
@@ -108,7 +132,7 @@ export const imageService = {
 
     const { error } = await s.storage.from(code).upload(path, file, { contentType, upsert: true });
 
-    if (error) throw createError({ statusCode: 409, message: error.message })
+    if (error) throw createError({ statusCode: 409, message: 'No se pudo guardar la imagen', cause:error.message })
 
 
   },
@@ -120,7 +144,7 @@ export const imageService = {
       .from('public')
       .move(oldPath, newPath);
 
-    if (error) throw createError({ statusCode: 409, message: error.message })
+    if (error) throw createError({ statusCode: 404, message: 'No se encontro la imagen' , cause:error.message })
   },
 
   /*** Borrammos varias imagenes */
@@ -128,7 +152,7 @@ export const imageService = {
 
     const { error } = await s.storage.from(code).remove(names)
 
-    if (error) throw createError({ statusCode: 409, message: error.message })
+    if (error) throw createError({ statusCode: 409, message: 'No se pudo eliminar imagen' , cause:error.message })
   },
 
   /** Borramos solo una */
@@ -137,7 +161,7 @@ export const imageService = {
 
     const { error } = await s.storage.from(code).remove([name])
 
-    if (error) throw createError({ statusCode: 409, message: error.message })
+    if (error) throw createError({ statusCode: 409, message: 'No se pudo eliminar la serie de imagenes' , cause:error.message })
   },
 
 

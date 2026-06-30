@@ -1,64 +1,50 @@
-# Nuxt Starter Template
+# SG-Store · Backoffice
 
-[![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
+Backoffice de gestión de productos desarrollado como prueba técnica para Studiogenesis.
 
-Use this template to get started with [Nuxt UI](https://ui.nuxt.com) quickly.
+**Stack:** Nuxt + Supabase 
+**Autor:** Gabriel Junior Nivicela Masaco  
+**Curso:** CFGS DAW 1r
 
-- [Live demo](https://starter-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/docs/getting-started/installation/nuxt)
+---
 
-<a href="https://starter-template.nuxt.dev/" target="_blank">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png">
-    <img alt="Nuxt Starter Template" src="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png" width="830" height="466">
-  </picture>
-</a>
+## Acceso al backoffice
 
-> The starter template for Vue is on https://github.com/nuxt-ui-templates/starter-vue.
+| Login  | Valor |
+|---|---|
+| **Email** | `gabriel@example.com` |
+| **Contraseña** | `1234` |
 
-## Quick Start
 
-```bash [Terminal]
-npm create nuxt@latest -- -t ui
-```
+## Funcionalidades
 
-## Deploy your own
+### Categorías
+- CRUD completo con jerarquía padre/hija
+- Una categoría puede tener subcategorías ilimitadas
+- Al eliminar una categoría padre se eliminan sus hijas
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-name=starter&repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fstarter&demo-image=https%3A%2F%2Fui.nuxt.com%2Fassets%2Ftemplates%2Fnuxt%2Fstarter-dark.png&demo-url=https%3A%2F%2Fstarter-template.nuxt.dev%2F&demo-title=Nuxt%20Starter%20Template&demo-description=A%20minimal%20template%20to%20get%20started%20with%20Nuxt%20UI.)
+### Productos
+- CRUD completo con categorías múltiples y tarifas por rango de fechas
+- Gestión de imágenes (añadir y eliminar)
+- Exportación del listado completo a **XLSX**
+- Descarga de ficha individual en **PDF**
 
-## Setup
+### Calendario de pedidos
+- Vista mensual con UCalendar 
+- Crear una cita indicando producto, fecha y unidades
+- El coste se calcula automáticamente según la tarifa vigente del producto
+- y formulario de edicion de pedido
 
-Make sure to install the dependencies:
+## Modulos utilizados
 
-```bash
-pnpm install
-```
+Módulos Instalados
+├── @iconify-json/lucide@1.2.111 → Iconos Lucide
+├── @internationalized/date@3.12.2 → Manejo de Fechas
+├── @nuxt/image@2.0.0 → Nuxtimage
+├── @nuxt/ui@4.8.2 → Interfaces fabricadas UI 
+├── @nuxtjs/supabase@2.0.9 → Módulo oficial de Supabase para NUXT
+├── @exceljs → Exportación csv
+├── @pdf-lib → Exportacion PDF
+├── @zod → Construcción de Schemas 
 
-## Development Server
 
-Start the development server on `http://localhost:3000`:
-
-```bash
-pnpm dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-pnpm build
-```
-
-Locally preview production build:
-
-```bash
-pnpm preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-
-## Renovate integration
-
-Install [Renovate GitHub app](https://github.com/apps/renovate/installations/select_target) on your repository and you are good to go.

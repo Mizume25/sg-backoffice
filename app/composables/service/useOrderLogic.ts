@@ -31,6 +31,7 @@ export const useOrderLogic = () => {
   const cleanUp = () => Object.assign(OrderState, { ...INIT_STATE });
 
 
+
   /** Estado incial de Formulario*/
   const OrderState = reactive({ ...INIT_STATE });
   const EditOrderState = reactive({ ...INIT_STATE, id: '', });
@@ -79,10 +80,39 @@ export const useOrderLogic = () => {
     }
   )
 
+
+
+  /**
+   * Controlamos variables del edit
+   */
+  watch(
+    () => ({
+      product_id: EditOrderState.product_id,
+      orderDate: EditOrderState.order_date,
+      units: EditOrderState.units,
+    }),
+    ({ product_id, orderDate, units }) => {
+      const producto = products.value?.find(p => p.id === product_id)
+      if (!producto || !orderDate || !units) return
+
+      const price = currentRate(producto.rates, orderDate)
+      if (price == 0) {
+        useNotify().error('No existe tarifa vigente para la fecha solicitada')
+        EditOrderState.order_date = '';
+
+      } else {
+        EditOrderState.amount = Number((price * units).toFixed(2))
+      }
+
+
+
+    }
+  )
+
   /** Crear Ordens */
   const onSubmit = async (e: FormSubmitEvent<StoreOrderSchema>) => {
 
-    if (checkOrder(e.data)) return;
+   
 
     try {
 
@@ -101,6 +131,9 @@ export const useOrderLogic = () => {
 
   /** Crear Ordens */
   const onUpdate = async (e: FormSubmitEvent<UpdateOrderSchema>, id: string) => {
+
+    
+
     try {
 
       await useProductsApi().orders.put(id, e.data);
@@ -176,9 +209,13 @@ export const useOrderLogic = () => {
    * @param order StoreOrderSchema
    */
   const checkOrder = (order: StoreOrderSchema): boolean => {
+    
+
+     const orderDate  = order?.order_date.slice(0, 10);
+
     let repet = orders.value!.find((p) =>
       p.product_id == order.product_id &&
-      p.order_date.slice(0, 10) == order.order_date.slice(0, 10));
+      p.order_date.slice(0, 10) == orderDate);
 
     if (!repet) return false;
 
