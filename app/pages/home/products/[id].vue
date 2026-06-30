@@ -15,9 +15,9 @@ const id = route.params.id as string;
 const { data: product } = await useProductsApi().products.get(id);
 
 
-const { FormProductState, isOpen, edit, parents, selectedParentId, merged, onCategories, onProduct , isDirty } = useProductEdit(id);
+const { FormProductState, isOpen, edit, parents, selectedParentId, merged, onCategories, onProduct , isDirty , loading } = useProductEdit(id);
 
-const { rates, deleteRate, rateStatus, RateSchema, RateState, changeRate, actionRate } = useRateEdit(id);
+const { rates, deleteRate, rateStatus, RateSchema, RateState, changeRate, actionRate  , loadRate} = useRateEdit(id);
 
 
 const { images, URL, triggerInput, onDrop, onFileChange, inputRef, removeImage } = useImageEdit(id);
@@ -70,7 +70,7 @@ const closeSection = () => {
 
         <div class="p-4 flex flex-row items-center justify-start mb-1 gap-3">
           <UButton class="w-30 h-10 cursor-pointer" color="warning" label="Actualizar" leading-icon="lucide:pen"
-            :disabled="!isDirty" type="submit" />
+            :disabled="!isDirty" type="submit" :loading="loading" />
         </div>
 
 
@@ -107,7 +107,7 @@ const closeSection = () => {
       <div v-if="edit == 'rates'">
         <div class="p-3 flex flex-row items-center justify-start gap-6">
           <USwitch icon="lucide:pencil" color="warning" class="cursor-pointer" @change="rateStatus = !rateStatus"
-            size="xl" />
+            size="xl"  :disabled="loadRate" />
           <h2 class="shrink-0 mb-1 text-start text-2xl font-bold text-blue-200">{{ rateStatus ? 'Edit' : 'Create' }}
             Rates</h2>
         </div>
@@ -129,7 +129,7 @@ const closeSection = () => {
             <UInput class="w-36" type="date" v-model="RateState.end_date" />
           </UFormField>
 
-          <UButton :icon="rateStatus ? 'lucide:download' : 'lucide:upload'" class="cursor-pointer" :color="rateStatus ? 'warning' : 'primary'" type="submit" />
+          <UButton :icon="rateStatus ? 'lucide:download' : 'lucide:upload'" class="cursor-pointer" :color="rateStatus ? 'warning' : 'primary'" type="submit" :loading="loadRate" />
 
         </UForm>
 

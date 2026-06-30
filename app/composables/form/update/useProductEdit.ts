@@ -5,7 +5,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 export const useProductEdit = (product_id: string) => {
 
 
-
+  const loading = ref(false);
   /** Objetos Necesarios */
   const { data: product } = useProductsApi().products.useOne(product_id);
 
@@ -118,9 +118,11 @@ export const useProductEdit = (product_id: string) => {
   }
 
   const onProduct = async (e: FormSubmitEvent<UpdateProductSchema>) => {
+    loading.value = true;
     try {
       await useProductsApi().products.put(product_id, e.data);
       useNotify().success('Producto modificado correctamente');
+       loading.value = false;
     } catch (error) {
       useNotify().error('No se pudo modificar el producto');
     }
@@ -130,5 +132,5 @@ export const useProductEdit = (product_id: string) => {
 
 
 
-  return { FormProductState, isOpen, edit, parents, selectedParentId, merged, onCategories, onProduct , isDirty }
+  return { FormProductState, isOpen, edit, parents, selectedParentId, merged, onCategories, onProduct , isDirty , loading }
 }

@@ -15,6 +15,7 @@ export const useRateEdit = (product_id: string) => {
   const rates = computed(() => product.value?.rates);
   const rateStatus = ref(false);
 
+  const loadRate = ref(false);
 
 
   /** Esuqmea de Fomrulario */
@@ -48,7 +49,7 @@ export const useRateEdit = (product_id: string) => {
    */
   async function deleteRate(id: string) {
 
-    if (rates.value?.length == 1) return useNotify().success('Debe existir por lo menos 1 tarifa');
+    if (rates.value?.length == 1) return useNotify().info('Debe existir por lo menos 1 tarifa');
 
     const ok = await confirm({
       title: 'Borrar Tarifa',
@@ -128,7 +129,7 @@ export const useRateEdit = (product_id: string) => {
 
 
   return {
-    rates, deleteRate, rateStatus, RateSchema, RateState, EditRate, CreateRate, changeRate, actionRate
+    rates, deleteRate, rateStatus, RateSchema, RateState, EditRate, CreateRate, changeRate, actionRate , loadRate
   }
 
 }

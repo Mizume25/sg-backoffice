@@ -4,9 +4,12 @@ import { serverSupabaseClient, serverSupabaseUser} from '#supabase/server'
 import type { H3Event } from 'h3'
 import { ProfileRecord } from "~~/shared/types/definitons";
 
+/***
+ * Obtiene perfil de usuario
+ * 
+ */
 export const getProfile = async (e: H3Event): Promise<ProfileRecord> => {
   const auth = await serverSupabaseUser(e)
-  console.log('USER:', auth)
    if (!auth) throw createError({ statusCode: 401, message: 'No autenticado' })
   
   const supabase = await serverSupabaseClient<Database>(e)

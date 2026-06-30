@@ -3,6 +3,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const user = useSupabaseUser()
   const publicPaths = ['/auth/login', '/auth/register']
 
+  const authPath = ['/auth/dashboard']
+
   /** Si se diriga a un path que no sea los publicos y es un usuario invalid, vuelve a auth */
   if (!publicPaths.includes(to.path) && !user.value) {
     return navigateTo('/auth/login')
@@ -12,5 +14,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (user.value && publicPaths.includes(to.path)) {
     return navigateTo('/auth/dashboard')
   }
+
+
+
 
 })
