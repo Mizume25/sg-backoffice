@@ -75,6 +75,7 @@ const { OrderState, onSubmit, orderDates, isOpen, selected , currentDates , onDe
           </UForm>
         </UCard>
 
+        <!--- Formulario de listado de pedidos-->
         <UModal v-model:open="isOpen" >
           <template #close />
           <template #title>
@@ -105,6 +106,7 @@ const { OrderState, onSubmit, orderDates, isOpen, selected , currentDates , onDe
 
         </UModal>
 
+        <!-- Modal de edicion-->
         <UModal v-model:open="edit">
           <template #close />
             <template #title >
@@ -147,4 +149,3 @@ const { OrderState, onSubmit, orderDates, isOpen, selected , currentDates , onDe
 
 
 
-<style lang="scss" scoped></style>

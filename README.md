@@ -1,4 +1,4 @@
-# SG-Store · Backoffice
+# SG-Backoffice
 
 Backoffice de gestión de productos desarrollado como prueba técnica para Studiogenesis.
 
