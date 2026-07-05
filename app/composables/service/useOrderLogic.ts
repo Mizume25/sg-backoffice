@@ -171,10 +171,19 @@ export const useOrderLogic = () => {
     }
   }
 
-
+  /***
+   * Ordenes 
+   */
   const orderDates = computed(() => new Set((orders.value ?? []).map(o => o.order_date.slice(0, 10))))
+
+   /***
+   * Ordenes selecionadas
+   */
   const currentDates = reactive<OrderRecord[]>([]);
 
+  /**
+   * Abrir modal de la fecha selecionada
+   */
   watch(selected, (date) => {
     if (!date) return
     const key = date.toString().slice(0, 10);
@@ -182,12 +191,16 @@ export const useOrderLogic = () => {
 
     currentDates.splice(0, currentDates.length);
 
+    /*** Copiamos los pedidos actuales */
     currentDates.push(...orders.value!.filter(p => p.order_date.slice(0, 10) === key))
     selectDay.value = key
     isOpen.value = true
   })
 
-
+  /**
+   * Activar modo Edit
+   * @param id 
+   */
   const handleOrder = (id: string) => {
     let order = currentDates.find((p) => p.id == id);
 
