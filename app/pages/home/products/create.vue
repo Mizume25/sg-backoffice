@@ -116,7 +116,7 @@ onUnmounted(() => clearimage());
                         <UButton class="w-10 h-10 cursor-pointer flex flex-row items-center justify-center "
                             icon="lucide:upload" color="primary" @click="Rate.add" />
 
-                        <UButton @click="isOpen = !isOpen"
+                        <UButton @click="() => {isOpen = !isOpen}"
                             class="w-10 h-10 cursor-pointer flex flex-row items-center justify-center "
                             :color="isOpen ? 'warning' : 'error'"
                             :leading-icon="isOpen ? 'lucide:eye' : 'lucide:eye-closed'" />
@@ -164,7 +164,7 @@ onUnmounted(() => clearimage());
         <SideBarRight :is-open="isOpen" content="w-[25%] max-md:w-[100%] p-4">
             <UButton icon="lucide:x" color="error"
                 class="w-10 lg:hidden flex flex-row justify-center items-center cursor-pointer"
-                @click="isOpen = !isOpen" />
+                @click="() => {isOpen = !isOpen}" />
             <div class="p-4 flex flex-col gap-3 ">
                 <h2 class="text-blue-300 font-bold text-xl sm:text-2xl mb-2">Tarifas</h2>
                 <!--- Items  -->
@@ -177,7 +177,7 @@ onUnmounted(() => clearimage());
                         <td class="px-4 py-3">{{ formatDate(rate.end_date) }}</td>
                         <td class="px-4 py-3">
                             <UButton color="error" icon="lucide:x" class="cursor-pointer" size="sm"
-                                @click="Rate.remove(index)" />
+                                @click="() => {Rate.remove(index)}" />
                         </td>
                     </tr>
                 </TableRate>

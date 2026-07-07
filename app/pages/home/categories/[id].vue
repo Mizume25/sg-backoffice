@@ -81,7 +81,7 @@ const back = category.value?.parent_id == null ? '/home/categories/create' : `/h
           <USelect :items="parents" label-key="name" value-key="id" v-model="FormState.parent_id!" class="w-full mb-2"
             leading-icon="lucide:tag" :disabled="allow" />
           <UButton class="cursor-pointer" :label="allow ? 'Activar Padre' : 'Desactivar Padre'"
-            :color="allow ? 'primary' : 'error'" @click="allow = !allow" />
+            :color="allow ? 'primary' : 'error'" @click="() => {allow = !allow}" />
         </UFormField>
 
 

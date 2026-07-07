@@ -52,7 +52,7 @@ const isOpen = ref(false);
           <USelect class="w-full" :leading-icon="allow ? '' : 'lucide:tag'" :items="parents" label-key="name"
             value-key="id" v-model="FormState.parent_id" :disabled="allow" />
           <UButton class="block mb-3 cursor-pointer" :label="allow ? 'Activar' : 'Desactivar'"
-            :color="allow ? 'primary' : 'error'" @click="allow = !allow" />
+            :color="allow ? 'primary' : 'error'" @click="() => {allow = !allow}" />
 
         </UFormField>
 
@@ -66,7 +66,7 @@ const isOpen = ref(false);
             type="submit" :loading="loading" />
           <UButton class="w-40 sm:w-30 h-10 flex items-center justify-center cursor-pointer" label="Categorias"
             :color="isOpen ? 'warning' : 'error'" :leading-icon="isOpen ? 'lucide:eye' : 'lucide:eye-closed'"
-            @click="isOpen = !isOpen" />
+            @click="()=> {isOpen = !isOpen}" />
 
         </div>
 
@@ -76,7 +76,7 @@ const isOpen = ref(false);
     <!-- Lista de categorias para editar -->
     <SideBarRight :is-open="isOpen" content="w-[30%] max-md:w-[100%] h-full overflow-y-auto">
       <UButton icon="lucide:x" color="error"
-        class="w-10 lg:hidden flex flex-row justify-center items-center cursor-pointer" @click="isOpen = !isOpen" />
+        class="w-10 lg:hidden flex flex-row justify-center items-center cursor-pointer" @click="() => {isOpen = !isOpen}" />
       <div class="p-4 flex flex-col gap-3">
         <h2 class="text-blue-300 font-bold text-xl sm:text-2xl mb-2">Editar Categoria</h2>
 

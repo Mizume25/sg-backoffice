@@ -146,7 +146,7 @@ const closeSection = () => {
             <td class="px-4 py-3">{{ formatDate(rate.start_date) }}</td>
             <td class="px-4 py-3">{{ formatDate(rate.end_date) }}</td>
             <td class="px-4 py-3">
-              <UButton color="error" icon="lucide:x" class="cursor-pointer" size="sm" @click="deleteRate(rate.id)" />
+              <UButton color="error" icon="lucide:x" class="cursor-pointer" size="sm" @click="() => {deleteRate(rate.id)}" />
             </td>
           </tr>
 

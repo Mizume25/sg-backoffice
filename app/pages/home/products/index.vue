@@ -19,7 +19,7 @@ const filtersOpen = ref(false)
   <div class="flex flex-col gap-4 h-full p-10">
 
     <!-- Botón toggle: solo visible en móvil -->
-    <UButton class="md:hidden" icon="lucide:sliders-horizontal" label="Filtros" @click="filtersOpen = !filtersOpen" />
+    <UButton class="md:hidden" icon="lucide:sliders-horizontal" label="Filtros" @click="() => {filtersOpen = !filtersOpen}" />
 
     <!-- La barra: siempre visible en desktop, toggleable en móvil -->
     <div :class="{ 'max-md:hidden': !filtersOpen }" class="w-full bg-blue-950/40 rounded-2xl flex items-center gap-1 px-4 max-sm:text-sm
@@ -61,7 +61,7 @@ const filtersOpen = ref(false)
          <!--- Header -->
         <div class="h-full flex flex-col ">
           <div class="shrink-0 mb-4">
-            <UButton icon="lucide:x" @click="isOpen = !isOpen" color="error" class="cursor-pointer" />
+            <UButton icon="lucide:x" @click="() => {isOpen = !isOpen}" color="error" class="cursor-pointer" />
           </div>
 
             <!--- Guard en caso de que no haya producto -->
