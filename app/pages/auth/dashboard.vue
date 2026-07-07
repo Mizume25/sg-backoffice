@@ -1,12 +1,12 @@
 <script setup lang="ts">
 
 const auth = useAuth()
-let profile = auth.profile.value
 
-if (!profile) {
+
+if (!auth.profile.value) {
   try {
-    profile = await auth.user.get()
-    auth.setProfile(profile)
+    const data = await auth.user.get()
+    auth.setProfile(data)
   } catch (error) {
 
   }
@@ -27,7 +27,8 @@ definePageMeta({
 
   <!-- Content -->
   <div class=" bg-[#2e2e2e] rounded-2xl p-6">
-    <h1 class="mb-3 font-bold text-md">Bienvenido de vuleta {{ profile?.name }}</h1>
+    <h1 class="mb-3 font-bold text-md">Bienvenido de vuleta {{ auth.profile.value?.name ?? '' }}</h1>
+    
 
     <!-- Boton de regreso -->
     <UButton

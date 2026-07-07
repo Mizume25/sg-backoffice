@@ -6,8 +6,8 @@ import type { ProfileRecord } from "~~/shared/types/definitons"
 
 export const useAuth = () => {
   const user = {
-    get:() => $fetch('/api/auth/profile', {method:'GET'}),
-    logout:() => $fetch('/api/auth/logout' , {method:'POST'}),
+    get:() => useRequestFetch()('/api/auth/profile', {method:'GET'}),
+    logout:() => useRequestFetch()('/api/auth/logout' , {method:'POST'}),
   }
 
 
