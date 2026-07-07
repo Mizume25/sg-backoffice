@@ -9,6 +9,7 @@ export const useRateEdit = (product_id: string) => {
   const { checkValues } = useRateLogic();
   const { CreateRate, Rate } = useRateLogic();
 
+
   /**
    * Variables Principales
    */
@@ -48,7 +49,7 @@ export const useRateEdit = (product_id: string) => {
    * @returns 
    */
   async function deleteRate(id: string) {
-
+      const notify = useNotify();
     if (rates.value?.length == 1) return useNotify().info('Debe existir por lo menos 1 tarifa');
 
     const ok = await confirm({
@@ -62,12 +63,12 @@ export const useRateEdit = (product_id: string) => {
 
       await useProductsApi().rates.delete(product_id, id);
 
-      useNotify().success('Tarifa Borrada correctamente')
+      notify.success('Tarifa Borrada correctamente')
       
       EditRate.value = undefined;
 
     } catch (error) {
-      useNotify().error('Ha habido un problema')
+      notify.error('Ha habido un problema')
     }
 
   }
@@ -77,9 +78,9 @@ export const useRateEdit = (product_id: string) => {
 
   /** Funcion para editar o crear tarifas */
   const actionRate = async (e: FormSubmitEvent<EditRateSchema | StoreRateSchema>) => {
-
+      const notify = useNotify();
     if (e.data.price == undefined || e.data.start_date == undefined || e.data.end_date == undefined) {
-      useNotify().error('Valores incoherentes');
+     notify.error('Valores incoherentes');
       return;
     }
 
@@ -95,11 +96,11 @@ export const useRateEdit = (product_id: string) => {
         await useProductsApi().rates.put(product_id, e.data.id, e.data)
 
 
-        useNotify().success('Tarifa Actualizada Correctamente');
+        notify.success('Tarifa Actualizada Correctamente');
 
       } catch (e) {
 
-        useNotify().error('Ha habido problemas en actualizar la tarifa');
+        notify.error('Ha habido problemas en actualizar la tarifa');
       }
 
     } else {
@@ -115,12 +116,12 @@ export const useRateEdit = (product_id: string) => {
 
         await useProductsApi().rates.post(product_id, rate)
 
-        useNotify().success('Tarifa Creada Correctamente');
+        notify.success('Tarifa Creada Correctamente');
 
         Rate.cleanForm();
 
       } catch (error) {
-        useNotify().error('Ha habido problemas en crear la tarifa');
+        notify.error('Ha habido problemas en crear la tarifa');
       }
     }
   }
