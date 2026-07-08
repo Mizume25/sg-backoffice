@@ -8,7 +8,7 @@ export const useRateEdit = (product_id: string) => {
   const { confirm } = useConfirm();
   const { checkValues } = useRateLogic();
   const { CreateRate, Rate } = useRateLogic();
-
+  const notify = useNotify();
 
   /**
    * Variables Principales
@@ -49,7 +49,7 @@ export const useRateEdit = (product_id: string) => {
    * @returns 
    */
   async function deleteRate(id: string) {
-      const notify = useNotify();
+      
     if (rates.value?.length == 1) return useNotify().info('Debe existir por lo menos 1 tarifa');
 
     const ok = await confirm({
@@ -78,7 +78,7 @@ export const useRateEdit = (product_id: string) => {
 
   /** Funcion para editar o crear tarifas */
   const actionRate = async (e: FormSubmitEvent<EditRateSchema | StoreRateSchema>) => {
-      const notify = useNotify();
+      
     if (e.data.price == undefined || e.data.start_date == undefined || e.data.end_date == undefined) {
      notify.error('Valores incoherentes');
       return;
